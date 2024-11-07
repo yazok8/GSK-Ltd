@@ -1,11 +1,10 @@
-
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
     provider = "mongodb"
     url      = env("DATABASE_URL")
-}
-generator client {
-  provider = "prisma-client-js"
 }
 
 model ProcessedEvent {
@@ -20,19 +19,22 @@ model Category {
 }
 
 model Product {
-  id                     String                 @id @default(auto()) @map("_id") @db.ObjectId
-  name                   String                 @unique
-  price                  Float
-  images                 Image[]
-  description            String
-  inStock                Boolean                @default(true)
-  brand                  String?
-  categoryId             String?                @db.ObjectId
-  category               Category?              @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String    @unique
+  price       Float
+  images      Image[]   @relation("ProductImages")
+  description String
+  inStock     Boolean   @default(true)
+  brand       String?
+  categoryId  String?   @db.ObjectId
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: Restrict)
 }
 
-type Image{
-  color String?
-  colorCode String?
-  image String
+model Image {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  color      String?
+  colorCode  String?
+  image      String
+  product    Product?  @relation("ProductImages", fields: [productId], references: [id])
+  productId  String?   @db.ObjectId
 }

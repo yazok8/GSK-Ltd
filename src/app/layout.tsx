@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Inter } from "next/font/google";
-import Header from "./(customerFacing)/components/header";
 
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -22,7 +21,6 @@ export default function RootLayout({
       <body
         className={cn("min-h-screen flex flex-col bg-background font-sans antialiased", inter.variable)}
       >
-        <Header/>
         {children}
       </body>
     </html>
