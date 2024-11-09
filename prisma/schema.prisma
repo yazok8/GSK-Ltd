@@ -8,14 +8,14 @@ datasource db {
 }
 
 model ProcessedEvent {
-  id          String   @id @map("_id")
+  id          String   @id @map("_id") @db.ObjectId
   processedAt DateTime @default(now())
 }
 
 model Category {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
   name     String    @unique
-  products Product[]
+  products Product[] @relation("CategoryProducts")
 }
 
 model Product {
@@ -27,7 +27,7 @@ model Product {
   inStock     Boolean   @default(true)
   brand       String?
   categoryId  String?   @db.ObjectId
-  category    Category? @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  category    Category? @relation("CategoryProducts", fields: [categoryId], references: [id], onDelete: Restrict)
 }
 
 model Image {
@@ -35,6 +35,6 @@ model Image {
   color      String?
   colorCode  String?
   image      String
-  product    Product?  @relation("ProductImages", fields: [productId], references: [id])
   productId  String?   @db.ObjectId
+  product    Product?  @relation("ProductImages", fields: [productId], references: [id])
 }

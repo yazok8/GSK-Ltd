@@ -58,19 +58,22 @@ export default function ProductForm({
 
   // Fetch categories on component mount
   useEffect(() => {
+    // Fetch categories from the API
     const fetchCategories = async () => {
       try {
-        const res = await fetch('/api/categories'); // Adjust API endpoint as needed
-        const data = await res.json();
-        setCategories(data.categories);
+        const response = await fetch('/api/categories');
+        if (!response.ok) {
+          throw new Error('Failed to fetch categories');
+        }
+        const data: Category[] = await response.json();
+        setCategories(data);
       } catch (err) {
-        console.error('Failed to fetch categories:', err);
+        console.error(err);
       }
     };
 
     fetchCategories();
   }, []);
-
   // Set initial image sources for existing images
   useEffect(() => {
     if (product?.images && product.images.length > 0) {
@@ -223,140 +226,141 @@ export default function ProductForm({
         <CardTitle>Add A Product</CardTitle>
       </CardHeader>
       <CardContent>
-    <form onSubmit={handleSubmit}>
-      {/* Product Name */}
-      <div className='space-y-2'>
-        <Label htmlFor='name'>Name</Label>
-        <Input
-          type="text"
-          id="name"
-          name="name"
-          required
-          defaultValue={product?.name || ""}
-        />
-      </div>
-
-      {/* Product Price */}
-      <div className="space-y-2">
-        <Label htmlFor="price">Price</Label>
-        <Input
-          type="number"
-          id="price"
-          name="price"
-          required
-          value={price}
-          onChange={(e) => setPrice(Number(e.target.value) || undefined)}
-        />
-        <div className="text-muted-foreground">
-          {formatPrice(price ? price / 100 : 0)}
-        </div>
-      </div>
-
-      {/* Product Description */}
-      <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
-        <Textarea
-          id="description"
-          name="description"
-          required
-          defaultValue={product?.description || ""}
-        />
-      </div>
-
-      {/* Category Field */}
-      <div className="space-y-2 text-sm">
-        <Label htmlFor="categoryId">Category</Label>
-        <select
-          id="categoryId"
-          name="categoryId" // Ensure this matches the server-side expectation
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-          required
-          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-        >
-          <option value="" className="text-sm">Select a category</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Add New Images */}
-      <div className="space-y-2">
-        <Label htmlFor="new-images">Add New Images</Label>
-        <Input
-          type="file"
-          id="new-images"
-          name="new-images"
-          multiple
-          accept="image/*"
-          onChange={handleNewImagesChange}
-        />
-        {newImagePreviews.map((url, index) => (
-          <div key={`new-image-${index}`} className="relative">
-            <Image src={url} alt={`New Image ${index + 1}`} width={200} height={200} />
-            <button
-              type="button"
-              onClick={() => handleRemoveNewImage(index)}
-              className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
-              aria-label={`Remove new image ${index + 1}`}
-            >
-              &times;
-            </button>
-          </div>
-        ))}
-      </div>
-
-      {/* Existing Images */}
-      <div className="space-y-2">
-        <Label>Existing Images</Label>
-        {existingImages.map((imgState, index) => (
-          <div key={imgState.id} className="relative">
-            <Image
-              src={imgState.replacementPreviewUrl || getImageSrc(imgState.image)}
-              alt={`Existing Image ${index + 1}`}
-              width={200}
-              height={200}
+        <form onSubmit={handleSubmit}>
+          {/* Product Name */}
+          <div className='space-y-2'>
+            <Label htmlFor='name'>Name</Label>
+            <Input
+              type="text"
+              id="name"
+              name="name"
+              required
+              defaultValue={product?.name || ""}
             />
-            <button
-              type="button"
-              onClick={() => handleRemoveExistingImage(imgState.id)}
-              className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
-              aria-label={`Remove existing image ${index + 1}`}
-            >
-              {imgState.isRemoved ? 'Undo Remove' : 'Remove'}
-            </button>
-            {!imgState.isRemoved && (
-              <>
-                <Label htmlFor={`replace-image-${imgState.id}`}>Replace Image</Label>
-                <Input
-                  type="file"
-                  id={`replace-image-${imgState.id}`}
-                  accept="image/*"
-                  onChange={(e) => handleReplaceExistingImage(e, imgState.id)}
-                />
-              </>
-            )}
           </div>
-        ))}
-      </div>
 
-      {/* Display Success or Error Messages */}
-      {success && <div className="text-green-500">{success}</div>}
-      {error && <div className="text-red-500">{error}</div>}
+          {/* Product Price */}
+          <div className="space-y-2">
+            <Label htmlFor="price">Price</Label>
+            <Input
+              type="number"
+              id="price"
+              name="price"
+              required
+              value={price}
+              onChange={(e) => setPrice(Number(e.target.value) || undefined)}
+            />
+            <div className="text-muted-foreground">
+              {formatPrice(price ? price / 100 : 0)}
+            </div>
+          </div>
 
-      {/* Submit Button */}
-      <button
-        type="submit"
-        disabled={pending}
-        className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
-      >
-        {pending ? 'Submitting...' : 'Submit'}
-      </button>
-    </form>
-    </CardContent>
+          {/* Product Description */}
+          <div className="space-y-2">
+            <Label htmlFor='description'>Description</Label>
+            <Textarea
+              id="description"
+              name="description"
+              required
+              defaultValue={product?.description || ""}
+            />
+          </div>
+
+          {/* Category Field */}
+          <div className="space-y-2 text-sm">
+            <Label htmlFor="categoryId">Category</Label>
+            <select
+              id="categoryId"
+              name="categoryId" // Ensure this matches the server-side expectation
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              required
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            >
+              <option value="" className="text-sm">Select a category</option>
+              {categories &&categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Add New Images */}
+          <div className="space-y-2">
+            <Label htmlFor="new-images">Add New Images</Label>
+            <Input
+              type="file"
+              id="new-images"
+              name="newImages" // Ensure the name matches the backend expectation
+              multiple
+              accept="image/*"
+              onChange={handleNewImagesChange}
+            />
+            {newImagePreviews.map((url, index) => (
+              <div key={`new-image-${index}`} className="relative">
+                <Image src={url} alt={`New Image ${index + 1}`} width={200} height={200} />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveNewImage(index)}
+                  className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
+                  aria-label={`Remove new image ${index + 1}`}
+                >
+                  &times;
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Existing Images */}
+          <div className="space-y-2">
+            <Label>Existing Images</Label>
+            {existingImages.map((imgState, index) => (
+              <div key={imgState.id} className="relative">
+                <Image
+                  src={imgState.replacementPreviewUrl || getImageSrc(imgState.image)}
+                  alt={`Existing Image ${index + 1}`}
+                  width={200}
+                  height={200}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveExistingImage(imgState.id)}
+                  className="absolute top-0 right-0 bg-red-500 text-white rounded-md"
+                  aria-label={`Remove existing image ${index + 1}`}
+                >
+                  {imgState.isRemoved ? 'Undo Remove' : 'Remove'}
+                </button>
+                {!imgState.isRemoved && (
+                  <>
+                    <Label htmlFor={`replace-image-${imgState.id}`}>Replace Image</Label>
+                    <Input
+                      type="file"
+                      id={`replace-image-${imgState.id}`}
+                      name={`replacementImages[${index}]`} // Ensure unique naming
+                      accept="image/*"
+                      onChange={(e) => handleReplaceExistingImage(e, imgState.id)}
+                    />
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Display Success or Error Messages */}
+          {success && <div className="text-green-500">{success}</div>}
+          {error && <div className="text-red-500">{error}</div>}
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={pending}
+            className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
+          >
+            {pending ? 'Submitting...' : 'Submit'}
+          </button>
+        </form>
+      </CardContent>
     </Card>
   );
 }

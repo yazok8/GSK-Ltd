@@ -38,6 +38,13 @@ const AdminNav = () => {
               selected={pathname === "/admin/manage-products"}
             />
           </Link>
+          <Link href="/admin/manage-categories">
+            <AdminNavItem
+              label="ManageCategories"
+              icon={MdDns}
+              selected={pathname === "/admin/manage-categories"}
+            />
+          </Link>
         </div>
       </Container>
     </div>

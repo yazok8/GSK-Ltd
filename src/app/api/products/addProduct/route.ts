@@ -8,6 +8,7 @@ import { S3 } from 'aws-sdk'; // AWS SDK for interacting with S3
 import { v4 as uuidv4 } from 'uuid'; // UUID library for generating unique IDs
 import path from 'path'; // Node.js module for handling file paths
 import { Readable } from 'stream'; // Node.js module for working with streams
+import { uploadImageToS3 } from '@/app/admin/actions/uploadImage'; // Import the upload function
 
 export const runtime = 'nodejs'; // Specify the runtime environment
 
@@ -105,42 +106,43 @@ const parseForm = async (
   });
 };
 
-// Handle POST requests to add a new product
+/**
+ * Handle POST requests to add or update a product
+ */
 export async function POST(request: Request) {
   try {
     // Parse the incoming form data
     const { fields, files } = await parseForm(request);
 
-    // Extract and assign form fields
+    // Extract form fields
     const name = fields.name;
     const description = fields.description;
     const priceString = fields.price;
     const categoryId = fields.categoryId;
+    const productId = fields.productId; // Ensure 'productId' is included in the form for updates
 
-    // Validate the form data using the Zod schema
+    // Validate form data using Zod
     const result = addSchema.safeParse({
       name,
       description,
-      price: parseFloat(priceString), // Convert price to a number
+      price: parseFloat(priceString),
       categoryId,
     });
 
-    // If validation fails, return the validation errors
     if (!result.success) {
       return NextResponse.json(
-        { errors: result.error.flatten().fieldErrors }, // Flattened error messages
-        { status: 400 } // Bad Request status code
+        { errors: result.error.flatten().fieldErrors },
+        { status: 400 }
       );
     }
 
-    const data = result.data; // Validated data
+    const data = result.data;
 
-    // Check if the provided category exists in the database
+    // Verify that the category exists
     const categoryExists = await prisma.category.findUnique({
       where: { id: data.categoryId },
     });
 
-    // If the category does not exist, return an error
     if (!categoryExists) {
       return NextResponse.json(
         { errors: { categoryId: ['Selected category does not exist.'] } },
@@ -148,84 +150,85 @@ export async function POST(request: Request) {
       );
     }
 
-    // Access the uploaded image file
-    const imageFile = files.image;
+    // Access the uploaded image files
+    const imagesToRemove = (fields.imagesToRemove || '').split(',').filter(Boolean); // Assuming imagesToRemove is a comma-separated string
+    const replacementImages = (fields.replacementImages || '').split(',').filter(Boolean); // Similarly for replacementImages
+    const replacementImageIds = (fields.replacementImageIds || '').split(',').filter(Boolean); // And for replacementImageIds
 
-    // If no image file is uploaded, return an error
-    if (!imageFile) {
-      return NextResponse.json(
-        { errors: { image: ['Image is required and must be a file.'] } },
-        { status: 400 }
-      );
+    // Handle image removals
+    if (imagesToRemove.length > 0) {
+      await prisma.image.deleteMany({
+        where: {
+          id: { in: imagesToRemove },
+        },
+      });
     }
 
-    // Validate that the uploaded file is an image
-    if (imageFile.mimetype && !imageFile.mimetype.startsWith('image/')) {
-      return NextResponse.json(
-        { errors: { image: ['Only image files are allowed.'] } },
-        { status: 400 }
-      );
+    // Handle image replacements
+    for (let i = 0; i < replacementImageIds.length; i++) {
+      const imageId = replacementImageIds[i];
+      const file = files[`replacementImages[${i}]`]; // Ensure your form names match this pattern
+
+      if (file) {
+        const newImageKey = await uploadImageToS3(file); // Upload to S3
+
+        // Update the image record
+        await prisma.image.update({
+          where: { id: imageId },
+          data: { image: newImageKey },
+        });
+      }
     }
 
-    // Enforce a maximum image file size of 10 MB
-    const MAX_SIZE = 10 * 1024 * 1024; // 10 MB in bytes
-    if (imageFile.buffer.length > MAX_SIZE) {
-      return NextResponse.json(
-        { errors: { image: ['Image size should not exceed 10 MB.'] } },
-        { status: 400 }
-      );
+    // Handle new images
+    const newImages = Object.values(files).filter((file) => file.fieldname === 'newImages'); // Adjust fieldname as needed
+
+    let product: ProductWithImages | null = null;
+
+    if (productId) {
+      // Update existing product
+      product = await prisma.product.update({
+        where: { id: productId },
+        data: {
+          name: data.name,
+          description: data.description,
+          price: data.price,
+          categoryId: data.categoryId,
+        },
+        include: { images: true },
+      });
+    } else {
+      // Create a new product
+      product = await prisma.product.create({
+        data: {
+          name: data.name,
+          description: data.description,
+          price: data.price,
+          categoryId: data.categoryId,
+        },
+        include: { images: true },
+      });
     }
 
-    const imageBuffer = imageFile.buffer; // Buffer containing the image data
+    // Upload and associate new images
+    for (const file of newImages) {
+      const newImageKey = await uploadImageToS3(file); // Upload to S3
 
-    // Generate a unique filename for the image
-    const originalFilename = imageFile.filename || 'uploaded-image';
-    const fileExtension = path.extname(originalFilename) || '.jpg'; 
-    const key = `products/${uuidv4()}${fileExtension}`;
-
-    // Ensure the S3 bucket name is provided in the environment variables
-    if (!process.env.AWS_S3_BUCKET_NAME) {
-      throw new Error('AWS_S3_BUCKET_NAME environment variable is not set.');
+      await prisma.image.create({
+        data: {
+          image: newImageKey,
+          productId: product!.id, // Non-null assertion since product is created or updated
+        },
+      });
     }
 
-    // Set up parameters for uploading the image to S3
-    const params: S3.PutObjectRequest = {
-      Bucket: process.env.AWS_S3_BUCKET_NAME, // S3 bucket name
-      Key: key, // S3 object key (file path)
-      Body: imageBuffer, // Image data
-      ContentType: imageFile.mimetype || 'image/jpeg', // MIME type of the image
-    };
+    // ... handle other form fields and update the product record as needed
 
-    // Upload the image to S3
-    await s3.upload(params).promise();
-
-    // Create a new product record in the database
-    const newProduct = await prisma.product.create({
-      data: {
-        name: data.name, 
-        description: data.description, 
-        price: data.price, 
-        inStock: false, 
-        categoryId: data.categoryId, 
-      },
-    });
-
-    // Create a new image record linked to the product
-    await prisma.image.create({
-      data: {
-        image: key,
-        productId: newProduct.id, 
-      },
-    });
-
-    // Return a success response
-    return NextResponse.json({ message: 'Product added successfully' }, { status: 200 });
+    return NextResponse.json({ message: 'Product updated successfully' }, { status: 200 });
   } catch (err: any) {
-    console.error('Error adding product:', err);
-
-    // Return a server error response with a general error message
+    console.error('Error adding/updating product:', err);
     return NextResponse.json(
-      { errors: { general: [err.message || 'An error occurred while adding the product.'] } },
+      { errors: { general: [err.message || 'An error occurred while processing the product.'] } },
       { status: 500 }
     );
   }
