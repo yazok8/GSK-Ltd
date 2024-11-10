@@ -12,6 +12,7 @@ import { Category } from "@prisma/client";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { MoreVertical } from "lucide-react";
 import { DeleteCategoryDropDownItem } from "../manage-categories/_components/DeleteCategoryDropDownItem"
+import AdminContainer from "@/components/ui/AdminContainer";
 
 interface CategoryFormInputs {
   name: string;
@@ -73,6 +74,7 @@ export default function ManageCategories() {
 
   return (
     <>
+    <AdminContainer/>
       <div className="max-w-md mx-auto p-4">
         <h1 className="text-2xl font-bold mb-4">Manage Categories</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -89,10 +91,10 @@ export default function ManageCategories() {
         </form>
       </div>
 
-      <div className="flex justify-center">
-        <h2 className="text-xl font-semibold mt-8 mb-4">Existing Categories</h2>
-      </div>
-      <table className="mx-auto w-[30rem]">
+      <div className="flex flex-col justify-center mx-auto">
+        <h2 className="text-xl font-semibold mt-8 mb-4 text-center">Existing Categories</h2>
+
+      <table className="mx-auto min-w-[25rem]">
         <thead className="border-none">
           <tr>
             <th
@@ -130,6 +132,7 @@ export default function ManageCategories() {
           ))}
         </TableBody>
       </table>
+      </div>
     </>
   );
 }

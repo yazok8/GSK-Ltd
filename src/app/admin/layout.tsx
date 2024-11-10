@@ -7,10 +7,10 @@ export const metadata = {
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div>
+    <>
       <AdminNav />
-      {children}
-    </div>
+      <div className="container mt-20 mb-5">{children}</div>
+    </>
   );
 };
 

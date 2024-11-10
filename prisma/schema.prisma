@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-    provider = "mongodb"
-    url      = env("DATABASE_URL")
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model ProcessedEvent {
@@ -22,7 +22,7 @@ model Product {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
   name        String    @unique
   price       Float
-  images      Image[]   @relation("ProductImages")
+  images      String[] 
   description String
   inStock     Boolean   @default(true)
   brand       String?
@@ -30,11 +30,3 @@ model Product {
   category    Category? @relation("CategoryProducts", fields: [categoryId], references: [id], onDelete: Restrict)
 }
 
-model Image {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  color      String?
-  colorCode  String?
-  image      String
-  productId  String?   @db.ObjectId
-  product    Product?  @relation("ProductImages", fields: [productId], references: [id])
-}

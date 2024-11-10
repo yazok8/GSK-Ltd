@@ -1,36 +1,34 @@
+// src/app/admin/_components/DeleteCategoryDropDownItem.tsx
 
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { useRouter } from "next/navigation";
-import { startTransition, useTransition } from "react";
+import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { Trash } from 'lucide-react';
 
-type DeleteDropDownItemProps = {
+type DeleteCategoryDropDownItemProps = {
   id: string;
   disabled?: boolean;
 };
 
-export function DeleteCategoryDropDownItem({
-  id,
-  disabled = false,
-}: DeleteDropDownItemProps) {
-  const [isPending, setIsPending] = useTransition();
-
+export function DeleteCategoryDropDownItem({ id, disabled = false }: DeleteCategoryDropDownItemProps) {
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const handleDelete = async () => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this category? This action cannot be undone."
-    );
-    if (!confirmDelete) return;
+    const confirmDeletion = window.confirm('Are you sure you want to delete this category? This action cannot be undone.');
+    if (!confirmDeletion) return;
 
     startTransition(async () => {
       try {
-        const response = await fetch(`/api/categories${id}`, {
-          method: "DELETE",
+        const response = await fetch(`/api/categories/${id}`, { // Corrected URL
+          method: 'DELETE',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         });
+
         const result = await response.json();
+
         if (!response.ok) {
           console.error(result.error);
           alert(result.error);
@@ -39,17 +37,20 @@ export function DeleteCategoryDropDownItem({
         alert(result.message);
         router.refresh();
       } catch (error) {
-        console.error("Failed to delete category:", error);
-        alert("Failed to delete category. Please try again.");
+        console.error('Failed to delete category:', error);
+        alert('Failed to delete category. Please try again.');
       }
     });
   };
+
   return (
     <DropdownMenuItem
-    variant='destructive'
-    disabled={disabled || isPending}
-    onclick={handleDelete}>
-
+      variant='destructive'
+      disabled={disabled || isPending}
+      onClick={handleDelete}
+    >
+      <Trash className="mr-2 h-4 w-4" />
+      Delete Category
     </DropdownMenuItem>
-  )
+  );
 }

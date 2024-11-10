@@ -12,32 +12,20 @@ import { Textarea } from '@/components/ui/textarea';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-type ProductWithImages = Prisma.ProductGetPayload<{
-  include: { images: true };
-}>;
-
-type ExistingImageState = {
-  id: string;
-  image: string;
-  isRemoved: boolean;
-  replacementFile?: File;
-  replacementPreviewUrl?: string;
-};
+type Product = Prisma.ProductGetPayload<{}>; // Adjusted type
 
 export default function ProductForm({
   product,
 }: {
-  product: ProductWithImages | null;
+  product: Product | null;
 }) {
   // State for existing images
-  const [existingImages, setExistingImages] = useState<ExistingImageState[]>(
-    () =>
-      product?.images.map((img) => ({
-        id: img.id,
-        image: img.image,
-        isRemoved: false,
-      })) || []
+  const [existingImages, setExistingImages] = useState<string[]>(
+    () => product?.images || []
   );
+
+  // State for images to remove
+  const [imagesToRemove, setImagesToRemove] = useState<string[]>([]);
 
   // State for new images to be added
   const [newImages, setNewImages] = useState<File[]>([]);
@@ -74,34 +62,16 @@ export default function ProductForm({
 
     fetchCategories();
   }, []);
-  // Set initial image sources for existing images
-  useEffect(() => {
-    if (product?.images && product.images.length > 0) {
-      const imageUrls = product.images.map((img) => getImageSrc(img.image));
-      setExistingImages((prevImages) =>
-        prevImages.map((img, index) => ({
-          ...img,
-          replacementPreviewUrl: imageUrls[index],
-        }))
-      );
-    }
-  }, [product]);
 
   // Cleanup object URLs to prevent memory leaks
   useEffect(() => {
     return () => {
       newImagePreviews.forEach((url) => URL.revokeObjectURL(url));
-      existingImages.forEach((img) => {
-        if (img.replacementPreviewUrl) {
-          URL.revokeObjectURL(img.replacementPreviewUrl);
-        }
-      });
     };
-  }, [newImagePreviews, existingImages]);
+  }, [newImagePreviews]);
 
   /**
    * Handles changes to new image inputs.
-   * @param e - The change event from the file input.
    */
   const handleNewImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -115,42 +85,14 @@ export default function ProductForm({
 
   /**
    * Handles removing an existing image.
-   * @param imageId - The ID of the image to remove.
    */
-  const handleRemoveExistingImage = (imageId: string) => {
-    setExistingImages((prevImages) =>
-      prevImages.map((img) =>
-        img.id === imageId ? { ...img, isRemoved: !img.isRemoved } : img
-      )
-    );
-  };
-
-  /**
-   * Handles replacing an existing image.
-   * @param e - The change event from the file input.
-   * @param imageId - The ID of the image to replace.
-   */
-  const handleReplaceExistingImage = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    imageId: string
-  ) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const previewUrl = URL.createObjectURL(file);
-
-      setExistingImages((prevImages) =>
-        prevImages.map((img) =>
-          img.id === imageId
-            ? { ...img, replacementFile: file, replacementPreviewUrl: previewUrl }
-            : img
-        )
-      );
-    }
+  const handleRemoveExistingImage = (imageKey: string) => {
+    setExistingImages((prevImages) => prevImages.filter((img) => img !== imageKey));
+    setImagesToRemove((prevImagesToRemove) => [...prevImagesToRemove, imageKey]);
   };
 
   /**
    * Handles removing a new image before submission.
-   * @param index - The index of the new image to remove.
    */
   const handleRemoveNewImage = (index: number) => {
     setNewImages((prevImages) => prevImages.filter((_, i) => i !== index));
@@ -159,7 +101,6 @@ export default function ProductForm({
 
   /**
    * Handles form submission.
-   * @param e - The form submission event.
    */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -170,29 +111,15 @@ export default function ProductForm({
     const formData = new FormData(e.currentTarget);
 
     try {
-      // Append new images to formData
-      newImages.forEach((file) => {
-        formData.append('newImages', file);
+      // Append new images with unique field names
+      newImages.forEach((file, index) => {
+        formData.append(`newImage-${index}`, file);
       });
 
-      // Append images to remove to formData
-      const imagesToRemove = existingImages
-        .filter((img) => img.isRemoved)
-        .map((img) => img.id);
-      imagesToRemove.forEach((id) => {
-        formData.append('imagesToRemove', id);
-      });
-
-      // Append replacement images and their IDs
-      existingImages.forEach((img) => {
-        if (img.replacementFile && !img.isRemoved) {
-          formData.append('replacementImages', img.replacementFile);
-          formData.append('replacementImageIds', img.id);
-        }
-      });
-
-      // Append other form fields as needed
-      // Example: formData.append('name', name);
+      // Append imagesToRemove
+      if (imagesToRemove.length > 0) {
+        formData.append('imagesToRemove', imagesToRemove.join(','));
+      }
 
       // Append productId if editing
       if (product) {
@@ -206,7 +133,7 @@ export default function ProductForm({
       });
 
       if (response.ok) {
-        setSuccess('Product updated successfully!');
+        setSuccess('Product saved successfully!');
         // Optionally, reset the form or redirect
       } else {
         const errorData = await response.json();
@@ -223,7 +150,7 @@ export default function ProductForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Add A Product</CardTitle>
+        <CardTitle>{product ? 'Edit Product' : 'Add A Product'}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit}>
@@ -251,7 +178,7 @@ export default function ProductForm({
               onChange={(e) => setPrice(Number(e.target.value) || undefined)}
             />
             <div className="text-muted-foreground">
-              {formatPrice(price ? price / 100 : 0)}
+              {formatPrice(price ? price : 0)}
             </div>
           </div>
 
@@ -271,19 +198,42 @@ export default function ProductForm({
             <Label htmlFor="categoryId">Category</Label>
             <select
               id="categoryId"
-              name="categoryId" // Ensure this matches the server-side expectation
+              name="categoryId"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
               required
               className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             >
               <option value="" className="text-sm">Select a category</option>
-              {categories &&categories.map((category) => (
+              {categories && categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* Existing Images */}
+          <div className="space-y-2">
+            <Label>Existing Images</Label>
+            {existingImages.map((imageKey, index) => (
+              <div key={index} className="relative">
+                <Image
+                  src={getImageSrc(imageKey)}
+                  alt={`Existing Image ${index + 1}`}
+                  width={200}
+                  height={200}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveExistingImage(imageKey)}
+                  className="absolute top-0 right-0 bg-red-500 text-white rounded-md"
+                  aria-label={`Remove existing image ${index + 1}`}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
           </div>
 
           {/* Add New Images */}
@@ -292,7 +242,7 @@ export default function ProductForm({
             <Input
               type="file"
               id="new-images"
-              name="newImages" // Ensure the name matches the backend expectation
+              name="newImages" // Name attribute is not crucial here
               multiple
               accept="image/*"
               onChange={handleNewImagesChange}
@@ -308,41 +258,6 @@ export default function ProductForm({
                 >
                   &times;
                 </button>
-              </div>
-            ))}
-          </div>
-
-          {/* Existing Images */}
-          <div className="space-y-2">
-            <Label>Existing Images</Label>
-            {existingImages.map((imgState, index) => (
-              <div key={imgState.id} className="relative">
-                <Image
-                  src={imgState.replacementPreviewUrl || getImageSrc(imgState.image)}
-                  alt={`Existing Image ${index + 1}`}
-                  width={200}
-                  height={200}
-                />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveExistingImage(imgState.id)}
-                  className="absolute top-0 right-0 bg-red-500 text-white rounded-md"
-                  aria-label={`Remove existing image ${index + 1}`}
-                >
-                  {imgState.isRemoved ? 'Undo Remove' : 'Remove'}
-                </button>
-                {!imgState.isRemoved && (
-                  <>
-                    <Label htmlFor={`replace-image-${imgState.id}`}>Replace Image</Label>
-                    <Input
-                      type="file"
-                      id={`replace-image-${imgState.id}`}
-                      name={`replacementImages[${index}]`} // Ensure unique naming
-                      accept="image/*"
-                      onChange={(e) => handleReplaceExistingImage(e, imgState.id)}
-                    />
-                  </>
-                )}
               </div>
             ))}
           </div>

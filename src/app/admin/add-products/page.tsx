@@ -1,25 +1,28 @@
-import React from 'react';
-import { prisma } from '@/lib/prisma';
-import { Prisma } from '@prisma/client';
-import ProductForm from './components/ProductForm';
+import React from "react";
+import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
+import ProductForm from "./components/ProductForm";
+import AdminContainer from "@/components/ui/AdminContainer";
 
-type ProductWithImages = Prisma.ProductGetPayload<{
-  include: { images: true };
-}>;
+type Product = Prisma.ProductGetPayload<{}>;
 
 export default async function AddProducts({
   params,
 }: {
   params: { id?: string };
 }) {
-  let product: ProductWithImages | null = null;
+  let product: Product | null = null;
 
   if (params.id) {
     product = await prisma.product.findUnique({
       where: { id: params.id },
-      include: { images: true },
     });
   }
 
-  return <ProductForm product={product} />;
+  return (
+    <>
+      <AdminContainer />
+      <ProductForm product={product} />
+    </>
+  );
 }

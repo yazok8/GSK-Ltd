@@ -2,6 +2,7 @@
 
 import { S3 } from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
+import { ServerFile } from "@/types/File"; 
 
 // Initialize S3 client
 const s3 = new S3({
@@ -12,43 +13,24 @@ const s3 = new S3({
 
 /**
  * Uploads a file to AWS S3 and returns the S3 key.
- * @param file - The file to upload.
- * @returns The S3 key of the uploaded file.
  */
-export async function uploadImageToS3(file: File): Promise<string> {
-  const key = `products/${uuidv4()}-${file.name}`; // Generate a unique key
+export async function uploadImageToS3(file: ServerFile): Promise<string> {
+  try {
+    const key = `products/${uuidv4()}-${file.filename}`; // Generate a unique key
 
-  const params: S3.PutObjectRequest = {
-    Bucket: process.env.AWS_S3_BUCKET_NAME!, // S3 Bucket Name
-    Key: key, // S3 Object Key
-    Body: file, // File content
-    ContentType: file.type, // MIME type of the file
-    ACL: "public-read", // Access control list
-  };
+    const params: S3.PutObjectRequest = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME!, 
+      Key: key, 
+      Body: file.buffer, 
+      ContentType: file.mimetype, 
+      // ACL: "public-read"
+    };
 
-  await s3.upload(params).promise(); // Upload the file to S3
+    await s3.upload(params).promise(); 
 
-  return key; // Return the S3 key
-}
-
-/**
- * Generates a pre-signed URL for uploading a file to S3.
- * @param fileName - The name of the file.
- * @param fileType - The MIME type of the file.
- * @returns An object containing the pre-signed URL and the S3 key.
- */
-export async function generatePresignedUrl(fileName: string, fileType: string) {
-  const key = `products/${uuidv4()}-${fileName}`; // Generate a unique key
-
-  const params = {
-    Bucket: process.env.AWS_S3_BUCKET_NAME!, // S3 Bucket Name
-    Key: key, // S3 Object Key
-    Expires: 60, // URL expiration time in seconds
-    ContentType: fileType, // MIME type of the file
-    ACL: "public-read", // Access control list
-  };
-
-  const uploadURL = await s3.getSignedUrlPromise("putObject", params); // Generate pre-signed URL
-
-  return { uploadURL, key }; // Return the URL and key
+    return key;
+  } catch (error) {
+    console.error('Error uploading to S3:', error);
+    throw error;
+  }
 }
