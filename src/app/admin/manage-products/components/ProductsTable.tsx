@@ -10,9 +10,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatPrice } from "../../../../../utils/formatPrice";// Adjusted import path
+import { ActiveToggleDropDownItem, DeleteDropDownItem } from "./ProductAction";
 
 interface Product {
   id: string;
@@ -35,6 +37,8 @@ export default function ProductsTable({ products }: ProductsTableProps) {
     // Optionally navigate to the edit page immediately
     // router.push(editPath);
   };
+
+
 
   if (products.length === 0) return <p>No Products Found</p>;
 
@@ -90,6 +94,12 @@ export default function ProductsTable({ products }: ProductsTableProps) {
                   >
                     Edit
                   </DropdownMenuItem>
+                  <ActiveToggleDropDownItem
+                    id={product.id}
+                    inStock={product.inStock}
+                  />
+                  <DropdownMenuSeparator />
+                  <DeleteDropDownItem productId={product.id}/>
                   {/* Other menu items */}
                 </DropdownMenuContent>
               </DropdownMenu>

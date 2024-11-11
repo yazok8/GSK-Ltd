@@ -6,9 +6,12 @@ import { z } from 'zod';
 import { ServerFile } from '@/types/File';
 import { validateData, handleImageUploads } from "../../../../utils/formUtils";
 import { deleteImageFromS3 } from '@/lib/s3';
+ import fs from "fs/promises";
+import { revalidatePath } from 'next/cache';
+import { notFound } from 'next/navigation';
 
-/**
- * Zod schema for adding a product.
+
+ /* Zod schema for adding a product.
  */
 export const addSchema = z.object({
   name: z.string().min(1, { message: 'Name is required.' }),
@@ -203,3 +206,47 @@ export async function UpdateProduct(
   }
 }
   
+export async function deleteProduct(id: string) {
+  try {
+    // Delete the product and get the deleted product data
+    const product = await prisma.product.delete({
+      where: { id },
+    });
+
+    if (!product) return notFound();
+
+    // Check if the product has images
+    if (product.images && Array.isArray(product.images)) {
+      // Delete each image from the filesystem
+      const deletePromises = product.images.map(async (imagePath) => {
+        try {
+          const fullPath = `public/${imagePath}`; // Adjust the path as necessary
+          await fs.unlink(fullPath);
+          console.log(`Deleted image: ${fullPath}`);
+        } catch (error) {
+          console.error(`Failed to delete image ${imagePath}:`, error);
+        }
+      });
+
+      // Await all deletions
+      await Promise.all(deletePromises);
+    }
+
+    // Revalidate paths to update cached pages
+    revalidatePath("/");
+    revalidatePath("/manage-products");
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    // Handle the error appropriately, e.g., throw or return a response
+    throw error; // or return some error response
+  }
+}
+
+// export async function deleteProduct(id:string){
+//   const product = await prisma.product.delete({where:{id}}); 
+  
+//   if(!product)return notFound(); 
+
+//   await fs.unlink(`public`)
+// }
+

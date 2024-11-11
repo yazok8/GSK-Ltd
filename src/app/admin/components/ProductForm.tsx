@@ -19,9 +19,6 @@ export default function ProductForm({
 }: {
   product: Product | null;
 }) {
-
-  console.log(product);
-  
   // State for existing images
   const [existingImages, setExistingImages] = useState<string[]>(
     () => product?.images || []
