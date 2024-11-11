@@ -1,17 +1,17 @@
+// src/app/admin/components/AdminNav.tsx
+
 "use client";
 
 import Link from "next/link";
 import AdminNavItem from "./AdminNavItem";
-import {
-  MdDashboard,
-  MdDns,
-  MdLibraryAdd,
-} from "react-icons/md";
+import { MdDashboard, MdDns, MdLibraryAdd, MdEdit } from "react-icons/md";
 import { usePathname } from "next/navigation";
-import Container from "@/components/ui/Container"; 
+import Container from "@/components/ui/Container";
+import { useAdminNav } from "@/context/AdminNavContext";
 
 const AdminNav = () => {
   const pathname = usePathname();
+  const { tabs } = useAdminNav();
 
   return (
     <div className="w-full shadow-sm top-20 border-b-[1px] pt-4">
@@ -26,25 +26,35 @@ const AdminNav = () => {
           </Link>
           <Link href="/admin/add-products">
             <AdminNavItem
-              label="AddProducts"
+              label="Add Products"
               icon={MdLibraryAdd}
               selected={pathname === "/admin/add-products"}
             />
           </Link>
           <Link href="/admin/manage-products">
             <AdminNavItem
-              label="ManageProducts"
+              label="Manage Products"
               icon={MdDns}
               selected={pathname === "/admin/manage-products"}
             />
           </Link>
           <Link href="/admin/manage-categories">
             <AdminNavItem
-              label="ManageCategories"
+              label="Manage Categories"
               icon={MdDns}
               selected={pathname === "/admin/manage-categories"}
             />
           </Link>
+          {/* Render additional tabs from context */}
+          {tabs.map((tab) => (
+            <Link key={tab.path} href={tab.path}>
+              <AdminNavItem
+                label={tab.label}
+                icon={MdEdit}
+                selected={pathname === tab.path}
+              />
+            </Link>
+          ))}
         </div>
       </Container>
     </div>

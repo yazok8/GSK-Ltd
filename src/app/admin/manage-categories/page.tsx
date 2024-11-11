@@ -89,12 +89,10 @@ export default function ManageCategories() {
             {isSubmitting ? "Adding..." : "Add Category"}
           </Button>
         </form>
-      </div>
-
-      <div className="flex flex-col justify-center mx-auto">
+        <div className="w-full">
         <h2 className="text-xl font-semibold mt-8 mb-4 text-center">Existing Categories</h2>
 
-      <table className="mx-auto min-w-[25rem]">
+      <table className="mx-auto min-w-[30rem]">
         <thead className="border-none">
           <tr>
             <th
@@ -133,6 +131,9 @@ export default function ManageCategories() {
         </TableBody>
       </table>
       </div>
+      </div>
+
+
     </>
   );
 }

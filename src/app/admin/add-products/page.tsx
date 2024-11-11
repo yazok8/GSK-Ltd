@@ -1,7 +1,7 @@
 import React from "react";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
-import ProductForm from "./components/ProductForm";
+import ProductForm from "../components/ProductForm";
 import AdminContainer from "@/components/ui/AdminContainer";
 
 type Product = Prisma.ProductGetPayload<{}>;
