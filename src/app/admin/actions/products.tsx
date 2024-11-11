@@ -6,9 +6,9 @@ import { z } from 'zod';
 import { ServerFile } from '@/types/File';
 import { validateData, handleImageUploads } from "../../../../utils/formUtils";
 import { deleteImageFromS3 } from '@/lib/s3';
- import fs from "fs/promises";
 import { revalidatePath } from 'next/cache';
-import { notFound } from 'next/navigation';
+import fs  from 'fs/promises';
+
 
 
  /* Zod schema for adding a product.
@@ -206,6 +206,8 @@ export async function UpdateProduct(
   }
 }
   
+
+// The deleteProduct function remains the same
 export async function deleteProduct(id: string) {
   try {
     // Delete the product and get the deleted product data
@@ -213,7 +215,7 @@ export async function deleteProduct(id: string) {
       where: { id },
     });
 
-    if (!product) return notFound();
+    if (!product) return { error: 'Product not found.', status: 404 };
 
     // Check if the product has images
     if (product.images && Array.isArray(product.images)) {
@@ -235,18 +237,10 @@ export async function deleteProduct(id: string) {
     // Revalidate paths to update cached pages
     revalidatePath("/");
     revalidatePath("/manage-products");
+
+    return { success: true };
   } catch (error) {
     console.error('Error deleting product:', error);
-    // Handle the error appropriately, e.g., throw or return a response
-    throw error; // or return some error response
+    return { error: 'An error occurred while deleting the product.', status: 500 };
   }
 }
-
-// export async function deleteProduct(id:string){
-//   const product = await prisma.product.delete({where:{id}}); 
-  
-//   if(!product)return notFound(); 
-
-//   await fs.unlink(`public`)
-// }
-

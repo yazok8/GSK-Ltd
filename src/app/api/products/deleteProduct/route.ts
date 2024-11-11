@@ -1,8 +1,5 @@
 // src/app/api/products/deleteProduct/route.ts
-
-import fs from "fs/promises";
-import { revalidatePath } from 'next/cache';
-import { prisma } from '@/lib/prisma';
+import { deleteProduct } from "@/app/admin/actions/products";
 
 export async function POST(request: Request) {
   try {
@@ -38,40 +35,3 @@ export async function POST(request: Request) {
   }
 }
 
-// The deleteProduct function remains the same
-async function deleteProduct(id: string) {
-  try {
-    // Delete the product and get the deleted product data
-    const product = await prisma.product.delete({
-      where: { id },
-    });
-
-    if (!product) return { error: 'Product not found.', status: 404 };
-
-    // Check if the product has images
-    if (product.images && Array.isArray(product.images)) {
-      // Delete each image from the filesystem
-      const deletePromises = product.images.map(async (imagePath) => {
-        try {
-          const fullPath = `public/${imagePath}`; // Adjust the path as necessary
-          await fs.unlink(fullPath);
-          console.log(`Deleted image: ${fullPath}`);
-        } catch (error) {
-          console.error(`Failed to delete image ${imagePath}:`, error);
-        }
-      });
-
-      // Await all deletions
-      await Promise.all(deletePromises);
-    }
-
-    // Revalidate paths to update cached pages
-    revalidatePath("/");
-    revalidatePath("/manage-products");
-
-    return { success: true };
-  } catch (error) {
-    console.error('Error deleting product:', error);
-    return { error: 'An error occurred while deleting the product.', status: 500 };
-  }
-}
