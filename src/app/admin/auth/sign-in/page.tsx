@@ -95,15 +95,6 @@ export default function AdminSignIn() {
             <Button type="submit">Admin Sign in</Button>
           </div>
         </form>
-        <p className="text-sm my-3">
-          Not an admin?{" "}
-          {/* <a
-            className="text-blue-700 cursor-pointer text-sm"
-            onClick={() => navigateToUserSignIn()}
-          >
-            Sign in as User
-          </a> */}
-        </p>
       </div>
     </div>
   );

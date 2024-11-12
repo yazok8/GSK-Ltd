@@ -16,6 +16,8 @@ model Category {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
   name     String    @unique
   products Product[] @relation("CategoryProducts")
+  desription String?
+  image   String? 
 }
 
 model Product {

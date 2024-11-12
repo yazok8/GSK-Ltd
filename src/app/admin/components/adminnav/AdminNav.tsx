@@ -4,15 +4,15 @@
 
 import Link from "next/link";
 import AdminNavItem from "./AdminNavItem";
-import { MdDashboard, MdDns, MdLibraryAdd, MdEdit } from "react-icons/md";
-import { redirect, usePathname } from "next/navigation";
+import { MdDashboard, MdDns, MdLibraryAdd } from "react-icons/md";
+import { usePathname } from "next/navigation";
 import Container from "@/components/ui/Container";
-import { useAdminNav } from "@/context/AdminNavContext";
+import EditTab from "./tabs/EditTabs"; 
+import HomeTab from "./tabs/HomeTab";
 
 
 const AdminNav =() => {
   const pathname = usePathname();
-  const { tabs } = useAdminNav();
 
  
   return (
@@ -20,11 +20,7 @@ const AdminNav =() => {
       <Container>
         <div className="flex flex-row items-center justify-between md:justify-center gap-8 md:gap-12 overflow-x-auto flex-nowrap">
           <Link href="/admin">
-            <AdminNavItem
-              label="Login"
-              icon={MdDashboard}
-              selected={pathname === "/admin"}
-            />
+        <HomeTab/>
           </Link>
           <Link href="/admin/add-products">
             <AdminNavItem
@@ -48,15 +44,7 @@ const AdminNav =() => {
             />
           </Link>
           {/* Render additional tabs from context */}
-          {tabs.map((tab) => (
-            <Link key={tab.path} href={tab.path}>
-              <AdminNavItem
-                label={tab.label}
-                icon={MdEdit}
-                selected={pathname === tab.path}
-              />
-            </Link>
-          ))}
+          <EditTab/>
         </div>
       </Container>
     </div>
