@@ -21,7 +21,7 @@ declare module 'formidable' {
     class IncomingForm {
       parse(
         req: IncomingMessage,
-        callback?: (err: any, fields: Fields, files: Files) => void
+        callback?: (err: unknown, fields: Fields, files: Files) => void
       ): void;
       // Add other methods and properties as needed
     }

@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { formatPrice } from "../../../../../utils/formatPrice";// Adjusted import path
+import { formatPrice } from "utils/formatPrice"; // Adjusted import path
 import { ActiveToggleDropDownItem, DeleteDropDownItem } from "./ProductAction";
 
 interface Product {
@@ -32,7 +32,7 @@ export default function ProductsTable({ products }: ProductsTableProps) {
   const { addTab } = useAdminNav();
 
   const handleEditClick = (productId: string, productName: string) => {
-    const editPath = `/admin/edit-product/${productId}/edit`;
+    const editPath = `/admin/edit-product/${productId}`;
     addTab({ path: editPath, label: `Edit ${productName}` });
     // Optionally navigate to the edit page immediately
     // router.push(editPath);

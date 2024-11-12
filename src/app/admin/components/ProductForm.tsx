@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-type Product = Prisma.ProductGetPayload<{}>; // Adjusted type
+type Product = Prisma.ProductGetPayload<object>;
 
 export default function ProductForm({
   product,
@@ -144,7 +144,7 @@ export default function ProductForm({
         const errorData = await response.json();
         setError(errorData.errors?.general?.[0] || 'An error occurred.');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error submitting form:', err);
       setError('An unexpected error occurred.');
     } finally {

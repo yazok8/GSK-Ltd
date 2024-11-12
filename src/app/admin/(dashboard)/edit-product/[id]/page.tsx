@@ -1,5 +1,4 @@
-
-import {prisma} from '@/lib/prisma';
+import prisma from '@/lib/prisma';
 import AdminContainer from "@/components/ui/AdminContainer";
 import ProductForm from '@/app/admin/components/ProductForm';
 

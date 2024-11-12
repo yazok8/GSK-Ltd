@@ -30,3 +30,51 @@ model Product {
   category    Category? @relation("CategoryProducts", fields: [categoryId], references: [id], onDelete: Restrict)
 }
 
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model User {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  email          String    @unique
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  emailVerified  DateTime?
+  hashedPassword String
+  name           String
+  address        String?
+  profileImage   String?
+  role           Role      @default(ADMIN)
+  accounts       Account[]
+  sessions       Session[]
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expire       DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+enum Role {
+  USER
+  ADMIN
+}

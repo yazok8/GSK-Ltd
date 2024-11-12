@@ -45,7 +45,6 @@ export function DeleteCategoryDropDownItem({ id, disabled = false }: DeleteCateg
 
   return (
     <DropdownMenuItem
-      variant='destructive'
       disabled={disabled || isPending}
       onClick={handleDelete}
     >

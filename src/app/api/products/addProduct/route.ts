@@ -11,7 +11,7 @@ export async function POST(req:Request){
     const response = await AddProduct(fields, files);
     return response
   
-  }catch(err:any){
+  }catch(err:unknown){
     console.error('Error in POST handler:', err);
     return new Response('Internal Server Error', { status: 500 });
   }

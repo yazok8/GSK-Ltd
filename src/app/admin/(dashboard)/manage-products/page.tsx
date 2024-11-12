@@ -1,5 +1,5 @@
 import React from "react";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import AdminContainer from "@/components/ui/AdminContainer";
 import ProductsTable from "./components/ProductsTable";
 

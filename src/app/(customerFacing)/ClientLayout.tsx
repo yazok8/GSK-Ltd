@@ -1,16 +1,13 @@
-// src/app/(customerFacing)/components/Header.tsx
-
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { NavLinks } from "./data/NavLinks";
 import Image from "next/image";
 import GSKLogo from "../../../public/logo/GSK Logo - business card.webp";
 import { Input } from "@/components/ui/input";
 import { FaSearch, FaBars } from "react-icons/fa";
 import dynamic from "next/dynamic"; // Import dynamic
-import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 
 interface ClientLayoutProps {
   children: React.ReactNode;
@@ -21,34 +18,8 @@ const BurgerMenu = dynamic(() => import("@/components/BurgerMenu"), {
   ssr: false,
 });
 
-
-
-export default function ClientLayout({children}:ClientLayoutProps) {
-  const [activeId, setActiveId] = useState<number | null>(null);
+export default function ClientLayout({ children }: ClientLayoutProps) {
   const [isOpen, setIsOpen] = useState(false); // State to control BurgerMenu visibility
-
-  // Ref for handling clicks outside the desktop "Services" dropdown
-  const desktopServicesRef = useRef<HTMLLIElement>(null);
-
-  // Handle clicks outside the "Services" dropdown to close it
-  useOnClickOutside(desktopServicesRef, () => {
-    setActiveId(null);
-  });
-
-  // Handle Escape key to close the desktop dropdown
-  useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setActiveId(null);
-      }
-    };
-
-    document.addEventListener("keydown", handleEscape);
-
-    return () => {
-      document.removeEventListener("keydown", handleEscape);
-    };
-  }, []);
 
   return (
     <>
@@ -88,39 +59,39 @@ export default function ClientLayout({children}:ClientLayoutProps) {
       <div className="h-12 hidden lg:flex justify-center items-center w-full bg-teal-500">
         <ul className="flex space-x-10 font-bold">
           {NavLinks.map(({ id, header, links }) => (
-         <li
-         key={id}
-         className="relative group text-sm uppercase cursor-pointer duration-200 ease-out hover:scale-105 text-white"
-       >
-         <Link href={`/#${header}`} className="focus:outline-none">
-           {header.charAt(0).toUpperCase() + header.slice(1)}
-         </Link>
-       
-         {/* Dropdown Menu: Visible on Hover if Links Exist */}
-         {links && (
-           <ul
-             className="absolute top-full left-0 w-40 bg-white border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300"
-             role="menu"
-             aria-label={`${header} submenu`}
-           >
-             {links.map((link) => (
-               <li
-                 key={link.id}
-                 className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline"
-                 role="none"
-               >
-                 <Link
-                   href={`/#${link.title}`}
-                   className="block focus:outline-none"
-                   role="menuitem"
-                 >
-                   {link.title.charAt(0).toUpperCase() + link.title.slice(1)}
-                 </Link>
-               </li>
-             ))}
-           </ul>
-         )}
-       </li>
+            <li
+              key={id}
+              className="relative group text-sm uppercase cursor-pointer duration-200 ease-out hover:scale-105 text-white"
+            >
+              <Link href={`/#${header}`} className="focus:outline-none">
+                {header.charAt(0).toUpperCase() + header.slice(1)}
+              </Link>
+
+              {/* Dropdown Menu: Visible on Hover if Links Exist */}
+              {links && (
+                <ul
+                  className="absolute top-full left-0 w-40 bg-white border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300"
+                  role="menu"
+                  aria-label={`${header} submenu`}
+                >
+                  {links.map((link) => (
+                    <li
+                      key={link.id}
+                      className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline"
+                      role="none"
+                    >
+                      <Link
+                        href={`/#${link.title}`}
+                        className="block focus:outline-none"
+                        role="menuitem"
+                      >
+                        {link.title.charAt(0).toUpperCase() + link.title.slice(1)}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
           ))}
         </ul>
       </div>

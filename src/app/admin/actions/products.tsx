@@ -1,14 +1,13 @@
 // src/app/admin/actions/products.tsx
 
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import prisma from '@/lib/prisma';
 import { z } from 'zod';
 import { ServerFile } from '@/types/File';
 import { validateData, handleImageUploads } from "../../../../utils/formUtils";
 import { deleteImageFromS3 } from '@/lib/s3';
 import { revalidatePath } from 'next/cache';
 import fs  from 'fs/promises';
-
 
 
  /* Zod schema for adding a product.
@@ -67,7 +66,7 @@ export async function AddProduct(
       { message: 'Product added successfully', product },
       { status: 200 }
     );
-  } catch (err: any) {
+  } catch (err: unknown) {
     if (err instanceof z.ZodError) {
       console.error("Validation Error:", err.flatten().fieldErrors);
       return NextResponse.json(
@@ -78,7 +77,7 @@ export async function AddProduct(
 
     console.error('Error adding product:', err);
     return NextResponse.json(
-      { errors: { general: [err.message || 'An error occurred.'] } },
+      { errors: { general: [ 'An error occurred.'] } },
       { status: 500 }
     );
   }
@@ -161,7 +160,7 @@ export async function UpdateProduct(
       if (imagesToRemoveList.length > 0) {
         // Delete images from S3
         await Promise.all(
-          imagesToRemoveList.map((imageKey) => deleteImageFromS3(imageKey))
+          imagesToRemoveList.map((imageKey:string) => deleteImageFromS3(imageKey))
         );
 
         // Remove images from currentImages
@@ -189,7 +188,7 @@ export async function UpdateProduct(
       { message: 'Product updated successfully', product },
       { status: 200 }
     );
-  } catch (err: any) {
+  } catch (err: unknown) {
     if (err instanceof z.ZodError) {
       console.error('Validation Error:', err.flatten().fieldErrors);
       return NextResponse.json(
@@ -200,7 +199,7 @@ export async function UpdateProduct(
 
     console.error('Error updating product:', err);
     return NextResponse.json(
-      { errors: { general: [err.message || 'An error occurred.'] } },
+      { errors: { general: ['An error occurred.'] } },
       { status: 500 }
     );
   }

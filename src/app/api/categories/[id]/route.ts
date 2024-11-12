@@ -1,7 +1,15 @@
-import {  NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+// src/app/api/categories/[id]/route.ts
 
-export async function Delete({ params }: { params: { id: string } }) {
+"use server"; // Depending on your use case; "use client" is not typically used in API routes
+
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import { isPrismaClientKnownRequestError } from "../../../../../utils/typeGuards"; // Ensure this path is correct
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   const { id } = params;
   if (!id) {
     return NextResponse.json(
@@ -37,12 +45,23 @@ export async function Delete({ params }: { params: { id: string } }) {
     }
     return NextResponse.json(
       {
-        message: "category deleted successfully",
+        message: "Category deleted successfully",
       },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error deleting category", error);
+
+    if (isPrismaClientKnownRequestError(error)) {
+      if (error.code === "P2002") {
+        return NextResponse.json(
+          { error: "Cannot delete category with associated products" },
+          { status: 400 }
+        );
+      }
+      // Handle other known Prisma errors if necessary
+    }
+
     return NextResponse.json(
       {
         error: "Internal server error",

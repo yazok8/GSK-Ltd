@@ -49,9 +49,8 @@ export default function ManageCategories() {
       const newCategory :Category = await response.json(); 
       setCategories([...categories,newCategory])
       reset(); 
-    }catch(err:any){
+    }catch(err:unknown){
       console.error(err); 
-      alert(err.message)
     }
   }
 
