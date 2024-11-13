@@ -1,94 +1,153 @@
-"use client";
-export const runtime = 'nodejs';
+// src/app/admin/(dashboard)/manage-categories/_components/CategoryForm.tsx
 
-import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Prisma } from "@prisma/client";
-import { Label } from "@radix-ui/react-label";
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Input } from "@/components/ui/input";
+'use client';
 
-type Category = Prisma.ProductGetPayload<object>;
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Category } from '@prisma/client';
+import { Button } from '@/components/ui/button';
+import { Label } from '@radix-ui/react-label';
+import { Input } from '@/components/ui/input';
+import Image from 'next/image';
+import { useState } from 'react';
+
+interface CategoryFormProps {
+  category?: Category | null;
+}
 
 interface CategoryFormInputs {
   name: string;
-  image: FileList;
+  image?: FileList;
+  description?: string;
 }
 
-const categorySchema = z.object({
-  name: z.string().min(1, "Category name is required"),
+const createCategorySchema = z.object({
+  name: z.string().min(1, 'Category name is required'),
   image: z
     .any()
-    .refine((files) => files && files.length === 1, "Image is required")
-    .refine(
-      (files) =>
-        files &&
-        files[0] &&
-        ["image/jpeg", "image/png", "image/gif"].includes(files[0].type),
-      "Only JPEG, PNG,WEBP, GIF images are allowed"
-    ),
+    .refine((files) => files && files.length === 1, 'Image is required'),
+  description: z.string().optional(),
 });
 
-export default function CategoryForm() {
-  const [categories, setCategories] = useState<Category[]>([]);
+const updateCategorySchema = z.object({
+  name: z.string().min(1, 'Category name is required'),
+  image: z
+    .any()
+    .refine(
+      (files) => !files || files.length <= 1,
+      'Only one image can be uploaded'
+    )
+    .optional(),
+  description: z.string().optional(),
+});
+
+export default function CategoryForm({ category }: CategoryFormProps) {
+  const isEditing = !!category;
+  const [success, setSuccess] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<CategoryFormInputs>({ resolver: zodResolver(categorySchema) });
-
-  // State for new images to be added
+  } = useForm<CategoryFormInputs>({
+    resolver: zodResolver(
+      isEditing ? updateCategorySchema : createCategorySchema
+    ),
+    defaultValues: isEditing
+      ? {
+          name: category?.name || '',
+          description: category?.description || '',
+        }
+      : {},
+  });
 
   const onSubmit = async (data: CategoryFormInputs) => {
     try {
       const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("image", data.image[0]);
-  
-      const response = await fetch("/api/categories", {
-        method: "POST",
+      formData.append('name', data.name);
+      if (data.description) {
+        formData.append('description', data.description);
+      }
+      if (data.image && data.image.length > 0) {
+        formData.append('image', data.image[0]);
+      }
+
+      const catApiEndPoints = category
+        ? `/api/categories/edit-category/${category?.id}`
+        : '/api/categories';
+
+      // Determine the HTTP method based on whether we're editing or creating
+      const method = category ? 'PUT' : 'POST';
+
+      // Send the form data to the server with the correct HTTP method
+      const response = await fetch(catApiEndPoints, {
+        method,
         body: formData,
       });
-  
+
       if (!response.ok) {
         const resData = await response.json();
-        throw new Error(resData.error || "Failed to add category");
+        throw new Error(resData.error || 'Failed to save category');
       }
-  
-      const newCategory: Category = await response.json();
-      setCategories([...categories, newCategory]);
+
+      setSuccess('Category saved successfully!');
       reset();
     } catch (err: unknown) {
       console.error(err);
     }
   };
-  
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Manage Categories</h1>
+      <h1 className="text-2xl font-bold mb-4">
+        {isEditing ? 'Edit Category' : 'Add Category'}
+      </h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className='space-y-4'>
+        <div className="space-y-4">
           <Label htmlFor="name">Category Name</Label>
-          <Input id="name" {...register("name")} />
+          <Input id="name" {...register('name')} />
           {errors.name && (
             <p className="text-destructive">{errors.name.message}</p>
           )}
+
+          <Label htmlFor="description">Description</Label>
+          <Input id="description" {...register('description')} />
+
+          {isEditing && category?.image && (
+            <div>
+              <Label>Current Image</Label>
+              <Image
+                src={`https://gsk-ltd.s3.us-east-2.amazonaws.com/${category.image}`}
+                alt={category.name}
+                className="h-20 w-20 object-cover"
+                width={200}
+                height={100}
+              />
+            </div>
+          )}
+
+          <Label htmlFor="image">
+            {isEditing ? 'Upload New Image (optional)' : 'Category Image'}
+          </Label>
           <Input
-          id="image"
-          type="file"
-          accept="image/*"
-          {...register("image")}
-        />
-        {errors.image && (
-          <p className="text-destructive">{errors.image.message}</p>
-        )}
+            id="image"
+            type="file"
+            accept="image/*"
+            {...register('image')}
+          />
+          {errors.image && (
+            <p className="text-destructive">{errors.image.message}</p>
+          )}
         </div>
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Adding..." : "Add Category"}
+          {isSubmitting
+            ? isEditing
+              ? 'Updating...'
+              : 'Adding...'
+            : isEditing
+            ? 'Update Category'
+            : 'Add Category'}
         </Button>
       </form>
     </div>

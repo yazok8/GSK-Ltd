@@ -20,7 +20,7 @@ export function DeleteCategoryDropDownItem({ id, disabled = false }: DeleteCateg
 
     startTransition(async () => {
       try {
-        const response = await fetch(`/api/categories/${id}`, { // Corrected URL
+        const response = await fetch(`/api/categories/delete-category/${id}`, { // Corrected URL
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

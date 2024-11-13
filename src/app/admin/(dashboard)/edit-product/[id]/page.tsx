@@ -1,6 +1,6 @@
 import prisma from '@/lib/prisma';
 import AdminContainer from "@/components/ui/AdminContainer";
-import ProductForm from '@/app/admin/components/ProductForm';
+import ProductForm from '@/app/admin/(dashboard)/add-products/components/ProductForm';
 
 
 export default async function EditProductPage({params:{id}}:{params:{id:string}}){

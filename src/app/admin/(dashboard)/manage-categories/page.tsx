@@ -13,6 +13,8 @@ import { DeleteCategoryDropDownItem } from "../manage-categories/_components/Del
 import AdminContainer from "@/components/ui/AdminContainer";
 import CategoryForm from "./_components/CategoryForm";
 import Image from "next/image";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { useAdminNav } from "@/context/AdminNavContext";
 
 export default function ManageCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -33,6 +35,15 @@ export default function ManageCategories() {
     fetchCategories();
   }, []);
 
+  const { addTab } = useAdminNav();
+
+  const handleEditClick = (categoryId: string, categoryName: string) => {
+    const editPath = `/admin/edit-category/${categoryId}`;
+    addTab({ path: editPath, label: `Edit ${categoryName}` });
+    // Optionally navigate to the edit page immediately
+    // router.push(editPath);
+  };
+
   return (
     <>
       <AdminContainer />
@@ -43,7 +54,7 @@ export default function ManageCategories() {
             Existing Categories
           </h2>
 
-          <table className="mx-auto min-w-[30rem]">
+          <table className="mx-auto min-w-[40rem]">
             <thead className="border-none">
               <tr>
                 <th
@@ -75,7 +86,7 @@ export default function ManageCategories() {
                     {category.image ? (
                       <div className="relative h-10 w-10">
                         <Image
-                           src={`https://gsk-ltd.s3.us-east-2.amazonaws.com/${category.image}`}
+                          src={`https://gsk-ltd.s3.us-east-2.amazonaws.com/${category.image}`}
                           alt={category.name}
                           layout="fill"
                           objectFit="cover"
@@ -93,6 +104,13 @@ export default function ManageCategories() {
                         <span className="sr-only">Actions</span>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="pt-0 pl-[10.5rem]">
+                        <DropdownMenuItem
+                          onSelect={() =>
+                            handleEditClick(category.id, category.name)
+                          }
+                        >
+                          Edit
+                        </DropdownMenuItem>
                         {/* Include other actions like Edit if needed */}
                         <DeleteCategoryDropDownItem id={category.id} />
                       </DropdownMenuContent>

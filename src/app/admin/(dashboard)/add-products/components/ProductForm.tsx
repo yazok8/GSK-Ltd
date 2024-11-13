@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { getImageSrc } from '@/lib/imageHelper';
 import { Prisma, Category } from '@prisma/client';
-import { formatPrice } from '../../../../utils/formatPrice';
+import { formatPrice } from '../../../../../../utils/formatPrice';
 import { Textarea } from '@/components/ui/textarea';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
