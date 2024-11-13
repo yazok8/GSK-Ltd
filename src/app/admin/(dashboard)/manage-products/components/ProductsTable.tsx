@@ -5,7 +5,7 @@
 import React from "react";
 import { useAdminNav } from "@/context/AdminNavContext";
 import { TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { CheckCircle2, MoreVertical, XCircle } from "lucide-react";
+import { CheckCircle2, Edit, MoreVertical, XCircle } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -92,7 +92,7 @@ export default function ProductsTable({ products }: ProductsTableProps) {
                   <DropdownMenuItem
                     onSelect={() => handleEditClick(product.id, product.name)}
                   >
-                    Edit
+                  <Edit className="mr-2 h-4 w-4"/>  Edit
                   </DropdownMenuItem>
                   <ActiveToggleDropDownItem
                     id={product.id}

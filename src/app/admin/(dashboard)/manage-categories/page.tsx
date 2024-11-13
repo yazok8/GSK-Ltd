@@ -1,3 +1,5 @@
+//src/app/admin/(dashboard)/manage-categories/page.tsx
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -8,7 +10,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import { MoreVertical } from "lucide-react";
+import { Edit, MoreVertical } from "lucide-react";
 import { DeleteCategoryDropDownItem } from "../manage-categories/_components/DeleteCategoryDropDownItem";
 import AdminContainer from "@/components/ui/AdminContainer";
 import CategoryForm from "./_components/CategoryForm";
@@ -84,15 +86,16 @@ export default function ManageCategories() {
                   <TableCell className="py-1">{category.name}</TableCell>
                   <TableCell className="py-1">
                     {category.image ? (
-                      <div className="relative h-10 w-10">
-                        <Image
-                          src={`https://gsk-ltd.s3.us-east-2.amazonaws.com/${category.image}`}
-                          alt={category.name}
-                          layout="fill"
-                          objectFit="cover"
-                          className="rounded"
-                        />
-                      </div>
+                   <div className="relative h-20 w-20">
+                   <Image
+                     src={`https://gsk-ltd.s3.us-east-2.amazonaws.com/${category.image}`}
+                     alt={category.name}
+                     width={80}
+                     height={80}
+                     objectFit="cover"
+                     className="rounded"
+                   />
+                 </div>
                     ) : (
                       <span>No Image</span>
                     )}
@@ -109,7 +112,8 @@ export default function ManageCategories() {
                             handleEditClick(category.id, category.name)
                           }
                         >
-                          Edit
+
+                        <Edit className="mr-2 h-4 w-4"/>  Edit
                         </DropdownMenuItem>
                         {/* Include other actions like Edit if needed */}
                         <DeleteCategoryDropDownItem id={category.id} />

@@ -35,7 +35,6 @@ export function DeleteCategoryDropDownItem({ id, disabled = false }: DeleteCateg
           return;
         }
         alert(result.message);
-        router.refresh();
       } catch (error) {
         console.error('Failed to delete category:', error);
         alert('Failed to delete category. Please try again.');
@@ -49,7 +48,7 @@ export function DeleteCategoryDropDownItem({ id, disabled = false }: DeleteCateg
       onClick={handleDelete}
     >
       <Trash className="mr-2 h-4 w-4" />
-      Delete Category
+      Delete
     </DropdownMenuItem>
   );
 }

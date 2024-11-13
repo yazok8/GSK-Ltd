@@ -11,6 +11,8 @@ import { Label } from '@radix-ui/react-label';
 import { Input } from '@/components/ui/input';
 import Image from 'next/image';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 interface CategoryFormProps {
   category?: Category | null;
@@ -43,8 +45,11 @@ const updateCategorySchema = z.object({
 });
 
 export default function CategoryForm({ category }: CategoryFormProps) {
+  const router = useRouter()
   const isEditing = !!category;
   const [success, setSuccess] = useState<string | null>(null);
+   // State for form feedback
+   const [error, setError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -90,8 +95,7 @@ export default function CategoryForm({ category }: CategoryFormProps) {
         const resData = await response.json();
         throw new Error(resData.error || 'Failed to save category');
       }
-
-      setSuccess('Category saved successfully!');
+      router.push('/admin/manage-categories');
       reset();
     } catch (err: unknown) {
       console.error(err);
@@ -104,16 +108,18 @@ export default function CategoryForm({ category }: CategoryFormProps) {
         {isEditing ? 'Edit Category' : 'Add Category'}
       </h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="space-y-4">
-          <Label htmlFor="name">Category Name</Label>
+        <div>
+          <div className='mt-4'>
+          <Label className='mt-4' htmlFor="name">Category Name</Label>
           <Input id="name" {...register('name')} />
           {errors.name && (
             <p className="text-destructive">{errors.name.message}</p>
           )}
-
+          </div>
+          <div className='mt-4'>
           <Label htmlFor="description">Description</Label>
           <Input id="description" {...register('description')} />
-
+          </div>
           {isEditing && category?.image && (
             <div>
               <Label>Current Image</Label>
@@ -126,7 +132,7 @@ export default function CategoryForm({ category }: CategoryFormProps) {
               />
             </div>
           )}
-
+        <div className='mt-4'>
           <Label htmlFor="image">
             {isEditing ? 'Upload New Image (optional)' : 'Category Image'}
           </Label>
@@ -136,10 +142,13 @@ export default function CategoryForm({ category }: CategoryFormProps) {
             accept="image/*"
             {...register('image')}
           />
+          </div>
           {errors.image && (
             <p className="text-destructive">{errors.image.message}</p>
           )}
         </div>
+        {success && <div className="text-green-500">{success}</div>}
+        {error && <div className="text-red-500">{error}</div>}
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting
             ? isEditing

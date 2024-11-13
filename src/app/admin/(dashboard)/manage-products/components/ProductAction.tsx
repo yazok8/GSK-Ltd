@@ -2,6 +2,7 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toggleProductAvailability } from "../_actions/UpdateAvailabilityAction"; 
+import { ActivityIcon, Trash } from "lucide-react";
 
 
 
@@ -18,7 +19,7 @@ onClick={
             router.refresh()
         })
     }}>
-        {inStock ? 'Deactivate':'Activate'}
+       <ActivityIcon /> {inStock ? 'Deactivate':'Activate'}
     </DropdownMenuItem>
 }
 
@@ -50,7 +51,7 @@ export function DeleteDropDownItem({ productId }: { productId: string }) {
   
     return (
       <DropdownMenuItem onClick={handleDelete}>
-        Delete
+       <Trash className="mr-2 h-4 w-4"/> Delete
       </DropdownMenuItem>
     );
   }
