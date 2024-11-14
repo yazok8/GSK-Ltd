@@ -56,7 +56,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
       </nav>
 
       {/* Teal Navigation Bar with Links: Hidden on Mobile */}
-      <div className="h-12 hidden lg:flex justify-center items-center w-full bg-teal-500">
+      <div className="h-12 hidden lg:flex justify-center items-center w-full bg-teal-500 z-50">
         <ul className="flex space-x-10 font-bold">
           {NavLinks.map(({ id, header, links }) => (
             <li
@@ -99,7 +99,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
       {/* Mobile Burger Menu: Always Rendered and Controlled via Props */}
       <BurgerMenu isOpen={isOpen} setIsOpen={setIsOpen} />
 
-      <div className="container mb-4 mt-24">{children}</div>
+      <div>{children}</div>
     </>
   );
 }
