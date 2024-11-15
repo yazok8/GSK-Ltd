@@ -27,10 +27,11 @@ function PrimarySlider() {
           const data: Category[] = await response.json();
           if (data.length > 0) {
             // Clone last and first slides
+            const filteredData = [data[0], data[3], data[6]]; // 1st, 4th, and 7th slides
             const clonedData = [
-              data[data.length - 1], // Clone of last slide
-              ...data,
-              data[0], // Clone of first slide
+              filteredData[filteredData.length - 1],
+              ...filteredData,
+              filteredData[0],
             ];
             setCategories(clonedData);
             setCurrentIndex(1); // Start at first real slide
@@ -106,16 +107,16 @@ function PrimarySlider() {
     }
   }, [currentIndex]);
 
-  const disableTransition = () => {
-    if (sliderRef.current) {
-      sliderRef.current.style.transition = 'none';
-      sliderRef.current.style.transform = `translateX(-${currentIndex * 100}%)`;
-      // Force reflow to apply the transform without transition
-      void sliderRef.current.offsetWidth;
-      // Re-enable transition
-      sliderRef.current.style.transition = 'transform 0.7s ease-in-out';
-    }
-  };
+  // const disableTransition = () => {
+  //   if (sliderRef.current) {
+  //     sliderRef.current.style.transition = 'none';
+  //     sliderRef.current.style.transform = `translateX(-${currentIndex * 100}%)`;
+  //     // Force reflow to apply the transform without transition
+  //     void sliderRef.current.offsetWidth;
+  //     // Re-enable transition
+  //     sliderRef.current.style.transition = 'transform 0.7s ease-in-out';
+  //   }
+  // };
 
   // Cleanup transition styles on mount
   useEffect(() => {
@@ -198,27 +199,6 @@ function PrimarySlider() {
           ))}
         </div>
 
-        {/* Navigation Buttons */}
-        {/* <button
-          onClick={() => {
-            goToPrevious();
-            startSlideTimer();
-          }}
-          aria-label="Previous Slide"
-          className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 focus:outline-none z-10"
-        >
-          &#10094;
-        </button>
-        <button
-          onClick={() => {
-            goToNext();
-            startSlideTimer();
-          }}
-          aria-label="Next Slide"
-          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 focus:outline-none z-10"
-        >
-          &#10095;
-        </button> */}
 
         {/* Dots Navigation */}
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
@@ -239,7 +219,7 @@ function PrimarySlider() {
       </div>
 
       {/* Overlay Div */}
-      <div className="absolute top-1/2 left-48 transform -translate-y-1/2 flex flex-col items-start justify-center bg-white bg-opacity-50 text-gray-900 p-4 text-center w-[200px] h-[500px]">
+      <div className="absolute top-0 mt-[19rem] ml-[7rem] my-auto transform -translate-y-1/2 translate-x-2/3 flex flex-col items-start justify-center bg-white bg-opacity-50 text-gray-900 p-4 text-center w-[200px] h-[500px]">
         <h2 className="text-2xl font-bold">{currentCategory.name}</h2>
         <p className="text-lg mt-2">Explore more about {currentCategory.name}</p>
       </div>

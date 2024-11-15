@@ -17,7 +17,7 @@ model Category {
   name     String    @unique
   products Product[] @relation("CategoryProducts")
   description String?
-  image   String? 
+  image   String 
 }
 
 model Product {
