@@ -3,7 +3,7 @@
 import { cache } from "@/lib/cache";
 import { CategoryWithImage, ProductWithCategory } from "@/types/Category";
 import prisma  from '@/lib/prisma';
-import { Category } from "@prisma/client";
+import { Category as PrismaCategory } from "@prisma/client";
 
 
 /**
@@ -41,9 +41,9 @@ export const getAllCategoriesWithImages = cache(
     { revalidate: 60 * 60 * 24 } // Cache for 24 hours
   );
 
-export async function getAllCategoriesWithProducts(): Promise<Category[]> {
+export async function getAllCategoriesWithProducts(): Promise<PrismaCategory[]> {
     return cache(
-      (): Promise<Category[]> => {
+      (): Promise<PrismaCategory[]> => {
         return prisma.category.findMany({
           where: {
             products: {
@@ -60,4 +60,33 @@ export async function getAllCategoriesWithProducts(): Promise<Category[]> {
       ["/", "getAllCategoriesWithProducts"],
       { revalidate: 60 * 60 * 24 } // Cache for 24 hours
     )();
+  }
+
+    // Fetch paginated products by category
+export async function getProductsByCategoryPaginated(
+    categoryId: string,
+    page: number,
+    perPage: number
+  ): Promise<{ products: ProductWithCategory[]; total: number }> {
+    const [products, total] = await prisma.$transaction([
+        prisma.product.findMany({
+            where: { categoryId },
+            include: { category: true },
+            skip: (page - 1) * perPage,
+            take: perPage,
+        }),
+        prisma.product.count({
+            where: { categoryId },
+        }),
+    ]);
+  
+    return { products, total };
+  }
+  
+
+  // Fetch a single category by ID
+export async function getCategoryById(id: string): Promise<PrismaCategory | null> {
+    return prisma.category.findUnique({
+        where: { id },
+    });
   }

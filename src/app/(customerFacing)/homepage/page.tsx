@@ -21,7 +21,7 @@ export default function Homepage() {
         if (response.ok) {
           const data: Category[] = await response.json();
           if(data.length > 0){
-            const filteredData = [data[0], data[3], data[6]];
+            const filteredData = [data[0], data[2], data[3], data[6]];
             setCategories(filteredData);
           }
           console.error('Failed to fetch categories');
@@ -38,26 +38,44 @@ export default function Homepage() {
 
   return (
     <>
-      <PrimarySlider />
-      <div className='bg-slate-100'>
-      <div className='text-center pt-5 pb-3'>
-        <h1 className='text-5xl'>Our Products</h1>
+    <PrimarySlider />
+    <div className='bg-slate-50 py-8 max-w-6xl mx-auto'>
+      {/* Section Header */}
+      <div className='text-center pb-6'>
+        <h1 className='text-5xl font-bold'>Our Products</h1>
       </div>
-      <div className='flex flex-wrap gap-4 p-4 justify-center'>
+      
+      {/* Categories Grid */}
+      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4'>
         {categories.map((category) => (
-          <div key={category.id} className="bg-white">
-            <div className='text-center'>
-              
-            <div className='min-h-[200px] flex px-3'>
-             <Image src={`https://gsk-ltd.s3.us-east-2.amazonaws.com/${category.image}`} width={300} height={300} alt="category.name" />
-             </div>
-             <h1 className='text-xl py-6'> {category.name}</h1>
-            </div>
-            
+          <div 
+            key={category.id} 
+            className="bg-white rounded-lg shadow-md overflow-hidden transform transition-transform duration-200 hover:scale-105"
+          >
+            <Link href={`/category/${category.id}`}>
+              <div className='block'>
+                {/* Image Container */}
+                <div className='w-full h-48 relative'>
+                  <Image 
+                    src={category.image ? `https://gsk-ltd.s3.us-east-2.amazonaws.com/${category.image}` : '/images/fallback.jpg'} 
+                    alt={category.name} 
+                    layout='fill' 
+                    objectFit='contain' 
+                    className="hover:opacity-90"
+                  />
+                </div>
+                
+                {/* Category Name */}
+                <div className='p-4 text-center'>
+                  <h2 className='text-xl font-semibold'>{category.name}</h2>
+                </div>
+              </div>
+            </Link>
           </div>
         ))}
       </div>
-      </div>
-    </>
+    </div>
+  </>
+
   );
 }

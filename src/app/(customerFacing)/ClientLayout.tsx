@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLinks } from "./data/NavLinks";
 import Image from "next/image";
 import GSKLogo from "../../../public/logo/GSK Logo - business card.webp";
 import { Input } from "@/components/ui/input";
 import { FaSearch, FaBars } from "react-icons/fa";
 import dynamic from "next/dynamic"; // Import dynamic
+import { Category } from "@prisma/client";
 
 interface ClientLayoutProps {
   children: React.ReactNode;
@@ -20,6 +21,29 @@ const BurgerMenu = dynamic(() => import("@/components/BurgerMenu"), {
 
 export default function ClientLayout({ children }: ClientLayoutProps) {
   const [isOpen, setIsOpen] = useState(false); // State to control BurgerMenu visibility
+
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    // Fetch categories once the component mounts
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/categories');
+        if (response.ok) {
+          const data: Category[] = await response.json();
+          if(data.length > 0){
+            setCategories(data);
+          }
+          console.error('Failed to fetch categories');
+       
+      }
+    }catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
 
   return (
     <>
@@ -74,18 +98,18 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
                   role="menu"
                   aria-label={`${header} submenu`}
                 >
-                  {links.map((link) => (
+                  {categories.map((link) => (
                     <li
                       key={link.id}
                       className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline"
                       role="none"
                     >
                       <Link
-                        href={`/#${link.title}`}
+                        href={`/category/${link.id}`}
                         className="block focus:outline-none"
                         role="menuitem"
                       >
-                        {link.title.charAt(0).toUpperCase() + link.title.slice(1)}
+                        {link.name.charAt(0).toUpperCase() + link.name.slice(1)}
                       </Link>
                     </li>
                   ))}

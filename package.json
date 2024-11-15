@@ -37,6 +37,7 @@
     "focus-trap-react": "^10.3.0",
     "formidable": "^3.5.2",
     "fs.promises": "^0.1.2",
+    "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.454.0",
     "mongoose": "^8.8.0",
     "next": "14.2.15",
@@ -56,6 +57,7 @@
   },
   "devDependencies": {
     "@types/busboy": "^1.5.4",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^20.17.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",
