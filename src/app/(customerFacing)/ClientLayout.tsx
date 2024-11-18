@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { NavLinks } from "./data/NavLinks";
 import Image from "next/image";
-import GSKLogo from "../../../public/logo/GSK Logo - business card.webp";
+import GSKLogo from "../../../public/logo/new-logo.png";
 import { Input } from "@/components/ui/input";
 import { FaSearch, FaBars } from "react-icons/fa";
 import dynamic from "next/dynamic"; // Import dynamic

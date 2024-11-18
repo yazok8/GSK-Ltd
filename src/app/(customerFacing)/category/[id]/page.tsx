@@ -4,6 +4,7 @@ import React from 'react'
 import { getCategoryById, getProductsByCategoryPaginated } from "../../actions/categories"
 import Image from 'next/image';
 import { getImageSrc } from '@/lib/imageHelper';
+import Link from 'next/link';
 
 type CategoryPageProps = {
     params: {
@@ -38,11 +39,14 @@ export default async function CategoryPage({params, searchParams}:CategoryPagePr
     <div className='container mx-auto px-4 py-8 flex flex-col justify-center text-center'>
         <div>
             <h1 className='text-3xl font-bold mb-10'>{category.name}</h1>
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-col-3 gap-4'>
+            <div className='grid grid-cols-1 sm:grid-cols-3 lg:grid-col-3 gap-4'>
                 {products && products.map((product)=>(
-                    <div key={product.id} className='flex flex-col justify-center items-center'>  
-                        <Image src={getImageSrc(product.images[0])} alt={product.name} width={250} height={250} className='mb-5'/>
+                    
+                    <div key={product.id} className='flex flex-col justify-center items-center'> 
+                    <Link href={`/product/${product.id}`}> 
+                        <Image src={getImageSrc(product.images[0])} alt={product.name} width={250} height={100} className='mb-5 object-contain' loading='lazy' quality={80}/>
                         <h1>{product.name}</h1>
+                        </Link>
                     </div>
                 ))}
             </div>

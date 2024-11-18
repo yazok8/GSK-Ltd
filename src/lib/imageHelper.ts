@@ -1,6 +1,6 @@
 export const getImageSrc = (path: string | undefined | null) => {
   if (!path) {
-    return "/default-avatar.png";
+    return "/default-avatar.jpg";
   }
 
   if (path.startsWith("https://") || path.startsWith("https://")) {

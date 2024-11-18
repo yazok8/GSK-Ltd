@@ -58,10 +58,12 @@ export default function Homepage() {
                 <div className='w-full h-48 relative'>
                   <Image 
                     src={category.image ? `https://gsk-ltd.s3.us-east-2.amazonaws.com/${category.image}` : '/images/fallback.jpg'} 
+                    quality={80}
                     alt={category.name} 
                     layout='fill' 
                     objectFit='contain' 
                     className="hover:opacity-90"
+                    loading='lazy'
                   />
                 </div>
                 
