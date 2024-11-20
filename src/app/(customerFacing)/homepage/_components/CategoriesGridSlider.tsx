@@ -1,22 +1,25 @@
+// src/app/(customerFacing)/homepage/_components/CategoriesGridSlider.tsx
+
+"use client";
+
 import React from "react";
 import { Category } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 export type CategoryProps = {
-    categories: Category[]
-}
+  categories: Category[];
+};
 
 function CategoriesGridSlider({ categories }: CategoryProps) {
-
   const settings = {
     dots: true,
-    infinite: false, // Enable infinite scrolling
+    infinite: false, // Enable infinite scrolling if needed
     speed: 500,
-    slidesToShow: 3, // Default to 1 slide per view
+    slidesToShow: 3,
     slidesToScroll: 2,
     responsive: [
       {
@@ -24,9 +27,9 @@ function CategoriesGridSlider({ categories }: CategoryProps) {
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
-        }
+        },
       },
-    ]
+    ],
   };
 
   return (

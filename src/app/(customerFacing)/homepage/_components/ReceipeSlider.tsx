@@ -8,6 +8,7 @@ import Link from "next/link";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Button } from "@/components/ui/button";
 
 export type CategoryProps = {
   categories: Category[];
@@ -32,7 +33,6 @@ function ReceipeSlider({ categories }: CategoryProps) {
             <div className="flex flex-col md:flex-row h-full">
               {/* Image Container */}
               <div className="relative w-full md:w-[600px] h-[500px] lg:h-full">
-                <Link href={`/category/${cat.id}`}>
                   <Image
                     src={
                       cat.image
@@ -45,13 +45,22 @@ function ReceipeSlider({ categories }: CategoryProps) {
                     className="h-full w-full"
                     loading="lazy"
                   />
-                </Link>
               </div>
               {/* Category Name */}
-              <div className="p-4 flex items-center justify-center bg-teal-500 lg:h-full">
+              <div className="p-4 flex flex-col items-center justify-center bg-teal-500 lg:h-full">
+                <div className='flex flex-col items-center justify-center'>
                 <h2 className="text-2xl font-semibold text-white">
                   {cat.name}
                 </h2>
+                <h2 className="text-2xl font-semibold text-white">
+                  {cat.description}
+                </h2>
+                </div>
+                <Button className='mt-5 flex justify-end items-end'>
+                <Link href={`/category/${cat.id}`}>
+                  Learn More
+                  </Link>
+                  </Button>
               </div>
             </div>
           </div>

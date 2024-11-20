@@ -1,64 +1,23 @@
+// src/app/(customerFacing)/homepage/_components/PrimarySlider.tsx
+
 "use client";
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Category } from "@prisma/client";
 import Image from "next/image";
-import debounce from "lodash.debounce";
 
-function PrimarySlider() {
-  const [categories, setCategories] = useState<Category[]>([]);
+interface PrimarySliderProps {
+  categories: Category[];
+}
+
+function PrimarySlider({ categories }: PrimarySliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const slideInterval = useRef<NodeJS.Timeout | null>(null);
-
-  // Touch states for swipe
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
-
-  // Fetch categories once the component mounts
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await fetch("/api/categories");
-        if (response.ok) {
-          const data: Category[] = await response.json();
-          console.log("Fetched categories from API:", data);
-          if (data.length >= 1) {
-            // Select desired slides dynamically based on available data
-            const selectedCategories = selectSlides(data);
-            if (selectedCategories.length > 0) {
-              setCategories(selectedCategories);
-              setCurrentIndex(0);
-              console.log("Slider data initialized with:", selectedCategories);
-            } else {
-              console.error("No valid categories selected for the slider.");
-              setError("No categories available to display in the slider.");
-            }
-          } else {
-            console.error("Fetched categories array is empty.");
-            setError("No categories available to display in the slider.");
-          }
-        } else {
-          console.error("Failed to fetch categories. Status:", response.status);
-          setError("Failed to fetch categories.");
-        }
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-        setError("An error occurred while fetching categories.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCategories();
-  }, []);
 
   // Function to select slides based on available data
   const selectSlides = (data: Category[]): Category[] => {
     const selectedSlides: Category[] = [];
-    const desiredIndices = [0, 3, 6]; // 1st, 4th, and 7th slides
+    const desiredIndices = [0, 3, 8]; // 1st, 4th, and 7th slides
 
     desiredIndices.forEach((index) => {
       if (data[index]) {
@@ -69,6 +28,9 @@ function PrimarySlider() {
     return selectedSlides;
   };
 
+  const selectedCategories = selectSlides(categories);
+
+  // Auto-play functionality
   const stopSlideTimer = useCallback(() => {
     if (slideInterval.current) {
       clearInterval(slideInterval.current);
@@ -77,45 +39,48 @@ function PrimarySlider() {
     }
   }, []);
 
-  // Auto-play functionality
   const startSlideTimer = useCallback(() => {
     stopSlideTimer(); // Clear any existing interval
     slideInterval.current = setInterval(() => {
-      setCurrentIndex((prev) => (prev === categories.length - 1 ? 0 : prev + 1));
+      setCurrentIndex((prev) =>
+        prev === selectedCategories.length - 1 ? 0 : prev + 1
+      );
       console.log("Auto-play to next slide.");
     }, 10000); // Change slide every 10 seconds
     console.log("Slide timer started.");
-  }, [categories.length,stopSlideTimer]);
-
-
+  }, [selectedCategories.length, stopSlideTimer]);
 
   useEffect(() => {
-    if (categories.length > 0) {
+    if (selectedCategories.length > 0) {
       startSlideTimer();
     }
     return () => {
       stopSlideTimer();
     };
-  }, [categories, startSlideTimer, stopSlideTimer]);
+  }, [selectedCategories, startSlideTimer, stopSlideTimer]);
 
   // Navigation functions
   const goToPrevious = useCallback(() => {
-    setCurrentIndex((prev) => (prev === 0 ? categories.length - 1 : prev - 1));
+    setCurrentIndex((prev) =>
+      prev === 0 ? selectedCategories.length - 1 : prev - 1
+    );
     console.log("Navigated to previous slide.");
-  }, [categories.length]);
+  }, [selectedCategories.length]);
 
   const goToNext = useCallback(() => {
-    setCurrentIndex((prev) => (prev === categories.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev) =>
+      prev === selectedCategories.length - 1 ? 0 : prev + 1
+    );
     console.log("Navigated to next slide.");
-  }, [categories.length]);
+  }, [selectedCategories.length]);
 
   // Swipe Handlers
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);
-    console.log(
-      "Touch start detected at position:",
-      e.targetTouches[0].clientX
-    );
+    console.log("Touch start detected at position:", e.targetTouches[0].clientX);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -141,29 +106,8 @@ function PrimarySlider() {
     setTouchEnd(null);
   };
 
-  // Log currentIndex changes
-  useEffect(() => {
-    console.log("Current Index Updated:", currentIndex);
-  }, [currentIndex]);
-
-  // Fallback UI for loading, error, and insufficient data
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64 bg-gray-200">
-        <p className="text-gray-500">Loading...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-64 bg-gray-200">
-        <p className="text-red-500">{error}</p>
-      </div>
-    );
-  }
-
-  if (categories.length === 0) {
+  // Fallback UI for insufficient data
+  if (selectedCategories.length === 0) {
     return (
       <div className="flex items-center justify-center h-64 bg-gray-200">
         <p className="text-gray-500">No categories to display.</p>
@@ -171,7 +115,7 @@ function PrimarySlider() {
     );
   }
 
-  const currentCategory = categories[currentIndex];
+  const currentCategory = selectedCategories[currentIndex];
 
   return (
     <div className="relative w-full mx-auto bg-teal-50">
@@ -196,7 +140,7 @@ function PrimarySlider() {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          {categories.map((cat) => (
+          {selectedCategories.map((cat) => (
             <div
               key={cat.id}
               className="relative flex-shrink-0 w-full aspect-video bg-slate-400"
@@ -226,7 +170,7 @@ function PrimarySlider() {
         <div
           className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20"
         >
-          {categories.map((_, index) => (
+          {selectedCategories.map((_, index) => (
             <button
               key={index}
               onClick={() => {
