@@ -51,7 +51,7 @@ export default function ProductDetails({ product }: ProductProps) {
   }, [product.images]);
 
   return (
-    <div className="flex flex-col items-start h-full md:flex-row pt-7">
+    <div className="flex flex-col items-start h-full md:flex-row pt-7 overflow-hidden">
       <div className="aspect-video flex-shrink-0 relative justify-start">
         <ProductImage
           product={product}

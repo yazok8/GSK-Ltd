@@ -1,15 +1,13 @@
-// src/app/(customerFacing)/components/Homepage/PrimarySlider.tsx
-
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Category } from "@prisma/client";
 import Image from "next/image";
 import debounce from "lodash.debounce";
 
 function PrimarySlider() {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0); // Start at first slide
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const slideInterval = useRef<NodeJS.Timeout | null>(null);
@@ -17,35 +15,6 @@ function PrimarySlider() {
   // Touch states for swipe
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
-
-  // Helper function to start the slide timer
-  const startSlideTimer = () => {
-    stopSlideTimer(); // Clear any existing interval
-    slideInterval.current = setInterval(() => {
-      goToNext();
-    }, 10000); // Change slide every 3 seconds
-    console.log("Slide timer started.");
-  };
-
-  // Helper function to stop the slide timer
-  const stopSlideTimer = () => {
-    if (slideInterval.current) {
-      clearInterval(slideInterval.current);
-      slideInterval.current = null;
-      console.log("Slide timer stopped.");
-    }
-  };
-
-  // Debounced navigation functions to prevent rapid state changes
-  const goToPrevious = debounce(() => {
-    setCurrentIndex((prev) => (prev === 0 ? categories.length - 1 : prev - 1));
-    console.log("Navigated to previous slide.");
-  }, 300); // Debounce duration aligns with any future needs
-
-  const goToNext = debounce(() => {
-    setCurrentIndex((prev) => (prev === categories.length - 1 ? 0 : prev + 1));
-    console.log("Navigated to next slide.");
-  }, 300);
 
   // Fetch categories once the component mounts
   useEffect(() => {
@@ -62,7 +31,7 @@ function PrimarySlider() {
             const selectedCategories = selectSlides(data);
             if (selectedCategories.length > 0) {
               setCategories(selectedCategories);
-              setCurrentIndex(0); // Start at first slide
+              setCurrentIndex(0);
               console.log("Slider data initialized with:", selectedCategories);
             } else {
               console.error("No valid categories selected for the slider.");
@@ -100,7 +69,26 @@ function PrimarySlider() {
     return selectedSlides;
   };
 
+  const stopSlideTimer = useCallback(() => {
+    if (slideInterval.current) {
+      clearInterval(slideInterval.current);
+      slideInterval.current = null;
+      console.log("Slide timer stopped.");
+    }
+  }, []);
+
   // Auto-play functionality
+  const startSlideTimer = useCallback(() => {
+    stopSlideTimer(); // Clear any existing interval
+    slideInterval.current = setInterval(() => {
+      setCurrentIndex((prev) => (prev === categories.length - 1 ? 0 : prev + 1));
+      console.log("Auto-play to next slide.");
+    }, 10000); // Change slide every 10 seconds
+    console.log("Slide timer started.");
+  }, [categories.length,stopSlideTimer]);
+
+
+
   useEffect(() => {
     if (categories.length > 0) {
       startSlideTimer();
@@ -108,7 +96,18 @@ function PrimarySlider() {
     return () => {
       stopSlideTimer();
     };
-  }, [categories]);
+  }, [categories, startSlideTimer, stopSlideTimer]);
+
+  // Navigation functions
+  const goToPrevious = useCallback(() => {
+    setCurrentIndex((prev) => (prev === 0 ? categories.length - 1 : prev - 1));
+    console.log("Navigated to previous slide.");
+  }, [categories.length]);
+
+  const goToNext = useCallback(() => {
+    setCurrentIndex((prev) => (prev === categories.length - 1 ? 0 : prev + 1));
+    console.log("Navigated to next slide.");
+  }, [categories.length]);
 
   // Swipe Handlers
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -141,6 +140,11 @@ function PrimarySlider() {
     setTouchStart(null);
     setTouchEnd(null);
   };
+
+  // Log currentIndex changes
+  useEffect(() => {
+    console.log("Current Index Updated:", currentIndex);
+  }, [currentIndex]);
 
   // Fallback UI for loading, error, and insufficient data
   if (loading) {
@@ -183,18 +187,19 @@ function PrimarySlider() {
         "
         onMouseEnter={stopSlideTimer}
         onMouseLeave={startSlideTimer}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
       >
         {/* Slides */}
-        <div className="flex transition-none">
-          {categories.map((cat, index) => (
+        <div
+          className="flex transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {categories.map((cat) => (
             <div
-              key={cat.id} // Use unique identifier
-              className={`relative flex-shrink-0 aspect-video w-full ${
-                index === currentIndex ? "block" : "hidden"
-              } bg-slate-400`}
+              key={cat.id}
+              className="relative flex-shrink-0 w-full aspect-video bg-slate-400"
             >
               <Image
                 src={`https://gsk-ltd.s3.us-east-2.amazonaws.com/${cat.image}`}
@@ -204,10 +209,10 @@ function PrimarySlider() {
                 quality={80}
                 className="object-cover"
                 loading="lazy"
-                placeholder="blur" // Enables blur-up effect
-                blurDataURL="/placeholder.webp" // Path to the placeholder image in 'public'
+                placeholder="blur"
+                blurDataURL="/placeholder.webp"
                 onError={(e) => {
-                  e.currentTarget.src = "/fallback.png"; // Path to a fallback image in 'public'
+                  e.currentTarget.src = "/fallback.png";
                   console.error(
                     `Failed to load image for category ID ${cat.id}. Using fallback image.`
                   );
@@ -218,14 +223,16 @@ function PrimarySlider() {
         </div>
 
         {/* Dots Navigation */}
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        <div
+          className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20"
+        >
           {categories.map((_, index) => (
             <button
               key={index}
               onClick={() => {
+                console.log(`Dot ${index + 1} clicked`);
                 setCurrentIndex(index);
                 startSlideTimer();
-                console.log(`Navigated to slide ${index + 1} via dots.`);
               }}
               className={`w-3 h-3 rounded-full ${
                 currentIndex === index ? "bg-gray-800" : "bg-gray-400"

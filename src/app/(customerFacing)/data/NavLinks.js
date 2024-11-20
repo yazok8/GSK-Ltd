@@ -6,7 +6,7 @@ export const NavLinks = [
     {
       id: 2,
       header: "services",
-      links:[
+      ServicesLinks:[
         {
             id:1,
             title:"Import",
@@ -24,7 +24,7 @@ export const NavLinks = [
     {
       id: 3,
       header: "products",
-      links:[
+      ProductsLinks:[
         {
             id:1,
             title:"nuts & dried fruits"

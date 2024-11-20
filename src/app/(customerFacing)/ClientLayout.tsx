@@ -82,7 +82,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
       {/* Teal Navigation Bar with Links: Hidden on Mobile */}
       <div className="h-12 hidden lg:flex justify-center items-center w-full bg-teal-500 z-50">
         <ul className="flex space-x-10 font-bold">
-          {NavLinks.map(({ id, header, links }) => (
+          {NavLinks.map(({ id, header, ProductsLinks, ServicesLinks }) => (
             <li
               key={id}
               className="relative group text-sm uppercase cursor-pointer duration-200 ease-out hover:scale-105 text-white"
@@ -92,7 +92,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
               </Link>
 
               {/* Dropdown Menu: Visible on Hover if Links Exist */}
-              {links && (
+              {ProductsLinks && ServicesLinks && (
                 <ul
                   className="absolute top-full left-0 w-40 bg-white border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300"
                   role="menu"

@@ -1,38 +1,45 @@
-// src/app/(customerFacing)/components/Homepage/_components/CategoryCard.tsx
+// components/CategoryCard.tsx
 
-"use client";
+import React from "react";
+import { Category } from "@prisma/client";
+import Image from "next/image";
+import Link from "next/link";
 
-import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+interface CategoryCardProps {
+  category: Category;
+  isSlider?: boolean;
+}
 
-type CategoryCardProps = {
-  id: string;
-  name: string;
-  description: string;
-  image: string; // Must be strictly a string
+const CategoryCard: React.FC<CategoryCardProps> = ({ category, isSlider = false }) => {
+  return (
+    <div className={`bg-white rounded-lg shadow-md overflow-hidden transform transition-transform duration-200 hover:scale-105 ${isSlider ? "bg-teal-500 text-white" : "bg-white text-black"}`}>
+      <Link href={`/category/${category.id}`}>
+        <div className="block">
+          {/* Image Container */}
+          <div className={`w-full h-48 relative ${isSlider ? "bg-teal-500" : ""}`}>
+            <Image
+              src={
+                category.image
+                  ? `https://gsk-ltd.s3.us-east-2.amazonaws.com/${category.image}`
+                  : "/images/fallback.jpg"
+              }
+              quality={80}
+              alt={category.name}
+              fill
+              style={{ objectFit: "cover" }}
+              className="hover:opacity-90"
+              loading="lazy"
+            />
+          </div>
+
+          {/* Category Name */}
+          <div className={`p-4 text-center ${isSlider ? "bg-teal-500" : ""}`}>
+            <h2 className="text-xl font-semibold">{category.name}</h2>
+          </div>
+        </div>
+      </Link>
+    </div>
+  );
 };
 
-export default function CategoryCard({
-  id,
-  name,
-  description,
-  image,
-}: CategoryCardProps) {
-  return (
-    <Link href={`/category/${id}`} className="category-card cursor-pointer hover:shadow-lg transition-shadow duration-300">
-      <div className="relative">
-        <Image
-          src={image}
-          alt={name}
-          width={300}
-          height={200}
-          className="object-cover w-full h-48"
-        />
-        <div className="absolute inset-0 bg-black bg-opacity-25 hover:bg-opacity-50 transition-opacity"></div>
-      </div>
-      <h3 className="mt-2 text-lg font-semibold">{name}</h3>
-      <p className="text-sm text-gray-600">{description}</p>
-    </Link>
-  );
-}
+export default CategoryCard;
