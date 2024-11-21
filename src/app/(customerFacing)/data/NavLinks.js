@@ -1,11 +1,13 @@
 export const NavLinks = [
+  {
+    id: 'about',
+    header: 'About',
+    href: '/about',
+  },
     {
-      id: 1,
-      header: "about",
-    },
-    {
-      id: 2,
-      header: "services",
+      id: 'services',
+      header: 'Services',
+      submenu: 'services',
       ServicesLinks:[
         {
             id:1,
@@ -22,8 +24,9 @@ export const NavLinks = [
       ]
     },
     {
-      id: 3,
-      header: "products",
+      id: 'products',
+      header: 'Products',
+      submenu: 'products',
       ProductsLinks:[
         {
             id:1,
@@ -66,7 +69,8 @@ export const NavLinks = [
     },
 
     {
-      id: 4,
-      header: "contact us",
+      id: 'contact',
+      header: 'Contact Us',
+      href: '/contact',
     },
   ];

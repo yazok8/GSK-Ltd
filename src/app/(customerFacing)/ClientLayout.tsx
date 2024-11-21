@@ -1,8 +1,9 @@
+// src/app/(customerFacing)/layout/ClientLayout.tsx
+
 "use client";
 
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { NavLinks } from "./data/NavLinks";
 import Image from "next/image";
 import GSKLogo from "../../../public/logo/new-logo.png";
 import { Input } from "@/components/ui/input";
@@ -21,29 +22,29 @@ const BurgerMenu = dynamic(() => import("@/components/BurgerMenu"), {
 
 export default function ClientLayout({ children }: ClientLayoutProps) {
   const [isOpen, setIsOpen] = useState(false); // State to control BurgerMenu visibility
-
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     // Fetch categories once the component mounts
     const fetchCategories = async () => {
       try {
-        const response = await fetch('/api/categories');
+        const response = await fetch('/api/categories'); // Ensure this API returns ObjectIDs
         if (response.ok) {
           const data: Category[] = await response.json();
-          if(data.length > 0){
+          if (data.length > 0) {
             setCategories(data);
+          } else {
+            console.error('Failed to fetch categories: No data returned');
           }
-          console.error('Failed to fetch categories');
-       
-      }
-    }catch (error) {
+        } else {
+          console.error('Failed to fetch categories: Response not ok');
+        }
+      } catch (error) {
         console.error('Error fetching categories:', error);
       }
     };
     fetchCategories();
   }, []);
-
 
   return (
     <>
@@ -82,41 +83,73 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
       {/* Teal Navigation Bar with Links: Hidden on Mobile */}
       <div className="h-12 hidden lg:flex justify-center items-center w-full bg-teal-500 z-50">
         <ul className="flex space-x-10 font-bold">
-          {NavLinks.map(({ id, header, ProductsLinks, ServicesLinks }) => (
-            <li
-              key={id}
-              className="relative group text-sm uppercase cursor-pointer duration-200 ease-out hover:scale-105 text-white"
+          {/* Static Links */}
+          <li className="text-sm uppercase text-white">
+            <Link href="/about" className="hover:underline">
+              About
+            </Link>
+          </li>
+          <li className="text-sm uppercase text-white relative group">
+          <Link href="/services" className="hover:underline">
+             Our Services
+            </Link>
+            <ul
+              className="absolute top-full left-0 w-60 bg-white border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300"
+              role="menu"
+              aria-label="Services submenu"
             >
-              <Link href={`/#${header}`} className="focus:outline-none">
-                {header.charAt(0).toUpperCase() + header.slice(1)}
-              </Link>
+              <li className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline" role="none">
+                <Link href="/services" className="block focus:outline-none" role="menuitem">
+                  Import
+                </Link>
+              </li>
+              <li className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline" role="none">
+                <Link href="/services" className="block focus:outline-none" role="menuitem">
+                  Export
+                </Link>
+              </li>
+              <li className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline" role="none">
+                <Link href="/services" className="block focus:outline-none" role="menuitem">
+                  Distribution
+                </Link>
+              </li>
+            </ul>
+          </li>
 
-              {/* Dropdown Menu: Visible on Hover if Links Exist */}
-              {ProductsLinks && ServicesLinks && (
-                <ul
-                  className="absolute top-full left-0 w-40 bg-white border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300"
-                  role="menu"
-                  aria-label={`${header} submenu`}
+          {/* Dynamic Categories */}
+          <li className="text-sm uppercase text-white relative group">
+          <Link href="/products" className="hover:underline">
+             Our Products
+            </Link>
+            <ul
+              className="absolute top-full left-0 w-60 bg-white border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300"
+              role="menu"
+              aria-label="Products submenu"
+            >
+              {categories.map((category) => (
+                <li
+                  key={category.id}
+                  className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline"
+                  role="none"
                 >
-                  {categories.map((link) => (
-                    <li
-                      key={link.id}
-                      className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline"
-                      role="none"
-                    >
-                      <Link
-                        href={`/category/${link.id}`}
-                        className="block focus:outline-none"
-                        role="menuitem"
-                      >
-                        {link.name.charAt(0).toUpperCase() + link.name.slice(1)}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
+                  <Link
+                    href={`/category/${category.id}`}
+                    className="block focus:outline-none"
+                    role="menuitem"
+                  >
+                    {category.name.charAt(0).toUpperCase() + category.name.slice(1)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </li>
+
+          {/* Static Links */}
+          <li className="text-sm uppercase text-white">
+            <Link href="/contact" className="hover:underline">
+              Contact Us
+            </Link>
+          </li>
         </ul>
       </div>
 

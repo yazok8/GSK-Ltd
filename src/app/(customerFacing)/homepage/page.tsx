@@ -4,9 +4,10 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { getCategories } from "@/lib/getCategories";
 import PrimarySlider from "./_components/PrimarySlider";
-import { Category } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
+import Services from "./_components/Services";
+import { CardHeader, CardTitle } from "@/components/ui/card";
 
 // Dynamically import client components
 const CategoriesGridSlider = dynamic(
@@ -91,9 +92,13 @@ export default async function Homepage({ searchParams }: HomepageProps) {
           </div>
         )}
       </div>
-      <div className="bg-teal-500">
+      <div>
+      <CardHeader>
+        <CardTitle className="text-4xl text-center">Mixed Spices</CardTitle>
+      </CardHeader>
         <ReceipeSlider categories={filteredCategories} />
       </div>
+      <Services/>
     </>
   );
 }

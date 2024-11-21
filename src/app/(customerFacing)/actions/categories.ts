@@ -63,30 +63,36 @@ export async function getAllCategoriesWithProducts(): Promise<PrismaCategory[]> 
   }
 
     // Fetch paginated products by category
-export async function getProductsByCategoryPaginated(
-    categoryId: string,
-    page: number,
-    perPage: number
-  ): Promise<{ products: ProductWithCategory[]; total: number }> {
-    const [products, total] = await prisma.$transaction([
-        prisma.product.findMany({
-            where: { categoryId },
-            include: { category: true },
+    export async function getProductsByCategoryPaginated(id: string, page: number, perPage: number) {
+      try {
+        const [products, total] = await Promise.all([
+          prisma.product.findMany({
+            where: { categoryId: id },
             skip: (page - 1) * perPage,
             take: perPage,
-        }),
-        prisma.product.count({
-            where: { categoryId },
-        }),
-    ]);
-  
-    return { products, total };
-  }
-  
+          }),
+          prisma.product.count({
+            where: { categoryId: id },
+          }),
+        ]);
+    
+        return { products, total };
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        return { products: [], total: 0 };
+      }
+    }
 
   // Fetch a single category by ID
-export async function getCategoryById(id: string): Promise<PrismaCategory | null> {
-    return prisma.category.findUnique({
+  export async function getCategoryById(id: string) {
+    try {
+      // If using MongoDB with Prisma
+      return await prisma.category.findUnique({
         where: { id },
-    });
+        include: { products: true }, // Adjust as needed
+      });
+    } catch (error) {
+      console.error('Error fetching category:', error);
+      return null;
+    }
   }

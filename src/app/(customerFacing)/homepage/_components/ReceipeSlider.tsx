@@ -26,11 +26,12 @@ function ReceipeSlider({ categories }: CategoryProps) {
   };
 
   return (
-    <div className="w-full mx-auto relative bg-teal-500 lg:ml-[160px] md:pt-2 md:pl-2">
+    <div className="w-full mx-auto relative bg-teal-500 md:pt-2 md:pl-2 md:py-8">
+
       <Slider {...settings}>
         {categories.map((cat) => (
           <div key={cat.id} className="lg:h-[700px]">
-            <div className="flex flex-col md:flex-row h-full">
+            <div className="flex flex-col md:flex-row h-full lg:ml-[160px]">
               {/* Image Container */}
               <div className="relative w-full md:w-[600px] h-[500px] lg:h-full">
                   <Image
