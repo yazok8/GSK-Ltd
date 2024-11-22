@@ -51,19 +51,23 @@ export default function ProductDetails({ product }: ProductProps) {
   }, [product.images]);
 
   return (
-    <div className="flex flex-col items-start h-full md:flex-row pt-7 overflow-hidden">
-      <div className="aspect-video flex-shrink-0 relative justify-start">
+    <div className="flex flex-col md:flex-row items-start h-full pt-7 overflow-hidden">
+      {/* Product Image Section */}
+      <div className="w-full md:w-1/5 relative mr-0">
         <ProductImage
           product={product}
           selectedImg={productDetail.selectedImg}
           handleImageSelect={handleImageSelect}
         />
       </div>
-      <div className="aspect-video flex-shrink-0 relative justify-end md:w-1/2 -ml-[100px]">
+
+      {/* Additional Image Section */}
+      <div className="relative w-full md:w-1/2 h-auto hidden md:block -ml-[95px]">
         <Image
-          className="flex justify-center items-center object-contain object-center"
+          className="object-contain rounded-lg"
           src={getImageSrc(productDetail.selectedImg.image)}
-          fill
+          width={500}
+          height={500}
           alt={product.name}
           sizes="(max-width: 768px) 100vw,
                  (max-width: 1200px) 50vw,
@@ -74,18 +78,19 @@ export default function ProductDetails({ product }: ProductProps) {
         />
       </div>
 
-      <Card className="flex flex-col border-none">
-        <CardHeader className="text-lg flex">
-          <CardTitle className="text-2xl font-bold p-0">{product.name}</CardTitle>
+      {/* Product Details Card */}
+      <Card className="flex flex-col border-none md:ml-6 mt-6 md:mt-0">
+        <CardHeader className="text-lg flex pl-3">
+          <CardTitle className="text-2xl font-bold">{product.name}</CardTitle>
         </CardHeader>
 
         <HorizontalLine />
-        <CardDescription className="text-muted-foreground sm:pr-0">
+        <CardDescription className="text-muted-foreground pl-3">
           {product.description}
         </CardDescription>
         <HorizontalLine />
         <div className="flex flex-col">
-          <span className="text-slate-500 font-semibold">Category: {product.category}</span>
+          <span className="text-slate-500 font-semibold pl-3">Category: {product.category}</span>
         </div>
         <HorizontalLine />
         <div className="space-y-3 mt-5"></div>

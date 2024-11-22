@@ -5,25 +5,26 @@ import distribution from "../../../../../public/services/distribution.avif";
 
 export default function Distribution() {
   return (
-    <Card>
+    <Card id="distribution" className="shadow-non pt-10">
       <CardHeader>
         <CardTitle className="text-4xl">Distribution</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col lg:flex-row-reverse flex-wrap">
+      <CardContent className="clearfix">
         {/* Image Container */}
-        <div className="relative w-full lg:w-1/2 min-w-[900] aspect-w-16 aspect-h-9">
+        <div className="lg:float-right lg:ml-6 lg:mb-4 w-full lg:w-3/5 mb-4">
           <Image
             src={distribution}
             alt="gsk-distribution"
-            width={900} // specify desired width
-            height={500} // specify desired height
-            style={{ objectFit: "fill" }}
+            layout="responsive"
+            width={300} 
+            height={200}
+            objectFit="cover"
             priority
           />
         </div>
 
         {/* Text Content */}
-        <div className="w-full lg:w-1/2 p-3">
+        <div className="text-xl">
           <p>
             Since we started, our outstanding Distribution Department has been
             working toward achieving the excellence level of services provided

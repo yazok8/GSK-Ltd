@@ -8,7 +8,8 @@ export default async function Layout({
   return (
     <>
       <ClientLayout>
-      {children}
+        <div>      {children}</div>
+
       </ClientLayout>
     </>
   );

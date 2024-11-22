@@ -6,18 +6,20 @@ import ExportService from "./_components/ExportService";
 
 export default function ServicesPage() {
   return (
-    <Card>
+
+    <Card className="bg-teal-50" >
       <CardHeader>
         <CardTitle className="underline text-4xl">About Our Services</CardTitle>
       </CardHeader>
-      <CardContent>
-        Golden Waves is a leading import & export company in the nuts, pulses,
+      <CardContent className="text-xl">
+        <p>
+        GSK is a leading import & export company in the nuts, pulses,
         coffee, spices industry in addition to a wide range of wholesale
         products. The Company imports top quality products from Europe, Turkey,
         Brazil, India, Indonesia, Vietnam, China, USA, Canada and other
         countries. ​<br />
         <br />
-        Golden Waves also export to many countries like Libya, morocco, Iraq,
+        GSK also export to many countries like Libya, morocco, Iraq,
         Jordan, Egypt, UAE, Yemen, USA & Canada.
         <br />
         Offering all clients valuable and competitive quality & prices that are
@@ -32,10 +34,11 @@ export default function ServicesPage() {
         providing them with services that reflect our solid business strategy,
         decades of experience, and professionalism. ​<br />
         <br />
-        Since the establishment, the Distribution Teams at Golden Waves has
+        Since the establishment, the Distribution Teams at GSK has
         worked hard to provide the best services to our customers & clients,
         reflecting a high level of responsibility & credibility that we believe
         our clients deserve!
+        </p>
       </CardContent>
       <ImportService/>
       <ExportService/>

@@ -2,14 +2,16 @@
 
 import React from "react";
 import dynamic from "next/dynamic";
-import { getCategories } from "@/lib/getCategories";
-import PrimarySlider from "./_components/PrimarySlider";
+import { getAllCategories } from "@/lib/getCategories";
 import Image from "next/image";
 import Link from "next/link";
 import Services from "./_components/Services";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 
 // Dynamically import client components
+const PrimarySlider = dynamic(() => import("./_components/PrimarySlider"), {
+  ssr: false,
+});
 const CategoriesGridSlider = dynamic(
   () => import("./_components/CategoriesGridSlider"),
   { ssr: false }
@@ -25,22 +27,33 @@ interface HomepageProps {
 }
 
 export default async function Homepage({ searchParams }: HomepageProps) {
-  let indices = [2, 3, 5, 7]; // Default indices
+  // Fetch all categories
+  const categories = await getAllCategories();
+  // **For PrimarySlider, select categories**
+  const primarySliderIndices = [1, 2, 7]; // Adjust these indices as needed
+  const primarySliderCategories = primarySliderIndices
+    .map((index) => categories[index])
+    .filter(Boolean);
+
+  // **For Other Sliders, select different categories**
+  let CategoriesGridSliderIndices = [8, 4, 5, 6]; // Default indices for other sliders
 
   if (searchParams?.indices) {
-    indices = searchParams.indices
+    CategoriesGridSliderIndices = searchParams.indices
       .split(",")
       .map((str) => parseInt(str, 10))
       .filter((num) => !isNaN(num));
   }
 
-  // Use the helper function to fetch categories
-  const { categories, filteredCategories } = await getCategories(indices);
+  const filteredCatGridSlider =
+    categories.length > 0
+      ? CategoriesGridSliderIndices.map((index) => categories[index]).filter(Boolean)
+      : [];
 
   return (
     <>
       {/* Pass categories as props */}
-      <PrimarySlider categories={categories} />
+      <PrimarySlider categories={primarySliderCategories} />
       <div className="bg-slate-50 py-8 max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="text-center">
@@ -48,9 +61,9 @@ export default async function Homepage({ searchParams }: HomepageProps) {
         </div>
 
         {/* Categories Grid for Large Screens */}
-        {filteredCategories.length > 0 && (
+        {filteredCatGridSlider.length > 0 && (
           <div className="hidden lg:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
-            {filteredCategories.map((category, index) => (
+            {filteredCatGridSlider.map((category, index) => (
               <div
                 key={index}
                 className="bg-white rounded-lg shadow-md overflow-hidden transform transition-transform duration-200 hover:scale-105"
@@ -86,19 +99,19 @@ export default async function Homepage({ searchParams }: HomepageProps) {
         )}
 
         {/* Categories Slider for Small and Medium Screens */}
-        {filteredCategories.length > 0 && (
+        {filteredCatGridSlider.length > 0 && (
           <div className="lg:hidden px-4">
-            <CategoriesGridSlider categories={filteredCategories} />
+            <CategoriesGridSlider categories={filteredCatGridSlider} />
           </div>
         )}
       </div>
       <div>
-      <CardHeader>
-        <CardTitle className="text-4xl text-center">Mixed Spices</CardTitle>
-      </CardHeader>
-        <ReceipeSlider categories={filteredCategories} />
+        <CardHeader>
+          <CardTitle className="text-4xl text-center">Mixed Spices</CardTitle>
+        </CardHeader>
+        <ReceipeSlider categories={filteredCatGridSlider} />
       </div>
-      <Services/>
+      <Services />
     </>
   );
 }

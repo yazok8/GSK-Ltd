@@ -49,7 +49,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
   return (
     <>
       {/* Top Navigation Bar: Logo and Search */}
-      <nav className="w-full text-black duration-300 ease-in p-4 z-[10] bg-white">
+      <nav className="w-full text-black duration-300 ease-in p-4 z-[10] bg-teal-50">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link href="/">
@@ -86,11 +86,11 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
           {/* Static Links */}
           <li className="text-sm uppercase text-white">
             <Link href="/about" className="hover:underline">
-              About
+              About Us
             </Link>
           </li>
           <li className="text-sm uppercase text-white relative group">
-          <Link href="/services" className="hover:underline">
+          <Link href="/services"className="hover:underline">
              Our Services
             </Link>
             <ul
@@ -99,17 +99,17 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
               aria-label="Services submenu"
             >
               <li className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline" role="none">
-                <Link href="/services" className="block focus:outline-none" role="menuitem">
+                <Link href="/services/#import" id="#import" className="block focus:outline-none" role="menuitem">
                   Import
                 </Link>
               </li>
               <li className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline" role="none">
-                <Link href="/services" className="block focus:outline-none" role="menuitem">
+                <Link href="/services/#export" className="block focus:outline-none" role="menuitem">
                   Export
                 </Link>
               </li>
               <li className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline" role="none">
-                <Link href="/services" className="block focus:outline-none" role="menuitem">
+                <Link href="/services/#distribution" className="block focus:outline-none" role="menuitem">
                   Distribution
                 </Link>
               </li>

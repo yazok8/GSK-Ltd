@@ -10,6 +10,8 @@ const config: Config = {
   theme: {
   	extend: {
   		colors: {
+			'brand-teal': '#14B8A6',  // Custom teal color
+        	'brand-blue': '#1E40AF',  // Custom blue color
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

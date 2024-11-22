@@ -16,16 +16,9 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
 
   // Function to select slides based on available data
   const selectSlides = (data: Category[]): Category[] => {
-    const selectedSlides: Category[] = [];
-    const desiredIndices = [0, 3, 8]; // 1st, 4th, and 7th slides
-
-    desiredIndices.forEach((index) => {
-      if (data[index]) {
-        selectedSlides.push(data[index]);
-      }
-    });
-
-    return selectedSlides;
+    if (data.length === 0) return [];
+    const numberOfSlides = Math.min(5, data.length);
+    return data.slice(0, numberOfSlides);
   };
 
   const selectedCategories = selectSlides(categories);
@@ -80,7 +73,10 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);
-    console.log("Touch start detected at position:", e.targetTouches[0].clientX);
+    console.log(
+      "Touch start detected at position:",
+      e.targetTouches[0].clientX
+    );
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -125,8 +121,7 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
           overflow-hidden 
           relative 
           w-full md:w-2/3 lg:w-3/4 xl:w-3/4 
-          h-full
-          aspect-video
+          h-[300px] md:h-[400px] lg:h-[700px]
           ml-auto
         "
         onMouseEnter={stopSlideTimer}
@@ -134,7 +129,7 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
       >
         {/* Slides */}
         <div
-          className="flex transition-transform duration-500 ease-in-out"
+          className="flex transition-transform duration-500 ease-in-out h-full"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -143,15 +138,14 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
           {selectedCategories.map((cat) => (
             <div
               key={cat.id}
-              className="relative flex-shrink-0 w-full aspect-video bg-slate-400"
+              className="relative flex-shrink-0 w-full h-full bg-slate-400"
             >
               <Image
                 src={`https://gsk-ltd.s3.us-east-2.amazonaws.com/${cat.image}`}
                 alt={cat.name}
-                fill
-                style={{ objectFit: "cover" }}
-                quality={80}
-                className="object-cover"
+                width={1920}
+                height={1080}
+                className="w-full h-full object-cover"
                 loading="lazy"
                 placeholder="blur"
                 blurDataURL="/placeholder.webp"
@@ -167,9 +161,7 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
         </div>
 
         {/* Dots Navigation */}
-        <div
-          className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20"
-        >
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
           {selectedCategories.map((_, index) => (
             <button
               key={index}
@@ -187,10 +179,10 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
         </div>
       </div>
       {currentCategory && (
-        <div className="absolute left-20 xl:left-48 inset-0 flex items-center justify-start">
+        <div className="absolute left-4 md:left-20 xl:left-48 inset-y-0 flex items-center">
           <div className="bg-white bg-opacity-50 text-gray-900 p-6 rounded-lg">
             <h2 className="text-2xl font-bold">{currentCategory.name}</h2>
-            <p className="mt-2">Explore more about {currentCategory.name}</p>
+            <p className="mt-2 text-lg">Explore more about {currentCategory.name}</p>
           </div>
         </div>
       )}
