@@ -28,7 +28,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
     // Fetch categories once the component mounts
     const fetchCategories = async () => {
       try {
-        const response = await fetch('/api/categories'); // Ensure this API returns ObjectIDs
+        const response = await fetch('/api/categories'); // Ensure this API returns ObjectIDs as strings
         if (response.ok) {
           const data: Category[] = await response.json();
           if (data.length > 0) {
@@ -90,8 +90,8 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
             </Link>
           </li>
           <li className="text-sm uppercase text-white relative group">
-          <Link href="/services"className="hover:underline">
-             Our Services
+            <Link href="/services" className="hover:underline">
+              Our Services
             </Link>
             <ul
               className="absolute top-full left-0 w-60 bg-white border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300"
@@ -99,7 +99,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
               aria-label="Services submenu"
             >
               <li className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline" role="none">
-                <Link href="/services/#import" id="#import" className="block focus:outline-none" role="menuitem">
+                <Link href="/services/#import" className="block focus:outline-none" role="menuitem">
                   Import
                 </Link>
               </li>
@@ -118,8 +118,8 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
 
           {/* Dynamic Categories */}
           <li className="text-sm uppercase text-white relative group">
-          <Link href="/products" className="hover:underline">
-             Our Products
+            <Link href="/products" className="hover:underline">
+              Our Products
             </Link>
             <ul
               className="absolute top-full left-0 w-60 bg-white border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300"
@@ -133,7 +133,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
                   role="none"
                 >
                   <Link
-                    href={`/category/${category.id}`}
+                    href={`/category/${encodeURIComponent(category.id)}`}
                     className="block focus:outline-none"
                     role="menuitem"
                   >
@@ -154,7 +154,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
       </div>
 
       {/* Mobile Burger Menu: Always Rendered and Controlled via Props */}
-      <BurgerMenu isOpen={isOpen} setIsOpen={setIsOpen} />
+      <BurgerMenu isOpen={isOpen} setIsOpen={setIsOpen} categories={categories} />
 
       <div>{children}</div>
     </>

@@ -3,6 +3,7 @@ import React from "react";
 import vision from "../../../../../public/about/vision.jpg";
 import mission from "../../../../../public/about/mission.jpg";
 import Image from "next/image";
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
 export default function MissonVison() {
   return (
@@ -38,32 +39,38 @@ export default function MissonVison() {
         </CardHeader>
         <CardContent className="flex flex-col-reverse lg:flex-row justify-between text-2xl">
           <div>
-          <ul className="list-item">
-            <li>
-              <strong>Excellence in Quality:</strong> Deliver superior products
-              that consistently meet and exceed our clients’ expectations.
-            </li>
-            <li>
-              <strong>Global Expansion:</strong> Continuously broaden our
-              international network to provide seamless trading solutions across
-              diverse markets.
-            </li>
-            <li>
-              <strong>Customer Focus:</strong> Cultivate lasting partnerships by
-              deeply understanding and addressing the unique needs of our
-              clients.
-            </li>
-            <li>
-              <strong>Integrity and Transparency:</strong> Uphold the highest
-              ethical standards in all our business practices, ensuring trust
-              and reliability.
-            </li>
-            <li>
-              <strong>Sustainable Practices:</strong> Promote and implement
-              sustainable trade practices that benefit our communities and
-              protect the environment.
-            </li>
-          </ul>
+          <ul className="space-y-4 text-gray-600 dark:text-gray-300">
+              <li className="flex items-start">
+                <CheckCircleIcon className="w-6 h-6 text-teal-500 mt-1 flex-shrink-0" />
+                <span className="ml-3">
+                  <strong>Excellence in Quality:</strong> Deliver superior products that consistently meet and exceed our clients’ expectations.
+                </span>
+              </li>
+              <li className="flex items-start">
+                <CheckCircleIcon className="w-6 h-6 text-teal-500 mt-1 flex-shrink-0" />
+                <span className="ml-3">
+                  <strong>Global Expansion:</strong> Continuously broaden our international network to provide seamless trading solutions across diverse markets.
+                </span>
+              </li>
+              <li className="flex items-start">
+                <CheckCircleIcon className="w-6 h-6 text-teal-500 mt-1 flex-shrink-0" />
+                <span className="ml-3">
+                  <strong>Customer Focus:</strong> Cultivate lasting partnerships by deeply understanding and addressing the unique needs of our clients.
+                </span>
+              </li>
+              <li className="flex items-start">
+                <CheckCircleIcon className="w-6 h-6 text-teal-500 mt-1 flex-shrink-0" />
+                <span className="ml-3">
+                  <strong>Integrity and Transparency:</strong> Uphold the highest ethical standards in all our business practices, ensuring trust and reliability.
+                </span>
+              </li>
+              <li className="flex items-start">
+                <CheckCircleIcon className="w-6 h-6 text-teal-500 mt-1 flex-shrink-0" />
+                <span className="ml-3">
+                  <strong>Sustainable Practices:</strong> Promote and implement sustainable trade practices that benefit our communities and protect the environment.
+                </span>
+              </li>
+            </ul>
           </div>
           <div className="relative flex-shrink-0 aspect-video pb-5 lg:pb-0">
         <Image

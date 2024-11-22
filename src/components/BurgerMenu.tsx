@@ -7,22 +7,23 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { FaSearch, FaTimes } from "react-icons/fa";
 import GSKLogo from "../../public/logo/gsk-nobg.png";
-import { NavLinks, NavLink, NavLinkSubmenu, NavLinkLink } from "@/app/(customerFacing)/data/NavLinks";
-
-import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import { Input } from "./ui/input";
 import slugify from "slugify";
+import { Category } from "@prisma/client"; // Import Category type
+import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 
 interface BurgerMenuProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  categories?: Category[]; // Ensure categories are required
 }
 
-
-
-export default function BurgerMenu({ isOpen, setIsOpen }: BurgerMenuProps) {
+export default function BurgerMenu({
+  isOpen,
+  setIsOpen,
+  categories,
+}: BurgerMenuProps) {
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null); // Tracks which submenu is open
-
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
@@ -98,98 +99,154 @@ export default function BurgerMenu({ isOpen, setIsOpen }: BurgerMenuProps) {
       {/* Navigation Links */}
       <nav className="flex-col py-4 text-white" role="navigation">
         <ul>
-          {NavLinks.map((navLink: NavLink) => {
-            if (isNavLinkSubmenu(navLink)) {
-              const { id, header, submenu, links } = navLink;
-              const isSubmenuOpen = openSubmenu === submenu;
+          {/* Static Links */}
+          <li className="py-4 hover:underline hover:decoration-yellow-300">
+            <Link
+              href="/about"
+              className="hover:text-yellow-500"
+              onClick={() => setIsOpen(false)}
+            >
+              About Us
+            </Link>
+          </li>
 
-              // Function to handle submenu toggle
-              const handleSubmenuToggle = () => {
-                setOpenSubmenu((prev) => (prev === submenu ? null : submenu));
-              };
+          {/* Services Submenu */}
+          <li className="py-4 relative" key="services">
+            <button
+              className="flex justify-between items-center w-full text-left focus:outline-none"
+              onClick={() =>
+                setOpenSubmenu((prev) =>
+                  prev === "services" ? null : "services"
+                )
+              }
+              aria-haspopup="true"
+              aria-expanded={openSubmenu === "services"}
+            >
+              <span className="text-white text-lg hover:text-yellow-500">
+                Our Services
+              </span>
+              {/* Dropdown Indicator Icon */}
+              <svg
+                className={`w-4 h-4 transition-transform ${
+                  openSubmenu === "services" ? "rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
 
-              return (
-                <li className="py-4 relative" key={id}>
-                  <button
-                    className="flex justify-between items-center w-full text-left focus:outline-none"
-                    onClick={handleSubmenuToggle}
-                    aria-haspopup="true"
-                    aria-expanded={isSubmenuOpen}
+            {/* Dropdown Menu for Services */}
+            <li className="text-sm uppercase text-white relative group">
+            <button
+              className="flex justify-between items-center w-full text-left focus:outline-none"
+              onClick={() =>
+                setOpenSubmenu((prev) =>
+                  prev === "services" ? null : "services"
+                )
+              }
+              aria-haspopup="true"
+              aria-expanded={openSubmenu === "services"}
+            >
+            </button>
+            {openSubmenu === "services" && (
+              <ul className="pl-4 mt-2">
+            <li className="py-2 hover:bg-teal-600 hover:underline" role="none">
+                <Link href="/services/#import" className="hover:text-yellow-500" role="menuitem">
+                  Import
+                </Link>
+              </li>
+              <li className="py-2 hover:bg-teal-600 hover:underline" role="none">
+                <Link href="/services/#export" className="hover:text-yellow-500" role="menuitem">
+                  Export
+                </Link>
+              </li>
+              <li className="py-2 hover:bg-teal-600 hover:underline" role="none">
+                <Link href="/services/#distribution" className="hover:text-yellow-500" role="menuitem">
+                  Distribution
+                </Link>
+              </li>
+              </ul>
+            )}
+          </li>         
+          </li>
+
+          {/* Dynamic Categories Submenu */}
+          <li className="py-4 relative" key="products">
+            <button
+              className="flex justify-between items-center w-full text-left focus:outline-none"
+              onClick={() =>
+                setOpenSubmenu((prev) =>
+                  prev === "products" ? null : "products"
+                )
+              }
+              aria-haspopup="true"
+              aria-expanded={openSubmenu === "products"}
+            >
+              <span className="text-white text-lg hover:text-yellow-500">
+                Our Products
+              </span>
+              {/* Dropdown Indicator Icon */}
+              <svg
+                className={`w-4 h-4 transition-transform ${
+                  openSubmenu === "products" ? "rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            {/* Dropdown Menu for Products */}
+            {openSubmenu === "products" && (
+              <ul className="pl-4 mt-2">
+                {categories?.map((category) => (
+                  <li
+                    key={category.id}
+                    className="py-2 hover:bg-teal-600 hover:underline"
+                    onClick={() => setIsOpen(false)}
                   >
-                    <span className="text-white text-lg hover:text-yellow-500">
-                      {header}
-                    </span>
-                    {/* Dropdown Indicator Icon */}
-                    <svg
-                      className={`w-4 h-4 transition-transform ${
-                        isSubmenuOpen ? "rotate-180" : ""
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
+                    <Link
+                      href={`/category/${encodeURIComponent(category.id)}`}
+                      className="hover:text-yellow-500"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </button>
+                      {category.name.charAt(0).toUpperCase() +
+                        category.name.slice(1)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
 
-                  {/* Dropdown Menu */}
-                  {isSubmenuOpen && (
-                    <ul className="pl-4 mt-2">
-                      {links.map((link: NavLinkLink) => (
-                        <li
-                          key={link.id}
-                          className="py-2 hover:bg-teal-600 hover:underline"
-                          onClick={() => setIsOpen(false)}
-                        >
-                          <Link
-                            href={
-                              submenu === "services"
-                                ? `/services/#${slugify(link.title)}`
-                                : `/category/${encodeURIComponent(slugify(link.title))}`
-                            }
-                            className="hover:text-yellow-500"
-                          >
-                            {link.title.charAt(0).toUpperCase() + link.title.slice(1)}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              );
-            } else if ("href" in navLink) {
-              const { id, header, href } = navLink;
-
-              return (
-                <li
-                  className="py-4 hover:underline hover:decoration-yellow-300"
-                  key={id}
-                  onClick={() => setIsOpen(false)}
-                >
-                  <Link href={href} className="hover:text-yellow-500">
-                    {header}
-                  </Link>
-                </li>
-              );
-            } else {
-              // Unexpected NavLink structure
-              return null;
-            }
-          })}
+          {/* Static Links */}
+          <li className="py-4 hover:underline hover:decoration-yellow-300">
+            <Link
+              href="/contact"
+              className="hover:text-yellow-500"
+              onClick={() => setIsOpen(false)}
+            >
+              Contact Us
+            </Link>
+          </li>
         </ul>
       </nav>
     </div>
   );
-}
-
-// src/app/(customerFacing)/components/BurgerMenu.tsx
-
-function isNavLinkSubmenu(navLink: NavLink): navLink is NavLinkSubmenu {
-  return 'submenu' in navLink && Array.isArray(navLink.links);
 }

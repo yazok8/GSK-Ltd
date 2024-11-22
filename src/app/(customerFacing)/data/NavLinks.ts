@@ -15,7 +15,7 @@ export interface NavLinkSubmenu extends NavLinkBase {
 }
 
 export interface NavLinkLink {
-  id: number;
+
   title: string;
 }
 
@@ -32,9 +32,9 @@ export const NavLinks: NavLink[] = [
     header: 'Services',
     submenu: 'services',
     links: [
-      { id: 1, title: "Import" },
-      { id: 2, title: "Export" },
-      { id: 3, title: "Distribution" }
+      {title: "Import" },
+      {title: "Export" },
+      {title: "Distribution" }
     ]
   },
   {
@@ -42,15 +42,15 @@ export const NavLinks: NavLink[] = [
     header: 'Products',
     submenu: 'products',
     links: [
-      { id: 1, title: "nuts & dried fruits" },
-      { id: 2, title: "pulses" },
-      { id: 3, title: "whole & ground spices" },
-      { id: 4, title: "cardamom" },
-      { id: 5, title: "herbs" },
-      { id: 6, title: "baking ingredients" },
-      { id: 7, title: "sesame" },
-      { id: 8, title: "bird feed" },
-      { id: 9, title: "pet food" }
+      { title: "nuts & dried fruits" },
+      { title: "pulses" },
+      { title: "whole & ground spices" },
+      { title: "cardamom" },
+      { title: "herbs" },
+      { title: "baking ingredients" },
+      { title: "sesame" },
+      { title: "bird feed" },
+      { title: "pet food" }
     ]
   },
   {
