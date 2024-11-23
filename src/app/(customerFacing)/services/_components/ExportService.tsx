@@ -18,8 +18,8 @@ export default function ExportService() {
             layout="responsive"
             width={300} 
             height={200}
-            objectFit="cover"
             priority
+            style={{ objectFit: 'cover' }}
           />
         </div>
 

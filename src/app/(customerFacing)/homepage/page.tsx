@@ -9,16 +9,9 @@ import Services from "./_components/Services";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 
 // Dynamically import client components
-const PrimarySlider = dynamic(() => import("./_components/PrimarySlider"), {
-  ssr: false,
-});
-const CategoriesGridSlider = dynamic(
-  () => import("./_components/CategoriesGridSlider"),
-  { ssr: false }
-);
-const ReceipeSlider = dynamic(() => import("./_components/ReceipeSlider"), {
-  ssr: false,
-});
+const PrimarySlider = dynamic(() => import("./_components/PrimarySlider"));
+const CategoriesGridSlider = dynamic(() => import("./_components/CategoriesGridSlider"));
+const ReceipeSlider = dynamic(() => import("./_components/ReceipeSlider"));
 
 interface HomepageProps {
   searchParams?: {
@@ -30,6 +23,8 @@ export default async function Homepage({ searchParams }: HomepageProps) {
   // Fetch all categories
   const categories = await getAllCategories();
   // **For PrimarySlider, select categories**
+
+  
   const primarySliderIndices = [1, 2, 7]; // Adjust these indices as needed
   const primarySliderCategories = primarySliderIndices
     .map((index) => categories[index])

@@ -21,11 +21,11 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, image, al
         <Image
           src={image}
           alt={alt}
-          layout="fill"
-          objectFit="cover"
+          fill
           className="rounded-lg"
           placeholder="blur"
           loading="lazy"
+          style={{ objectFit: 'cover' }}
         />
       </div>
       <h2 className="mt-4 text-2xl font-semibold">{title}</h2>
