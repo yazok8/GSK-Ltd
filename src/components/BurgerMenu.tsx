@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { FaSearch, FaTimes } from "react-icons/fa";
-import GSKLogo from "../../public/logo/gsk-nobg.png";
+import GSKLogo from "../../public/logo/new-logo.png";
 import { Input } from "./ui/input";
 import slugify from "slugify";
 import { Category } from "@prisma/client"; // Import Category type

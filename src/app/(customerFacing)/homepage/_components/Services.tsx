@@ -27,7 +27,7 @@ const servicesData: Service[] = [
       "Golden Waves is one of the leading import companies in nuts, pulses, cooking oils and gees, branded products (e.g. chocolates, soft drinks, cheeses, candies.. etc), coffee and spices industry plus animals foods.",
     image: importService,
     alt: "GSK Import Service",
-    link: "/services/import",
+    link: "/services/#import",
   },
   {
     id: 2,
@@ -36,7 +36,7 @@ const servicesData: Service[] = [
       "Since we started, our outstanding Distribution Department has been working toward achieving the excellence level of services provided to our customers and clients.",
     image: distribution,
     alt: "GSK Distribution Service",
-    link: "/services/distribution",
+    link: "/services/#distribution",
   },
   {
     id: 3,
@@ -45,7 +45,7 @@ const servicesData: Service[] = [
       "Golden Waves depends strongly on its professional and long experience in international trading.",
     image: exportService,
     alt: "GSK Export Service",
-    link: "/services/export",
+    link: "/services/#export",
   },
   // Add more services as needed
 ];

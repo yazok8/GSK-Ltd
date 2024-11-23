@@ -3,9 +3,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { isPrismaClientKnownRequestError } from "../../../../utils/typeGuards";
-import { parseForm } from "utils/formUtils";
 import path from "path";
-import fs from "fs/promises";
 import { z } from "zod";
 import { S3 } from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
