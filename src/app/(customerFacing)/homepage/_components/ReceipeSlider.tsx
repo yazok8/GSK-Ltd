@@ -2,70 +2,66 @@
 "use client";
 
 import React from "react";
-import { Category } from "@prisma/client";
+import { Product } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { Button } from "@/components/ui/button";
 
-export type CategoryProps = {
-  categories: Category[];
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+export type ReceipeSliderProps = {
+  products: Product[];
 };
 
-function ReceipeSlider({ categories }: CategoryProps) {
+function ReceipeSlider({ products }: ReceipeSliderProps) {
   const settings = {
     dots: true,
     infinite: false, // Set to true if you want infinite scrolling
     speed: 500,
-    slidesToShow: 1,
+    slidesToShow: 1, // Show up to 4 slides
     slidesToScroll: 1,
-    adaptiveHeight: false, // We are setting explicit heights
-    arrows:false
+    adaptiveHeight: false,
+    arrows: true,
   };
 
   return (
     <div className="w-full mx-auto relative bg-teal-500 md:pt-2 md:pl-2 md:py-8">
-
       <Slider {...settings}>
-        {categories.map((cat) => (
-          <div key={cat.id} className="lg:h-[700px]">
+        {products.map((product) => (
+          <div key={product.id} className="lg:h-[700px]">
             <div className="flex flex-col md:flex-row h-full lg:ml-[160px]">
               {/* Image Container */}
               <div className="relative w-full md:w-[600px] h-[500px] lg:h-full">
-                  <Image
-                    src={
-                      cat.image
-                        ? `https://gsk-ltd.s3.us-east-2.amazonaws.com/${cat.image}`
-                        : "/images/fallback.jpg"
-                    }
-                    alt={cat.name}
-                    object-fi='cover'
-                    fill
-                    className="h-full w-full"
-                    loading="lazy"
-                  />
+                <Image
+                  src={
+                    product.images && product.images.length > 0
+                      ? `https://gsk-ltd.s3.us-east-2.amazonaws.com/${product.images[0]}`
+                      : "/images/fallback.jpg"
+                  }
+                  alt={product.name}
+                  fill
+                  className="object-cover"
+                  loading="lazy"
+                />
               </div>
-              {/* Category Name */}
-              <div className="p-4 flex flex-col items-center justify-center bg-teal-500 lg:h-full">
-                <div className='flex flex-col items-center justify-center'>
-                <h2 className="text-2xl font-semibold text-white">
-                  {cat.name}
+              {/* Product Details */}
+              <div className="p-4 flex flex-col mr-auto justify-center bg-teal-500 lg:h-full pl-10">
+                <h2 className="text-2xl text-start font-semibold text-white mb-8">
+                  {product.name}
                 </h2>
-                <h2 className="text-2xl font-semibold text-white">
-                  {cat.description}
-                </h2>
-                </div>
-                <Button className='mt-5 flex justify-end items-end'>
-<<<<<<< HEAD
-                <Link href={`/category/${cat.id}`} className="mt-4 text-lg font-semibold text-blue-600 border-b-4 border-blue-500 hover:text-blue-800 transition-colors duration-200">
-=======
-                <Link href={`/category/${cat.id}`}>
->>>>>>> frontend-main
-                  Learn More
+                <p className="text-lg text-white">
+                  {product.description}
+                </p>
+                <Button className="mt-5">
+                  <Link
+                    href={`/products/${product.id}`}
+                    className="text-lg font-semibold text-blue-600 border-b-4 border-blue-500 hover:text-blue-800 transition-colors duration-200"
+                  >
+                    Learn More
                   </Link>
-                  </Button>
+                </Button>
               </div>
             </div>
           </div>

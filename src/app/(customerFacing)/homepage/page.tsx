@@ -2,15 +2,18 @@
 
 import React from "react";
 import dynamic from "next/dynamic";
-import { getAllCategories } from "@/lib/getCategories";
+import { getAllCategories, getProductsByCategoryId } from "@/lib/getCategories";
 import Image from "next/image";
 import Link from "next/link";
 import Services from "./_components/Services";
 import { CardHeader, CardTitle } from "@/components/ui/card";
+import { Product } from "@prisma/client";
 
 // Dynamically import client components
 const PrimarySlider = dynamic(() => import("./_components/PrimarySlider"));
-const CategoriesGridSlider = dynamic(() => import("./_components/CategoriesGridSlider"));
+const CategoriesGridSlider = dynamic(
+  () => import("./_components/CategoriesGridSlider")
+);
 const ReceipeSlider = dynamic(() => import("./_components/ReceipeSlider"));
 
 interface HomepageProps {
@@ -24,15 +27,30 @@ export default async function Homepage({ searchParams }: HomepageProps) {
   const categories = await getAllCategories();
   // **For PrimarySlider, select categories**
 
-  
+  console.log("categories", categories); // Debugging
+
   const primarySliderIndices = [1, 2, 7]; // Adjust these indices as needed
   const primarySliderCategories = primarySliderIndices
     .map((index) => categories[index])
     .filter(Boolean);
 
+  // Find the "Mixed Spices" category
+  const mixedSpicesCategory = categories.find(
+    (category) => category.name === "Mix Spices"
+  );
+
+
+  // **Fetch products in the "Mix Spices" category**
+  let mixedSpicesProducts: Product[] = [];
+  if (mixedSpicesCategory) {
+    mixedSpicesProducts = await getProductsByCategoryId(mixedSpicesCategory.id);
+  } else {
+    // Handle the case where the category is not found
+    mixedSpicesProducts = [];
+  }
+  
   // **For Other Sliders, select different categories**
   let CategoriesGridSliderIndices = [8, 4, 5, 6]; // Default indices for other sliders
-
   if (searchParams?.indices) {
     CategoriesGridSliderIndices = searchParams.indices
       .split(",")
@@ -40,9 +58,13 @@ export default async function Homepage({ searchParams }: HomepageProps) {
       .filter((num) => !isNaN(num));
   }
 
+  
+
   const filteredCatGridSlider =
     categories.length > 0
-      ? CategoriesGridSliderIndices.map((index) => categories[index]).filter(Boolean)
+      ? CategoriesGridSliderIndices.map((index) => categories[index]).filter(
+          Boolean
+        )
       : [];
 
   return (
@@ -104,7 +126,8 @@ export default async function Homepage({ searchParams }: HomepageProps) {
         <CardHeader>
           <CardTitle className="text-4xl text-center">Mixed Spices</CardTitle>
         </CardHeader>
-        <ReceipeSlider categories={filteredCatGridSlider} />
+        {/* Ensure mixedSpicesCategory is found before passing  */}
+        <ReceipeSlider products={mixedSpicesProducts} />
       </div>
       <Services />
     </>
