@@ -49,7 +49,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
   return (
     <>
       {/* Top Navigation Bar: Logo and Search */}
-      <nav className="w-full text-black duration-300 ease-in p-4 z-[10] bg-teal-50">
+      <nav className="w-full text-black duration-300 ease-in p-4 z-10 bg-teal-50">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link href="/">

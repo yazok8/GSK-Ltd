@@ -3,7 +3,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Inter } from "next/font/google";
 import { Providers } from "./Provider";
-
+import Footer from "@/components/footer/Footer";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -20,10 +20,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-       className={cn("min-h-screen flex flex-col bg-background font-sans antialiased", inter.variable)}
+        className={cn(
+          "min-h-screen flex flex-col bg-background font-sans antialiased",
+          inter.variable
+        )}
       >
-        <Providers> 
-        {children}
+        <Providers>
+          {/* Wrap the main content in a flex-grow container */}
+          <main className="flex-grow">{children}</main>
+          <Footer />
         </Providers>
       </body>
     </html>

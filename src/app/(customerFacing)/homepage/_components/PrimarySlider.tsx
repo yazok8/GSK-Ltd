@@ -114,7 +114,7 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
   const currentCategory = selectedCategories[currentIndex];
 
   return (
-    <div className="relative w-full mx-auto bg-teal-50">
+    <div className="relative w-full mx-auto bg-teal-50 -z-10">
       {/* Slider Container */}
       <div
         className="
