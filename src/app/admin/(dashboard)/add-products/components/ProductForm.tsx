@@ -1,8 +1,6 @@
-// src/app/admin/components/ProductForm.tsx
-
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { getImageSrc } from '@/lib/imageHelper';
@@ -11,6 +9,7 @@ import { formatPrice } from '../../../../../../utils/formatPrice';
 import { Textarea } from '@/components/ui/textarea';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useRouter } from 'next/navigation'; // Updated import
 
 type Product = Prisma.ProductGetPayload<object>;
 
@@ -19,6 +18,15 @@ export default function ProductForm({
 }: {
   product: Product | null;
 }) {
+  const router = useRouter();
+  // State for form fields
+  const [name, setName] = useState<string>(product?.name || "");
+  const [price, setPrice] = useState<string>(product?.price?.toString() || "");
+  const [description, setDescription] = useState<string>(product?.description || "");
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    product?.categoryId || ""
+  );
+
   // State for existing images
   const [existingImages, setExistingImages] = useState<string[]>(
     () => product?.images || []
@@ -35,14 +43,10 @@ export default function ProductForm({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // State for other form fields
-  const [price, setPrice] = useState<number | undefined>(product?.price);
-  const [selectedCategory, setSelectedCategory] = useState<string>(
-    product?.categoryId || ""
-  );
-
   const [categories, setCategories] = useState<Category[]>([]);
   const [pending, setPending] = useState<boolean>(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch categories on component mount
   useEffect(() => {
@@ -69,6 +73,19 @@ export default function ProductForm({
       newImagePreviews.forEach((url) => URL.revokeObjectURL(url));
     };
   }, [newImagePreviews]);
+
+  // Optional: Prevent state reset if product prop changes after submission
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (product && !hasSubmitted) {
+      setName(product.name);
+      setPrice(product.price?.toString() || '');
+      setDescription(product.description);
+      setSelectedCategory(product.categoryId || "");
+      setExistingImages(product.images || []);
+    }
+  }, [product, hasSubmitted]);
 
   /**
    * Handles changes to new image inputs.
@@ -108,9 +125,15 @@ export default function ProductForm({
     setError(null);
     setSuccess(null);
 
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData();
 
     try {
+      // Append form fields
+      formData.append('name', name);
+      formData.append('price', price || '0');
+      formData.append('description', description);
+      formData.append('categoryId', selectedCategory);
+
       // Append new images with unique field names
       newImages.forEach((file, index) => {
         formData.append(`newImage-${index}`, file);
@@ -127,8 +150,8 @@ export default function ProductForm({
       }
 
       const apiEndpoint = product
-      ? '/api/products/updateProduct'
-      : '/api/products/addProduct';
+        ? '/api/products/updateProduct'
+        : '/api/products/addProduct';
 
       // Send the form data to the server
       const response = await fetch(apiEndpoint, {
@@ -136,10 +159,25 @@ export default function ProductForm({
         body: formData,
       });
 
-
       if (response.ok) {
         setSuccess('Product saved successfully!');
-        // Optionally, reset the form or redirect
+
+        // Reset all form fields
+        setName('');
+        setPrice('');
+        setDescription('');
+        setSelectedCategory('');
+        setExistingImages([]);
+        setImagesToRemove([]);
+        setNewImages([]);
+        setNewImagePreviews([]);
+        setHasSubmitted(true);
+
+        // Reset the file input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+        
       } else {
         const errorData = await response.json();
         setError(errorData.errors?.general?.[0] || 'An error occurred.');
@@ -167,7 +205,8 @@ export default function ProductForm({
               id="name"
               name="name"
               required
-              defaultValue={product?.name || ""}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
 
@@ -180,10 +219,10 @@ export default function ProductForm({
               name="price"
               required
               value={price}
-              onChange={(e) => setPrice(Number(e.target.value) || undefined)}
+              onChange={(e) => setPrice(e.target.value)}
             />
             <div className="text-muted-foreground">
-              {formatPrice(price ? price : 0)}
+              {formatPrice(Number(price) || 0)}
             </div>
           </div>
 
@@ -194,7 +233,8 @@ export default function ProductForm({
               id="description"
               name="description"
               required
-              defaultValue={product?.description || ""}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             />
           </div>
 
@@ -247,10 +287,11 @@ export default function ProductForm({
             <Input
               type="file"
               id="new-images"
-              name="newImages" // Name attribute is not crucial here
+              name="newImages"
               multiple
               accept="image/*"
               onChange={handleNewImagesChange}
+              ref={fileInputRef}
             />
             {newImagePreviews.map((url, index) => (
               <div key={`new-image-${index}`} className="relative">
