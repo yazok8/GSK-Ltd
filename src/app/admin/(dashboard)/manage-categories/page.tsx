@@ -92,8 +92,8 @@ export default function ManageCategories() {
                      alt={category.name}
                      width={80}
                      height={80}
-                     objectFit="cover"
                      className="rounded"
+                     style={{ objectFit: 'cover' }}
                    />
                  </div>
                     ) : (

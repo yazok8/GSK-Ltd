@@ -1,13 +1,15 @@
+// src/app/(customerFacing)/layout/ClientLayout.tsx
+
 "use client";
 
 import Link from "next/link";
-import React, { useState } from "react";
-import { NavLinks } from "./data/NavLinks";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import GSKLogo from "../../../public/logo/GSK Logo - business card.webp";
+import GSKLogo from "../../../public/logo/new-logo.png";
 import { Input } from "@/components/ui/input";
 import { FaSearch, FaBars } from "react-icons/fa";
 import dynamic from "next/dynamic"; // Import dynamic
+import { Category } from "@prisma/client";
 
 interface ClientLayoutProps {
   children: React.ReactNode;
@@ -20,11 +22,34 @@ const BurgerMenu = dynamic(() => import("@/components/BurgerMenu"), {
 
 export default function ClientLayout({ children }: ClientLayoutProps) {
   const [isOpen, setIsOpen] = useState(false); // State to control BurgerMenu visibility
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    // Fetch categories once the component mounts
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/categories'); // Ensure this API returns ObjectIDs as strings
+        if (response.ok) {
+          const data: Category[] = await response.json();
+          if (data.length > 0) {
+            setCategories(data);
+          } else {
+            console.error('Failed to fetch categories: No data returned');
+          }
+        } else {
+          console.error('Failed to fetch categories: Response not ok');
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   return (
     <>
       {/* Top Navigation Bar: Logo and Search */}
-      <nav className="w-full text-black duration-300 ease-in p-4 z-[10] bg-white">
+      <nav className="w-full text-black duration-300 ease-in p-4 z-10 bg-teal-50">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link href="/">
@@ -56,50 +81,82 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
       </nav>
 
       {/* Teal Navigation Bar with Links: Hidden on Mobile */}
-      <div className="h-12 hidden lg:flex justify-center items-center w-full bg-teal-500">
+      <div className="h-12 hidden lg:flex justify-center items-center w-full bg-teal-500 z-50">
         <ul className="flex space-x-10 font-bold">
-          {NavLinks.map(({ id, header, links }) => (
-            <li
-              key={id}
-              className="relative group text-sm uppercase cursor-pointer duration-200 ease-out hover:scale-105 text-white"
+          {/* Static Links */}
+          <li className="text-sm uppercase text-white">
+            <Link href="/about" className="hover:underline">
+              About Us
+            </Link>
+          </li>
+          <li className="text-sm uppercase text-white relative group">
+            <Link href="/services" className="hover:underline">
+              Our Services
+            </Link>
+            <ul
+              className="absolute top-full left-0 w-60 bg-white border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300"
+              role="menu"
+              aria-label="Services submenu"
             >
-              <Link href={`/#${header}`} className="focus:outline-none">
-                {header.charAt(0).toUpperCase() + header.slice(1)}
-              </Link>
+              <li className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline" role="none">
+                <Link href="/services/#import" className="block focus:outline-none" role="menuitem">
+                  Import
+                </Link>
+              </li>
+              <li className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline" role="none">
+                <Link href="/services/#export" className="block focus:outline-none" role="menuitem">
+                  Export
+                </Link>
+              </li>
+              <li className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline" role="none">
+                <Link href="/services/#distribution" className="block focus:outline-none" role="menuitem">
+                  Distribution
+                </Link>
+              </li>
+            </ul>
+          </li>
 
-              {/* Dropdown Menu: Visible on Hover if Links Exist */}
-              {links && (
-                <ul
-                  className="absolute top-full left-0 w-40 bg-white border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300"
-                  role="menu"
-                  aria-label={`${header} submenu`}
+          {/* Dynamic Categories */}
+          <li className="text-sm uppercase text-white relative group">
+            <Link href="/products" className="hover:underline">
+              Our Products
+            </Link>
+            <ul
+              className="absolute top-full left-0 w-60 bg-white border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300"
+              role="menu"
+              aria-label="Products submenu"
+            >
+              {categories.map((category) => (
+                <li
+                  key={category.id}
+                  className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline"
+                  role="none"
                 >
-                  {links.map((link) => (
-                    <li
-                      key={link.id}
-                      className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline"
-                      role="none"
-                    >
-                      <Link
-                        href={`/#${link.title}`}
-                        className="block focus:outline-none"
-                        role="menuitem"
-                      >
-                        {link.title.charAt(0).toUpperCase() + link.title.slice(1)}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
+                  <Link
+                    href={`/category/${encodeURIComponent(category.id)}`}
+                    className="block focus:outline-none"
+                    role="menuitem"
+                  >
+                    {category.name.charAt(0).toUpperCase() + category.name.slice(1)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </li>
+
+          {/* Static Links */}
+          <li className="text-sm uppercase text-white">
+            <Link href="/contact" className="hover:underline">
+              Contact Us
+            </Link>
+          </li>
         </ul>
       </div>
 
       {/* Mobile Burger Menu: Always Rendered and Controlled via Props */}
-      <BurgerMenu isOpen={isOpen} setIsOpen={setIsOpen} />
+      <BurgerMenu isOpen={isOpen} setIsOpen={setIsOpen} categories={categories} />
 
-      <div className="container mb-4 mt-24">{children}</div>
+      <div>{children}</div>
     </>
   );
 }

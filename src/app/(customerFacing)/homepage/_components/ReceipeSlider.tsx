@@ -58,7 +58,11 @@ function ReceipeSlider({ categories }: CategoryProps) {
                 </h2>
                 </div>
                 <Button className='mt-5 flex justify-end items-end'>
+<<<<<<< HEAD
                 <Link href={`/category/${cat.id}`} className="mt-4 text-lg font-semibold text-blue-600 border-b-4 border-blue-500 hover:text-blue-800 transition-colors duration-200">
+=======
+                <Link href={`/category/${cat.id}`}>
+>>>>>>> frontend-main
                   Learn More
                   </Link>
                   </Button>

@@ -11,7 +11,6 @@ import { Label } from '@radix-ui/react-label';
 import { Input } from '@/components/ui/input';
 import Image from 'next/image';
 import { useState } from 'react';
-import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
 interface CategoryFormProps {

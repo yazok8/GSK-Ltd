@@ -2,8 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Roboto', sans-serif;
+}
+
+div{
+  color: #0F766E;
+}
+
+p{
+  color: #0F766E;
+}
+
+h1{
+  font-weight: 600;
+  font-size: 18px;
+  text-align:center;
+  color: #0F766E;
+}
+
+h2{
+  color: #0F766E;
+}
+
+span{
+  color: #0F766E;
 }
 
 @layer utilities {
@@ -68,11 +93,26 @@ body {
   }
 }
 
+
 @layer base {
-  * {
-    @apply border-border;
+  :root {
+    --background: #14B8A6; /* Updated to match bg-teal-500 */
+    --foreground: #FFFFFF;  /* White for text against teal background */
+    /* ... other CSS variables ... */
   }
+  
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    /* ... other dark mode CSS variables ... */
+  }
+
+  /* Apply Tailwind Utilities */
+  * {
+    @apply border border-none; /* Valid Tailwind classes */
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-teal-50; /* Valid Tailwind classes */
   }
 }

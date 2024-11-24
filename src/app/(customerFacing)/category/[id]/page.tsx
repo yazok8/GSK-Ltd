@@ -1,11 +1,11 @@
 // src/app/(customerFacing)/category/[id]/page.tsx
 
 import React from 'react';
-import { getCategoryById, getProductsByCategoryPaginated } from "../../actions/categories";
 import Image from 'next/image';
 import { getImageSrc } from '@/lib/imageHelper';
 import Link from 'next/link';
 import { isValidObjectId } from '@/lib/validateObjectId';  // Utility function to validate ObjectID
+import { getCategoryById, getProductsByCategoryPaginated } from '../../actions/categories';
 
 type CategoryPageProps = {
   params: {
@@ -41,32 +41,31 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   console.log(products);
 
   return (
-    <>
-    <h1 className='text-3xl font-bold my-10'>{category.name}</h1>
-    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
+    <div className='container mx-auto px-4 py-8 flex flex-col justify-center text-center'>
+      <div>
+        <h1 className='text-3xl font-bold mb-10'>{category.name}</h1>
+        <div className='grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4'>
           {products && products.map((product) => (
-            <div key={product.id} className="flex flex-col items-center mt-6 p-2 bg-transparent">
+            <div key={product.id} className='flex flex-col justify-center items-center max-h-[300px]'>
               <Link href={`/products/${product.id}`}>
-              <div
-                className="w-72 h-52 sm:w-72 sm:h-60 relative mb-3 cursor-pointer">
                 <Image
                   src={getImageSrc(product.images[0])}
                   alt={product.name}
-                 fill
-                  className="object-cover rounded-md -z-10"
+                  width={250}
+                  height={100}
+                  className='mb-5 object-contain'
                   loading='lazy'
                   quality={80}
                 />
-              </div>
-                <h1 className="text-center text-base sm:text-lg font-medium underline">{product.name}</h1>
+                <h1>{product.name}</h1>
               </Link>
             </div>
           ))}
-      
+        </div>
 
         {/* Pagination Component (Optional) */}
         {/* Implement pagination if needed */}
+      </div>
     </div>
-    </>
   );
 }

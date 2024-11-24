@@ -17,7 +17,8 @@ model Category {
   name     String    @unique
   products Product[] @relation("CategoryProducts")
   description String?
-  image   String? 
+  image   String 
+  featured  Boolean  @default(false)
 }
 
 model Product {

@@ -10,6 +10,8 @@ const config: Config = {
   theme: {
   	extend: {
   		colors: {
+			'brand-teal': '#14B8A6',  // Custom teal color
+        	'brand-blue': '#1E40AF',  // Custom blue color
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
@@ -55,9 +57,14 @@ const config: Config = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		  corePlugins: {
+			aspectRatio: false,
+		  },
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"),
+	require('@tailwindcss/aspect-ratio')
+  ],
 };
 export default config;
