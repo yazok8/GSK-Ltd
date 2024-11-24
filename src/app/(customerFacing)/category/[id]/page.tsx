@@ -1,11 +1,11 @@
 // src/app/(customerFacing)/category/[id]/page.tsx
 
 import React from 'react';
-import { getCategoryById, getProductsByCategoryPaginated } from "../../actions/categories";
 import Image from 'next/image';
 import { getImageSrc } from '@/lib/imageHelper';
 import Link from 'next/link';
 import { isValidObjectId } from '@/lib/validateObjectId';  // Utility function to validate ObjectID
+import { getCategoryById, getProductsByCategoryPaginated } from '../../actions/categories';
 
 type CategoryPageProps = {
   params: {

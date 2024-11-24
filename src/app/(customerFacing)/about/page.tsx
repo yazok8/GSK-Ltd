@@ -7,7 +7,7 @@ import MissionVision from "./_components/MissonVison";
 
 export default function AboutPage() {
   return (
-    <Card className="relative w-full mx-auto bg-teal-50">
+    <Card className="relative w-full mx-auto bg-teal-50 -z-10">
       {/* Main Section with Image and Text Overlay */}
       <CardContent
         className="

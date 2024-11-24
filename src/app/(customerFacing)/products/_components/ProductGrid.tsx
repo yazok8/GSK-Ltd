@@ -41,7 +41,7 @@ export default function ProductsGrid({ products }: ProductGridType) {
                   src={getImageSrc(product.images[0])}
                   alt={product.name}
                   fill
-                  className="object-cover rounded-md"
+                  className="object-cover rounded-md -z-10"
                   loading="lazy"
                   quality={80}
                 />
