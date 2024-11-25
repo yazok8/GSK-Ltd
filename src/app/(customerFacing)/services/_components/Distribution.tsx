@@ -33,7 +33,7 @@ export default function Distribution() {
           <br />
           <p>
             This approach reflects our high level of responsibility and
-            credibility that we believe our clients deserve. Golden Waves is
+            credibility that we believe our clients deserve. GSK is
             always ready to provide such services around the Middle East &
             beyond.
           </p>

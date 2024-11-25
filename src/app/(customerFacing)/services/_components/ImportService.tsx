@@ -40,8 +40,8 @@ export default function ImportService() {
           </p>
           <br />
           <p>
-            Throughout its journey that started more than 80 years ago, Golden
-            Waves has maintained a trustworthy and strong relationship with its
+            Throughout its journey that started more than 80 years ago, GSK
+            has maintained a trustworthy and strong relationship with its
             suppliers. When dealing with suppliers, the Company used the CAD
             System (cash against documents) and FOB system (free on board)
             bases. Additionally, to facilitate the international trading process

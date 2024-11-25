@@ -31,8 +31,7 @@ export default function ExportService() {
           </p>
           <br />
           <p>
-            Being one of the leading export companies in the region made Golden
-            Waves focus more on acquiring and realizing bigger share in each
+            Being one of the leading export companies in the region made GSK focus more on acquiring and realizing bigger share in each
             market.as well as exceeding its horizons and expanding its channels
             to reach out to a bigger customers & clients base in different
             regions.

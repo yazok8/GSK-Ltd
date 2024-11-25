@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { FaSearch, FaBars } from "react-icons/fa";
 import dynamic from "next/dynamic"; // Import dynamic
 import { Category } from "@prisma/client";
+import SearchBox from "@/components/SearchBox";
 
 interface ClientLayoutProps {
   children: React.ReactNode;
@@ -58,13 +59,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
 
           {/* Search Input and Burger Icon Container */}
           <div className="flex items-center">
-            <div className="hidden lg:flex items-center space-x-2">
-              <Input
-                placeholder="Search"
-                className="w-64 bg-gray-100 text-black rounded-md"
-              />
-              <FaSearch size={20} className="text-teal-500 cursor-pointer" />
-            </div>
+           <SearchBox/>
 
             {/* Burger Icon: Visible Only on Mobile */}
             <button

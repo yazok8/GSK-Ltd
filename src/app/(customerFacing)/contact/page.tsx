@@ -170,7 +170,7 @@ export default function ContactPage() {
                 id="subjects"
                 value={subject || ""}
                 onChange={handleSubjectChange}
-                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
                 required
               >
                 <option value="">-- Select a subject --</option>
@@ -213,7 +213,7 @@ export default function ContactPage() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
                 placeholder="Your Full Name"
               />
             </div>
@@ -231,7 +231,7 @@ export default function ContactPage() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
                 placeholder="you@example.com"
               />
             </div>
@@ -268,7 +268,7 @@ export default function ContactPage() {
                     value={formData.productDetails}
                     onChange={handleChange}
                     required
-                    className="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    className="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-teal-500"
                     rows={4}
                     placeholder="Provide detailed information about the product."
                   ></textarea>
@@ -290,7 +290,7 @@ export default function ContactPage() {
                     value={formData.message}
                     onChange={handleChange}
                     required
-                    className="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    className="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
                     rows={4}
                     placeholder="Enter your query or message here."
                   ></textarea>
@@ -303,11 +303,11 @@ export default function ContactPage() {
               <button
                 type="submit"
                 disabled={isLoading} // Disable button while loading
-                className={`w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow ${
+                className={`w-full py-2 px-4 bg-teal-500 text-white font-semibold rounded-md shadow ${
                   isLoading
                     ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-indigo-700"
-                } focus:outline-none focus:ring-2 focus:ring-indigo-500`}
+                    : "hover:bg-teal-500"
+                } focus:outline-none focus:ring-2 focus:ring-teal-500`}
               >
                 {isLoading ? "Sending..." : "Submit"}
               </button>
@@ -318,7 +318,7 @@ export default function ContactPage() {
           <div className="mt-4 text-center">
             <button
               onClick={handleReset}
-              className="text-sm text-indigo-600 hover:text-indigo-800 underline"
+              className="text-sm text-teal-600 hover:text-teal-800 underline"
             >
               Change Subject
             </button>
