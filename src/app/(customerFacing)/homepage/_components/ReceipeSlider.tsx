@@ -2,7 +2,7 @@
 "use client";
 
 import React from "react";
-import { Product } from "@prisma/client";
+import { Category, Product } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import Slider from "react-slick";
@@ -10,12 +10,14 @@ import { Button } from "@/components/ui/button";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { ArrowRight } from "lucide-react";
 
 export type ReceipeSliderProps = {
   products: Product[];
+  category: Category;
 };
 
-function ReceipeSlider({ products }: ReceipeSliderProps) {
+function ReceipeSlider({ products,category }: ReceipeSliderProps) {
   const settings = {
     dots: true,
     infinite: false, // Set to true if you want infinite scrolling
@@ -28,6 +30,14 @@ function ReceipeSlider({ products }: ReceipeSliderProps) {
 
   return (
     <div className="w-full mx-auto relative bg-teal-500 md:pt-2 md:pl-2 md:py-8">
+         <div className="flex justify-end mb-3">
+        <Button className="outline-none text-xl">
+          <Link href={`/category/${category.id}`} className="flex items-center space-x-2 text-white hover:underline">
+            View All Products
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </Button>
+      </div>
       <Slider {...settings}>
         {products.map((product) => (
           <div key={product.id} className="lg:h-[700px]">
@@ -57,7 +67,7 @@ function ReceipeSlider({ products }: ReceipeSliderProps) {
                 <Button className="mt-5">
                   <Link
                     href={`/products/${product.id}`}
-                    className="text-lg font-semibold text-blue-600 border-b-4 border-blue-500 hover:text-blue-800 transition-colors duration-200"
+                    className="text-lg font-semibold text-blue-600 border-b-4 border-blue-500 hover:text-blue-800 transition-colors duration-200 hover:underline"
                   >
                     Learn More
                   </Link>

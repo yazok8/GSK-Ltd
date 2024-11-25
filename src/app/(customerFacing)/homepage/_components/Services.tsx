@@ -52,7 +52,7 @@ const servicesData: Service[] = [
 
 export default function Services() {
   return (
-    <Card id="services" className="my-10">
+    <Card id="services" className="mt-10">
       <CardHeader className="mx-auto text-center">
         <CardTitle className="text-5xl font-bold">Our Services</CardTitle>
       </CardHeader>

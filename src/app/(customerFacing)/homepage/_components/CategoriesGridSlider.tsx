@@ -41,6 +41,7 @@ function CategoriesGridSlider({ categories }: CategoryProps) {
               <Link href={`/category/${cat.id}`}>
                 <div className="block">
                   {/* Image Container */}
+                  
                   <div className="w-full h-48 relative">
                     <Image
                       src={

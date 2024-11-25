@@ -8,6 +8,8 @@ import Link from "next/link";
 import Services from "./_components/Services";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 import { Product } from "@prisma/client";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 
 // Dynamically import client components
 const PrimarySlider = dynamic(() => import("./_components/PrimarySlider"));
@@ -26,17 +28,11 @@ export default async function Homepage({ searchParams }: HomepageProps) {
   // Fetch all categories
   const categories = await getAllCategories();
   // **For PrimarySlider, select categories**
-
-  console.log("categories", categories); // Debugging
-
-  const primarySliderIndices = [1, 2, 7]; // Adjust these indices as needed
-  const primarySliderCategories = primarySliderIndices
-    .map((index) => categories[index])
-    .filter(Boolean);
+ 
 
   // Find the "Mixed Spices" category
   const mixedSpicesCategory = categories.find(
-    (category) => category.name === "Mix Spices"
+    (category) => category.name === "Mixed Spices"
   );
 
 
@@ -67,6 +63,11 @@ export default async function Homepage({ searchParams }: HomepageProps) {
         )
       : [];
 
+      const primarySliderIndices = [3, 4, 1]; // Adjust these indices as needed
+      const primarySliderCategories = primarySliderIndices
+        .map((index) => categories[index])
+        .filter(Boolean);
+
   return (
     <>
       {/* Pass categories as props */}
@@ -76,7 +77,9 @@ export default async function Homepage({ searchParams }: HomepageProps) {
         <div className="text-center">
           <h1 className="text-5xl font-bold">Our Products</h1>
         </div>
-
+        <div className="flex justify-end ml-auto mb-3">
+          <Button className="outline-none text-xl"><Link href="/products" className="flex items-center space-x-2 hover:underline">View All Products</Link><ArrowRight className="w-4 h-4" /></Button>
+          </div>
         {/* Categories Grid for Large Screens */}
         {filteredCatGridSlider.length > 0 && (
           <div className="hidden lg:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
@@ -127,7 +130,12 @@ export default async function Homepage({ searchParams }: HomepageProps) {
           <CardTitle className="text-4xl text-center">Mixed Spices</CardTitle>
         </CardHeader>
         {/* Ensure mixedSpicesCategory is found before passing  */}
-        <ReceipeSlider products={mixedSpicesProducts} />
+        {mixedSpicesCategory && (
+          <ReceipeSlider
+            products={mixedSpicesProducts}
+            category={mixedSpicesCategory}
+          />
+        )}
       </div>
       <Services />
     </>

@@ -7,14 +7,14 @@ import { AiFillFacebook, AiFillInstagram, AiFillLinkedin } from "react-icons/ai"
 export default async function Footer() {
   const categories: PrismaCategory[] = await getAllCategories();
   return (
-    <footer className="bg-teal-500 text-white mt-16">
+    <footer className="bg-teal-500 text-white">
       <div className="max-w-[1920px] mx-auto px-8 py-12">
         <div className="flex flex-col md:flex-row justify-between">
           {/* Column 1: Logo and Social Media Links */}
           <div className="mb-8 md:mb-0 md:w-1/3">
             {/* Replace with your actual logo */}
-            <h2 className="text-2xl font-bold mb-4 text-white">GSK Limited</h2>
-            <div className="flex gap-4">
+            <Link href='/' className="text-2xl font-bold text-white">GSK Limited</Link>
+            <div className="flex gap-4 mt-4">
               <Link href="https://www.instagram.com/gskinternationals/" target="_blank">
                 <AiFillInstagram size={30} className="hover:text-gray-300 text-white" />
               </Link>

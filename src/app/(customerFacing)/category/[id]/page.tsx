@@ -46,7 +46,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         <h1 className='text-3xl font-bold mb-10'>{category.name}</h1>
         <div className='grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4'>
           {products && products.map((product) => (
-            <div key={product.id} className='flex flex-col justify-center items-center max-h-[300px]'>
+            <div key={product.id} className='flex flex-col justify-center items-center max-h-[300px] hover:underline'>
               <Link href={`/products/${product.id}`}>
                 <Image
                   src={getImageSrc(product.images[0])}

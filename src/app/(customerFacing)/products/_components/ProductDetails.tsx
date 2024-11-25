@@ -29,7 +29,7 @@ export type ProductDetailType = {
 };
 
 const HorizontalLine = () => {
-  return <hr className="w-[30%] my-2" />;
+  return <hr className="w-[20%] my-1" />;
 };
 
 export default function ProductDetails({ product }: ProductProps) {
@@ -51,9 +51,9 @@ export default function ProductDetails({ product }: ProductProps) {
   }, [product.images]);
 
   return (
-    <div className="flex flex-col md:flex-row items-start h-full pt-7 overflow-hidden">
+    <div className="flex flex-col md:flex-row items-start h-full pt-7 overflow-hidden gap-2">
       {/* Product Image Section */}
-      <div className="w-full md:w-1/5 relative mr-0">
+      <div className="w-full md:w-1/5 relative">
         <ProductImage
           product={product}
           selectedImg={productDetail.selectedImg}
@@ -62,7 +62,7 @@ export default function ProductDetails({ product }: ProductProps) {
       </div>
 
       {/* Additional Image Section */}
-      <div className="relative w-full md:w-1/2 h-auto hidden md:block -ml-[95px]">
+      <div className="relative w-full md:w-1/2 lg:w-1/3 h-auto hidden md:block -ml-20">
         <Image
           className="object-contain rounded-lg"
           src={getImageSrc(productDetail.selectedImg.image)}
@@ -79,18 +79,18 @@ export default function ProductDetails({ product }: ProductProps) {
       </div>
 
       {/* Product Details Card */}
-      <Card className="flex flex-col border-none md:ml-6 mt-6 md:mt-0">
-        <CardHeader className="text-lg flex pl-3">
+      <Card className="flex flex-col border-none mt-4 md:mt-0 ml-1 flex-grow">
+        <CardHeader className="text-lg flex pl-1">
           <CardTitle className="text-2xl font-bold">{product.name}</CardTitle>
         </CardHeader>
 
         <HorizontalLine />
-        <CardDescription className="text-muted-foreground pl-3">
+        <CardDescription className="text-muted-foreground pl-1">
           {product.description}
         </CardDescription>
         <HorizontalLine />
         <div className="flex flex-col">
-          <span className="text-slate-500 font-semibold pl-3">Category: {product.category}</span>
+          <span className="text-slate-500 font-semibold pl-1">Category: {product.category}</span>
         </div>
         <HorizontalLine />
         <div className="space-y-3 mt-5"></div>

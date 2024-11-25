@@ -114,22 +114,22 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
   const currentCategory = selectedCategories[currentIndex];
 
   return (
-    <div className="relative w-full mx-auto bg-teal-50 -z-10">
+    <div className="relative w-full mx-auto bg-teal-50">
       {/* Slider Container */}
       <div
         className="
+          p-0
           overflow-hidden 
           relative 
-          w-full md:w-2/3 lg:w-3/4 xl:w-3/4 
+          w-full 
           h-[300px] md:h-[400px] lg:h-[700px]
-          ml-auto
         "
         onMouseEnter={stopSlideTimer}
         onMouseLeave={startSlideTimer}
       >
-        {/* Slides */}
+        {/* Slides Wrapper */}
         <div
-          className="flex transition-transform duration-500 ease-in-out h-full"
+          className="flex transition-transform duration-500 ease-in-out w-full h-full"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -138,24 +138,60 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
           {selectedCategories.map((cat) => (
             <div
               key={cat.id}
-              className="relative flex-shrink-0 w-full h-full bg-slate-400"
+              className="flex-shrink-0 w-full h-full relative"
             >
-              <Image
-                src={`https://gsk-ltd.s3.us-east-2.amazonaws.com/${cat.image}`}
-                alt={cat.name}
-                width={1920}
-                height={1080}
-                className="w-full h-full object-cover"
-                loading="lazy"
-                placeholder="blur"
-                blurDataURL="/placeholder.webp"
-                onError={(e) => {
-                  e.currentTarget.src = "/fallback.png";
-                  console.error(
-                    `Failed to load image for category ID ${cat.id}. Using fallback image.`
-                  );
-                }}
-              />
+              {/* Slide Structure */}
+              <div className="flex flex-col md:flex-row w-full h-full">
+                {/* Background (Hidden on small screens) */}
+                <div className="hidden md:block md:w-1/5 bg-teal-0"></div>
+
+                {/* Image */}
+                <div className="w-full h-full md:w-4/5 relative -z-10">
+                  <Image
+                    src={`https://gsk-ltd.s3.us-east-2.amazonaws.com/${cat.image}`}
+                    alt={cat.name}
+                    fill
+                    style={{ objectFit: "cover"}}
+                    className="rounded-lg"
+                    loading="lazy"
+                    placeholder="blur"
+                    blurDataURL="/placeholder.webp"
+                    onError={(e) => {
+                      e.currentTarget.src = "/fallback.png";
+                      console.error(
+                        `Failed to load image for category ID ${cat.id}. Using fallback image.`
+                      );
+                    }}
+                  />
+                </div>
+
+                {/* Overlay Text */}
+                <div className="
+                  absolute 
+                  top-1/2 
+                  -translate-y-1/2 
+                  z-20 
+                  bg-white 
+                  bg-opacity-60 
+                  p-4 
+                  rounded-lg
+                  left-1/4
+                  transform
+                  -translate-x-1/2
+                  w-3/4
+                  max-w-[30%]
+                  md:left-40
+                  md:translate-x-0
+                  md:max-w-[20%]
+                ">
+                  <h2 className="text-xl md:text-2xl font-extrabold">
+                    {cat.name}
+                  </h2>
+                  <p className="mt-3 md:mt-5 text-lg">
+                    Explore more about {cat.name}
+                  </p>
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -178,14 +214,6 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
           ))}
         </div>
       </div>
-      {currentCategory && (
-        <div className="absolute left-4 md:left-20 xl:left-48 inset-y-0 flex items-center">
-          <div className="bg-white bg-opacity-50 text-gray-900 p-6 rounded-lg">
-            <h2 className="text-2xl font-bold">{currentCategory.name}</h2>
-            <p className="mt-2 text-lg">Explore more about {currentCategory.name}</p>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

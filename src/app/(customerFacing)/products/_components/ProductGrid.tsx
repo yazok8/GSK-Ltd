@@ -47,7 +47,7 @@ export default function ProductsGrid({ products }: ProductGridType) {
                 />
               </div>
               {/* Product Name */}
-              <h3 className="text-center text-base sm:text-lg font-medium underline">
+              <h3 className="text-center text-base sm:text-lg font-medium hover:underline">
                 {product.name}
               </h3>
             </Link>

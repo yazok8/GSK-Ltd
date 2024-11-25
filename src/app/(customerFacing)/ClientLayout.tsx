@@ -28,19 +28,19 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
     // Fetch categories once the component mounts
     const fetchCategories = async () => {
       try {
-        const response = await fetch('/api/categories'); // Ensure this API returns ObjectIDs as strings
+        const response = await fetch("/api/categories"); // Ensure this API returns ObjectIDs as strings
         if (response.ok) {
           const data: Category[] = await response.json();
           if (data.length > 0) {
             setCategories(data);
           } else {
-            console.error('Failed to fetch categories: No data returned');
+            console.error("Failed to fetch categories: No data returned");
           }
         } else {
-          console.error('Failed to fetch categories: Response not ok');
+          console.error("Failed to fetch categories: Response not ok");
         }
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
     };
     fetchCategories();
@@ -94,22 +94,59 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
               Our Services
             </Link>
             <ul
-              className="absolute top-full left-0 w-60 bg-white border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300"
+              className="
+              absolute 
+              top-full 
+              left-0 
+              w-60 
+              bg-white 
+              border 
+              rounded 
+              shadow-lg 
+              opacity-0 
+              invisible 
+              group-hover:opacity-100 
+              group-hover:visible 
+              transition-opacity 
+              duration-300 
+              z-20
+            "
               role="menu"
               aria-label="Services submenu"
             >
-              <li className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline" role="none">
-                <Link href="/services/#import" className="block focus:outline-none" role="menuitem">
+              <li
+                className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline"
+                role="none"
+              >
+                <Link
+                  href="/services/#import"
+                  className="block focus:outline-none"
+                  role="menuitem"
+                >
                   Import
                 </Link>
               </li>
-              <li className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline" role="none">
-                <Link href="/services/#export" className="block focus:outline-none" role="menuitem">
+              <li
+                className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline"
+                role="none"
+              >
+                <Link
+                  href="/services/#export"
+                  className="block focus:outline-none"
+                  role="menuitem"
+                >
                   Export
                 </Link>
               </li>
-              <li className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline" role="none">
-                <Link href="/services/#distribution" className="block focus:outline-none" role="menuitem">
+              <li
+                className="px-4 py-2 hover:bg-gray-100 text-yellow-500 hover:underline"
+                role="none"
+              >
+                <Link
+                  href="/services/#distribution"
+                  className="block focus:outline-none"
+                  role="menuitem"
+                >
                   Distribution
                 </Link>
               </li>
@@ -122,7 +159,23 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
               Our Products
             </Link>
             <ul
-              className="absolute top-full left-0 w-60 bg-white border rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300"
+              className="
+                     absolute 
+                     top-full 
+                     left-0 
+                     w-60 
+                     bg-white 
+                     border 
+                     rounded 
+                     shadow-lg 
+                     opacity-0 
+                     invisible 
+                     group-hover:opacity-100 
+                     group-hover:visible 
+                     transition-opacity 
+                     duration-300 
+                     z-20
+                    "
               role="menu"
               aria-label="Products submenu"
             >
@@ -137,7 +190,8 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
                     className="block focus:outline-none"
                     role="menuitem"
                   >
-                    {category.name.charAt(0).toUpperCase() + category.name.slice(1)}
+                    {category.name.charAt(0).toUpperCase() +
+                      category.name.slice(1)}
                   </Link>
                 </li>
               ))}
@@ -154,7 +208,11 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
       </div>
 
       {/* Mobile Burger Menu: Always Rendered and Controlled via Props */}
-      <BurgerMenu isOpen={isOpen} setIsOpen={setIsOpen} categories={categories} />
+      <BurgerMenu
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        categories={categories}
+      />
 
       <div>{children}</div>
     </>
