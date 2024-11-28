@@ -11,6 +11,7 @@ import { Input } from "./ui/input";
 import slugify from "slugify";
 import { Category } from "@prisma/client"; // Import Category type
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
+import SearchBox from "./SearchBox";
 
 interface BurgerMenuProps {
   isOpen: boolean;
@@ -91,10 +92,8 @@ export default function BurgerMenu({
           <FaTimes size={24} />
         </button>
       </div>
-      <div className="flex items-center mb-6">
-        <Input placeholder="Search" />
-        <FaSearch size={24} className="ml-2 text-white" />
-      </div>
+      <SearchBox />
+      
 
       {/* Navigation Links */}
       <nav className="flex-col py-4 text-white" role="navigation">

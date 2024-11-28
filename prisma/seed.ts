@@ -10,9 +10,10 @@ const prisma = new PrismaClient();
 async function main() {
   const isDevelopment = process.env.NODE_ENV === 'development';
 
+  const adminEmail = `${process.env.ADMIN_EMAIL}`;
   // 1. Seed Admin User (Production Only)
   if (isDevelopment) {
-    const adminEmail = 'ykherfan@ecom.com';
+ 
     const existingAdmin = await prisma.user.findUnique({
       where: { email: adminEmail },
     });
@@ -25,10 +26,11 @@ async function main() {
 
     if (!existingAdmin) {
       const hashedPassword = await bcrypt.hash(`${adminPassword}`, 10);
+      
       await prisma.user.create({
         data: {
           name: 'Yazan Kherfan',
-          email: adminEmail,
+          email:adminEmail ,
           hashedPassword,
           role: 'ADMIN', // Corrected to match Role enum
         },

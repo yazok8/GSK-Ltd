@@ -1,5 +1,3 @@
-// src/app/(customerFacing)/homepage/_components/PrimarySlider.tsx
-
 "use client";
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
@@ -39,7 +37,7 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
         prev === selectedCategories.length - 1 ? 0 : prev + 1
       );
       console.log("Auto-play to next slide.");
-    }, 10000); // Change slide every 10 seconds
+    }, 5000); // Change slide every 5 seconds
     console.log("Slide timer started.");
   }, [selectedCategories.length, stopSlideTimer]);
 
@@ -81,22 +79,20 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
 
   const handleTouchMove = (e: React.TouchEvent) => {
     setTouchEnd(e.targetTouches[0].clientX);
-    console.log("Touch move detected at position:", e.targetTouches[0].clientX);
+    console.log(
+      "Touch move detected at position:",
+      e.targetTouches[0].clientX
+    );
   };
 
   const handleTouchEnd = () => {
     if (touchStart === null || touchEnd === null) return;
     const distance = touchStart - touchEnd;
     const minSwipeDistance = 50;
-
     if (distance > minSwipeDistance) {
-      // Swiped left
       goToNext();
-      console.log("Swipe detected: Left");
     } else if (distance < -minSwipeDistance) {
-      // Swiped right
       goToPrevious();
-      console.log("Swipe detected: Right");
     }
     setTouchStart(null);
     setTouchEnd(null);
@@ -111,62 +107,53 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
     );
   }
 
-  const currentCategory = selectedCategories[currentIndex];
-
   return (
     <div className="relative w-full mx-auto bg-teal-50">
       {/* Slider Container */}
       <div
-        className="
-          p-0
-          overflow-hidden 
-          relative 
-          w-full 
-          h-[300px] md:h-[400px] lg:h-[700px]
-        "
+        className="relative w-full h-[300px] md:h-[400px] lg:h-[700px]"
         onMouseEnter={stopSlideTimer}
         onMouseLeave={startSlideTimer}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
-        {/* Slides Wrapper */}
-        <div
-          className="flex transition-transform duration-500 ease-in-out w-full h-full"
-          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
-          {selectedCategories.map((cat) => (
-            <div
-              key={cat.id}
-              className="flex-shrink-0 w-full h-full relative"
-            >
-              {/* Slide Structure */}
-              <div className="flex flex-col md:flex-row w-full h-full">
-                {/* Background (Hidden on small screens) */}
-                <div className="hidden md:block md:w-1/5 bg-teal-0"></div>
+        {/* Slides */}
+        {selectedCategories.map((cat, index) => (
+          <div
+            key={cat.id}
+            className={`absolute top-0 left-0 w-full h-full transition-opacity duration-500 ease-in-out ${
+              currentIndex === index ? "opacity-100 z-10" : "opacity-0 z-0"
+            }`}
+          >
+            {/* Slide Content */}
+            <div className="flex flex-col md:flex-row w-full h-full">
+              {/* Background (Hidden on small screens) */}
+              <div className="hidden md:block md:w-1/5 bg-teal-0"></div>
 
-                {/* Image */}
-                <div className="w-full h-full md:w-4/5 relative -z-10">
-                  <Image
-                    src={`https://gsk-ltd.s3.us-east-2.amazonaws.com/${cat.image}`}
-                    alt={cat.name}
-                    fill
-                    style={{ objectFit: "cover"}}
-                    className="rounded-lg"
-                    loading="lazy"
-                    placeholder="blur"
-                    blurDataURL="/placeholder.webp"
-                    onError={(e) => {
-                      e.currentTarget.src = "/fallback.png";
-                      console.error(
-                        `Failed to load image for category ID ${cat.id}. Using fallback image.`
-                      );
-                    }}
-                  />
-                </div>
+              {/* Image */}
+              <div className="w-full h-full md:w-4/5 relative -z-10">
+                <Image
+                  src={`https://gsk-ltd.s3.us-east-2.amazonaws.com/${cat.image}`}
+                  alt={cat.name}
+                  fill
+                  style={{ objectFit: "cover" }}
+                  className="rounded-lg"
+                  loading="lazy"
+                  placeholder="blur"
+                  blurDataURL="/placeholder.webp"
+                  onError={(e) => {
+                    e.currentTarget.src = "/fallback.png";
+                    console.error(
+                      `Failed to load image for category ID ${cat.id}. Using fallback image.`
+                    );
+                  }}
+                />
+              </div>
 
-                {/* Overlay Text */}
-                <div className="
+              {/* Overlay Text */}
+              <div
+                className="
                   absolute 
                   top-1/2 
                   -translate-y-1/2 
@@ -183,18 +170,18 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
                   md:left-40
                   md:translate-x-0
                   md:max-w-[20%]
-                ">
-                  <h2 className="text-xl md:text-2xl font-extrabold">
-                    {cat.name}
-                  </h2>
-                  <p className="mt-3 md:mt-5 text-lg">
-                    Explore more about {cat.name}
-                  </p>
-                </div>
+                "
+              >
+                <h2 className="text-xl md:text-2xl font-extrabold">
+                  {cat.name}
+                </h2>
+                <p className="mt-3 md:mt-5 text-lg">
+                  Explore more about {cat.name}
+                </p>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
 
         {/* Dots Navigation */}
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">

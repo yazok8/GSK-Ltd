@@ -59,7 +59,9 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
 
           {/* Search Input and Burger Icon Container */}
           <div className="flex items-center">
+            <div className='hidden md:block'>
            <SearchBox/>
+           </div>
 
             {/* Burger Icon: Visible Only on Mobile */}
             <button

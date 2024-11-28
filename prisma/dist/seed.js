@@ -4,9 +4,9 @@ import bcrypt from 'bcrypt';
 // Load environment variables from .env file
 const prisma = new PrismaClient();
 async function main() {
-    const isProduction = process.env.NODE_ENV === 'production';
+    const isDevelopment = process.env.NODE_ENV === 'development';
     // 1. Seed Admin User (Production Only)
-    if (isProduction) {
+    if (isDevelopment) {
         const adminEmail = 'ykherfan@ecom.com';
         const existingAdmin = await prisma.user.findUnique({
             where: { email: adminEmail },

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
@@ -23,6 +25,7 @@ export async function GET(request: NextRequest) {
           id: true,
           name: true,
         },
+        take: 6, 
       }),
 
       // Search products
@@ -35,9 +38,9 @@ export async function GET(request: NextRequest) {
         },
         select: {
           id: true,
-          name: true,
-          price: true,
+          name: true
         },
+        take: 6,
       }),
     ]);
 

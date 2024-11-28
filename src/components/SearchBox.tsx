@@ -78,7 +78,7 @@ export default function SearchBox() {
   };
 
   return (
-    <div className="relative w-full lg:w-96" ref={commandRef}>
+    <div className="relative w-full" ref={commandRef}>
       {/* Search Input Field */}
       <div className="relative">
         <Input
