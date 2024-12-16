@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 async function main() {
   const isDevelopment = process.env.NODE_ENV === 'development';
 
-  const adminEmail = `${process.env.ADMIN_EMAIL}`;
+  const adminEmail = "ykherfan8@gmail.com";
   // 1. Seed Admin User (Production Only)
   if (isDevelopment) {
  

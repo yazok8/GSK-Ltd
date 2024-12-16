@@ -31,3 +31,17 @@ export async function getProductsByCategoryId(categoryId: string): Promise<Produ
     return [];
   }
 }
+
+export async function getHomeCategories():Promise<Category[]> { 
+  try{
+    const categories  = await prisma.category.findMany({
+      orderBy: { name: "asc" },
+      take: 5, 
+    })
+    return categories;
+  }catch(error){
+    console.error("Error fetching home categories:", error);
+    return [];
+  }
+
+}

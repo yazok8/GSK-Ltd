@@ -32,7 +32,7 @@ export default async function Homepage({ searchParams }: HomepageProps) {
 
   // Find the "Mixed Spices" category
   const mixedSpicesCategory = categories.find(
-    (category) => category.name === "Mixed Spices"
+    (category) => category.name === "Mix Spices"
   );
 
 
