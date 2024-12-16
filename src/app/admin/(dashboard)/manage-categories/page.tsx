@@ -10,7 +10,6 @@ export default async function ManageCategories() {
     orderBy: { name: "asc" },
   });
 
-
   return (
     <>
       <AdminContainer />

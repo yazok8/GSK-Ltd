@@ -28,14 +28,12 @@ interface ProductsTableProps {
   products: Product[];
 }
 
-export default function ProductsTable({ products }: ProductsTableProps) {
+export default function ProductsTable({ products }: ProductsTableProps) { 
   const { addTab } = useAdminNav();
 
   const handleEditClick = (productId: string, productName: string) => {
     const editPath = `/admin/edit-product/${productId}`;
     addTab({ path: editPath, label: `Edit ${productName}` });
-    // Optionally navigate to the edit page immediately
-    // router.push(editPath);
   };
 
 

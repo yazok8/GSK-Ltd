@@ -10,29 +10,32 @@ import { z } from 'zod';
 
 export async function deleteCategory(id: string) {
   try {
-    // Delete the category and get the deleted category data
+    // Check if category exists first
+    const existingCategory = await prisma.category.findUnique({
+      where: { id },
+    });
+
+    if (!existingCategory) {
+      return { error: 'Category not found.', status: 404 };
+    }
+
+    // Delete the category now that we know it exists
     const category = await prisma.category.delete({
       where: { id },
     });
 
-    if (!category) return { error: 'Category not found.', status: 404 };
-
-    // Check if the category has an image
+    // If the category has an image, delete it from S3
     if (category.image) {
       let key = '';
 
       if (category.image.startsWith('http://') || category.image.startsWith('https://')) {
-        // imageUrl is a full URL
         const url = new URL(category.image);
-        key = decodeURIComponent(url.pathname.substring(1)); // Remove leading '/'
+        key = decodeURIComponent(url.pathname.substring(1));
       } else {
-        // imageUrl is a relative path (key)
         key = category.image;
       }
 
       const bucketName = process.env.AWS_S3_BUCKET_NAME!;
-
-      // Delete the image from S3
       try {
         const deleteParams = {
           Bucket: bucketName,
@@ -45,13 +48,13 @@ export async function deleteCategory(id: string) {
       }
     }
 
-    // Return success
     return { success: true };
   } catch (error) {
     console.error('Error deleting category:', error);
     return { error: 'An error occurred while deleting the category.', status: 500 };
   }
 }
+
 
 
 // Helper function to convert Blob to Buffer
