@@ -51,6 +51,11 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
+          if (!user.hashedPassword) {
+            console.log("User does not have a hashed password set.");
+            return null;
+          }          
+
           const isValid = await bcrypt.compare(password, user.hashedPassword);
 
           if (!isValid) {
@@ -65,7 +70,6 @@ export const authOptions: NextAuthOptions = {
             role: user.role,
           };
         } catch (error) {
-          NextResponse.error();
           console.error("Error in authorize function:", error);
           return null;
         }
