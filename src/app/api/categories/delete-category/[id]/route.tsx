@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { deleteCategory } from '@/app/admin/actions/categories';
 
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   const { id } = params;
