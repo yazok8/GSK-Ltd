@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "GSK Limited",
-  description: "Foor export services",
+  description: "Food export services",
 };
 
 export default function RootLayout({
