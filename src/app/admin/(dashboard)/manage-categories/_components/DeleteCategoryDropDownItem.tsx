@@ -1,6 +1,8 @@
 // src/app/admin/_components/DeleteCategoryDropDownItem.tsx
 
-import { useTransition } from 'react';
+"use client";
+
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Trash } from 'lucide-react';
@@ -8,11 +10,13 @@ import { Trash } from 'lucide-react';
 type DeleteCategoryDropDownItemProps = {
   id: string;
   disabled?: boolean;
+  onSuccess?: () => void;  // Add callback prop
 };
 
-export function DeleteCategoryDropDownItem({ id, disabled = false }: DeleteCategoryDropDownItemProps) {
-  const [isPending, startTransition] = useTransition();
+export function DeleteCategoryDropDownItem({ id, disabled = false, onSuccess }: DeleteCategoryDropDownItemProps) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [success, setSuccess] = useState<string | null>(null);
 
   const handleDelete = async () => {
     const confirmDeletion = window.confirm('Are you sure you want to delete this category? This action cannot be undone.');
@@ -34,6 +38,19 @@ export function DeleteCategoryDropDownItem({ id, disabled = false }: DeleteCateg
           alert(result.error);
           return;
         }
+
+        // Call onSuccess callback to trigger parent component refresh
+      if (onSuccess) {
+        onSuccess();
+      }
+
+      // Refresh the router to update server-side props
+      router.refresh();
+      
+      // Navigate after a short delay to show success message
+      setTimeout(() => {
+        router.push('/admin/manage-categories');
+      }, 1500);
         alert(result.message);
       } catch (error) {
         console.error('Failed to delete category:', error);

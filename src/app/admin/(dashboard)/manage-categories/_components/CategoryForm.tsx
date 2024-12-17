@@ -1,5 +1,3 @@
-// src/app/admin/(dashboard)/manage-categories/_components/CategoryForm.tsx
-
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -15,6 +13,7 @@ import { useRouter } from 'next/navigation';
 
 interface CategoryFormProps {
   category?: Category | null;
+  onSuccess?: () => void;  // Add callback prop
 }
 
 interface CategoryFormInputs {
@@ -43,12 +42,12 @@ const updateCategorySchema = z.object({
   description: z.string().optional(),
 });
 
-export default function CategoryForm({ category }: CategoryFormProps) {
-  const router = useRouter()
+export default function CategoryForm({ category, onSuccess }: CategoryFormProps) {
+  const router = useRouter();
   const isEditing = !!category;
   const [success, setSuccess] = useState<string | null>(null);
-   // State for form feedback
-   const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  
   const {
     register,
     handleSubmit,
@@ -81,10 +80,8 @@ export default function CategoryForm({ category }: CategoryFormProps) {
         ? `/api/categories/edit-category/${category?.id}`
         : '/api/categories';
 
-      // Determine the HTTP method based on whether we're editing or creating
       const method = category ? 'PUT' : 'POST';
 
-      // Send the form data to the server with the correct HTTP method
       const response = await fetch(catApiEndPoints, {
         method,
         body: formData,
@@ -94,10 +91,29 @@ export default function CategoryForm({ category }: CategoryFormProps) {
         const resData = await response.json();
         throw new Error(resData.error || 'Failed to save category');
       }
-      router.push('/admin/manage-categories');
-      reset();
+
+      // Call onSuccess callback to trigger parent component refresh
+      if (onSuccess) {
+        onSuccess();
+      }
+
+      // Refresh the router to update server-side props
+      router.refresh();
+      
+      setSuccess(isEditing ? 'Category updated successfully!' : 'Category added successfully!');
+      
+      if (!isEditing) {
+        reset(); // Only reset form for new categories
+      }
+      
+      // Navigate after a short delay to show success message
+      setTimeout(() => {
+        router.push('/admin/manage-categories');
+      }, 1500);
+      
     } catch (err: unknown) {
       console.error(err);
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
@@ -109,15 +125,15 @@ export default function CategoryForm({ category }: CategoryFormProps) {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <div className='mt-4'>
-          <Label className='mt-4' htmlFor="name">Category Name</Label>
-          <Input id="name" {...register('name')} />
-          {errors.name && (
-            <p className="text-destructive">{errors.name.message}</p>
-          )}
+            <Label className='mt-4' htmlFor="name">Category Name</Label>
+            <Input id="name" {...register('name')} />
+            {errors.name && (
+              <p className="text-destructive">{errors.name.message}</p>
+            )}
           </div>
           <div className='mt-4'>
-          <Label htmlFor="description">Description</Label>
-          <Input id="description" {...register('description')} />
+            <Label htmlFor="description">Description</Label>
+            <Input id="description" {...register('description')} />
           </div>
           {isEditing && category?.image && (
             <div>
@@ -131,24 +147,36 @@ export default function CategoryForm({ category }: CategoryFormProps) {
               />
             </div>
           )}
-        <div className='mt-4'>
-          <Label htmlFor="image">
-            {isEditing ? 'Upload New Image (optional)' : 'Category Image'}
-          </Label>
-          <Input
-            id="image"
-            type="file"
-            accept="image/*"
-            {...register('image')}
-          />
+          <div className='mt-4'>
+            <Label htmlFor="image">
+              {isEditing ? 'Upload New Image (optional)' : 'Category Image'}
+            </Label>
+            <Input
+              id="image"
+              type="file"
+              accept="image/*"
+              {...register('image')}
+            />
           </div>
           {errors.image && (
             <p className="text-destructive">{errors.image.message}</p>
           )}
         </div>
-        {success && <div className="text-green-500">{success}</div>}
-        {error && <div className="text-red-500">{error}</div>}
-        <Button type="submit" disabled={isSubmitting}>
+        {success && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+            {success}
+          </div>
+        )}
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            {error}
+          </div>
+        )}
+        <Button 
+          type="submit" 
+          disabled={isSubmitting}
+          className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
+        >
           {isSubmitting
             ? isEditing
               ? 'Updating...'

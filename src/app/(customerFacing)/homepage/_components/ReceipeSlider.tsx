@@ -29,6 +29,7 @@ function ReceipeSlider({ products,category }: ReceipeSliderProps) {
   };
 
   return (
+    <>
     <div className="w-full mx-auto relative bg-teal-500 md:pt-2 md:pl-2 md:py-8">
          <div className="flex justify-end mb-3">
         <Button className="outline-none text-xl">
@@ -78,6 +79,7 @@ function ReceipeSlider({ products,category }: ReceipeSliderProps) {
         ))}
       </Slider>
     </div>
+    </>
   );
 }
 

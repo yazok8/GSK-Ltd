@@ -7,6 +7,7 @@ import path from "path";
 import { z } from "zod";
 import { S3 } from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
+import { revalidatePath } from "next/cache";
 
 //Handle GET Categories
 export async function GET() {
@@ -124,6 +125,10 @@ export async function POST(req: NextRequest) {
         image:key
       }
     })
+    // Revalidate the cache for the categories page
+    revalidatePath('/admin/manage-categories');
+
+
     // Respond with success
     return NextResponse.json({ message: 'Category added successfully' }, { status: 200 });
   } catch (error: unknown) {

@@ -37,7 +37,7 @@ function CategoriesGridSlider({ categories }: CategoryProps) {
       <Slider {...settings}>
         {categories.map((cat) => (
           <div key={cat.id} className="px-2">
-            <div className="bg-white rounded-lg shadow-md overflow-hidden transform transition-transform duration-200 hover:scale-105">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden transform transition-transform duration-200 hover:scale-105 h-[16em] md:h-auto">
               <Link href={`/category/${cat.id}`}>
                 <div className="block">
                   {/* Image Container */}
@@ -59,7 +59,7 @@ function CategoriesGridSlider({ categories }: CategoryProps) {
                   </div>
 
                   {/* Category Name */}
-                  <div className="p-4 text-center">
+                  <div className="px-1 text-center">
                     <h2 className="text-xl font-semibold">{cat.name}</h2>
                   </div>
                 </div>

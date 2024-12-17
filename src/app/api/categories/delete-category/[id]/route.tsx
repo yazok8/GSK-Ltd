@@ -1,7 +1,8 @@
 // src/app/api/categories/[id]/route.ts
 
-import { NextRequest, NextResponse } from 'next/server';
-import { deleteCategory } from '@/app/admin/actions/categories';
+import { NextRequest, NextResponse } from "next/server";
+import { deleteCategory } from "@/app/admin/actions/categories";
+import { revalidatePath } from "next/cache";
 
 export async function DELETE(
   _request: NextRequest,
@@ -11,7 +12,7 @@ export async function DELETE(
 
   if (!id) {
     return NextResponse.json(
-      { error: 'Category ID is required' },
+      { error: "Category ID is required" },
       { status: 400 }
     );
   }
@@ -27,14 +28,17 @@ export async function DELETE(
       );
     }
 
+    // Revalidate the categories page
+    revalidatePath("/admin/manage-categories");
+
     return NextResponse.json(
-      { message: 'Category deleted successfully' },
+      { message: "Category deleted successfully" },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Error deleting category', error);
+    console.error("Error deleting category", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }
