@@ -1,4 +1,5 @@
 // src/app/admin/actions/categories.tsx
+export const dynamic = 'force-dynamic';
 
 import prisma from '@/lib/prisma';
 import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
