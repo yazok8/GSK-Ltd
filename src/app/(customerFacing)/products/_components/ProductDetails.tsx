@@ -90,7 +90,7 @@ export default function ProductDetails({ product }: ProductProps) {
         </CardDescription>
         <HorizontalLine />
         <div className="flex flex-col">
-          <span className="text-slate-500 font-semibold pl-1">Category: {product.category}</span>
+          <CardDescription className=" text-muted-foreground font-semibold pl-1">Category: {product.category}</CardDescription>
         </div>
         <HorizontalLine />
         <div className="space-y-3 mt-5"></div>

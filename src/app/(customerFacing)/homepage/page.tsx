@@ -69,7 +69,7 @@ export default async function Homepage({ searchParams }: HomepageProps) {
         .filter(Boolean);
 
   return (
-    <>
+    <div className="w-full mx-auto">
       {/* Pass categories as props */}
       <PrimarySlider categories={primarySliderCategories} />
       <div className="bg-slate-50 py-8 max-w-6xl mx-auto">
@@ -138,6 +138,6 @@ export default async function Homepage({ searchParams }: HomepageProps) {
         )}
       </div>
       <Services />
-    </>
+    </div>
   );
 }

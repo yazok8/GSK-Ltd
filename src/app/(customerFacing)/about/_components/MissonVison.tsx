@@ -8,7 +8,7 @@ import { CheckCircleIcon } from "@heroicons/react/24/solid";
 export default function MissonVison() {
   return (
     <div>
-      <Card className=" bg-teal-50 text-teal-500">
+      <Card className=" bg-teal-50 text-teal-500 mx-auto lg:max-w-[1920px] ">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl text-start font-extrabold">OUR VISION</CardTitle>
         </CardHeader>
@@ -33,7 +33,7 @@ export default function MissonVison() {
         </div>
         </CardContent>
       </Card>
-      <Card className=" bg-teal-50 text-teal-500">
+      <Card className=" bg-teal-50 text-teal-500 mx-auto lg:max-w-[1920px] ">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl text-start font-extrabold">OUR MISSION</CardTitle>
         </CardHeader>

@@ -33,7 +33,7 @@ function CategoriesGridSlider({ categories }: CategoryProps) {
   };
 
   return (
-    <div className="w-full max-w-[1032px] mx-auto relative">
+    <div className="w-full max-w-[1920px] mx-auto relative">
       <Slider {...settings}>
         {categories.map((cat) => (
           <div key={cat.id} className="px-2">

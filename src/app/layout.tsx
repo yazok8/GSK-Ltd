@@ -27,7 +27,7 @@ export default function RootLayout({
       >
         <Providers>
           {/* Wrap the main content in a flex-grow container */}
-          <main className="flex-grow overflow-x-hidden">{children}</main>
+          <main className="flex-grow w-full overflow-x-hidden">{children}</main>
           <Footer />
         </Providers>
       </body>

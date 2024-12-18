@@ -121,9 +121,9 @@ export default function BurgerMenu({
               aria-haspopup="true"
               aria-expanded={openSubmenu === "services"}
             >
-              <span className="text-white text-lg hover:text-yellow-500">
+              <Link className="text-white text-lg hover:text-yellow-500" href="/services`">
                 Our Services
-              </span>
+              </Link>
               {/* Dropdown Indicator Icon */}
               <svg
                 className={`w-4 h-4 transition-transform ${
@@ -190,9 +190,9 @@ export default function BurgerMenu({
               aria-haspopup="true"
               aria-expanded={openSubmenu === "products"}
             >
-              <span className="text-white text-lg hover:text-yellow-500">
+              <Link className="text-white text-lg hover:text-yellow-500" href="/products">
                 Our Products
-              </span>
+              </Link>
               {/* Dropdown Indicator Icon */}
               <svg
                 className={`w-4 h-4 transition-transform ${

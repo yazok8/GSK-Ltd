@@ -16,6 +16,8 @@ export default function AboutPage() {
           relative 
           w-full 
           h-[300px] md:h-[400px] lg:h-[700px]
+          lg:max-w-[1920px] 
+          mx-auto
         "
       >
         <div className="relative w-full h-full">
@@ -76,7 +78,7 @@ export default function AboutPage() {
       <MissionVision />
 
       {/* Contact Section */}
-      <div className="text-center mx-auto font-bold my-20 text-3xl">
+      <div className="p-2 text-center mx-auto font-bold my-20 text-3xl">
         <p>
           We Know Food Best. Let GSK international Food Suppler be your trusted
           trading partner.

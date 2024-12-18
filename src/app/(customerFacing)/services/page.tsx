@@ -7,7 +7,7 @@ import ExportService from "./_components/ExportService";
 export default function ServicesPage() {
   return (
 
-    <Card className="bg-teal-50" >
+    <Card className="bg-teal-50 max-w-[1920px] px-4 mx-auto">
       <CardHeader>
         <CardTitle className="underline text-4xl">About Our Services</CardTitle>
       </CardHeader>
