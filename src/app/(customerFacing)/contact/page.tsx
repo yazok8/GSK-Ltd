@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import emailjs  from 'emailjs-com';
+import { Button } from "@/components/ui/button";
 
 interface FormData {
   name: string;
@@ -300,9 +301,9 @@ export default function ContactPage() {
 
             {/* Submit Button */}
             <div>
-              <button
+              <Button
                 type="submit"
-                disabled={isLoading} // Disable button while loading
+                disabled={isLoading} // Disable Button while loading
                 className={`w-full py-2 px-4 bg-teal-500 text-white font-semibold rounded-md shadow ${
                   isLoading
                     ? "opacity-50 cursor-not-allowed"
@@ -310,7 +311,7 @@ export default function ContactPage() {
                 } focus:outline-none focus:ring-2 focus:ring-teal-500`}
               >
                 {isLoading ? "Sending..." : "Submit"}
-              </button>
+              </Button>
             </div>
           </form>
 

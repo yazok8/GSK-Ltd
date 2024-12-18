@@ -42,7 +42,7 @@ function ReceipeSlider({ products, category }: ReceipeSliderProps) {
             </Link>
           </Button>
         </div>
-        <Slider {...settings} className="lg:max-w-[1920px] mx-auto">
+        <Slider {...settings} className="lg:max-w-[1920px] mx-auto lg:pl-16">
           {products.map((product) => (
             <div key={product.id} className="lg:h-[700px]">
               <div className="flex flex-col md:flex-row h-full">
@@ -77,10 +77,10 @@ function ReceipeSlider({ products, category }: ReceipeSliderProps) {
                     {product.name}
                   </h2>
                   <p className="text-lg text-white">{product.description}</p>
-                  <Button className="mt-5">
+                  <Button className="mt-5 justify-center flex pl-0 bg-teal-100 max-w-[150px]">
                     <Link
                       href={`/products/${product.id}`}
-                      className="text-lg font-semibold text-blue-600 border-b-4 border-blue-500 hover:text-blue-800 transition-colors duration-200 hover:underline"
+                      className="text-lg font-semibold text-teal-600 border-b-4 border-teal-600 hover:text-teal-500 transition-colors duration-200 hover:underline"
                     >
                       Learn More
                     </Link>

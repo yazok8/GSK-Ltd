@@ -162,11 +162,11 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
                   bg-opacity-60 
                   p-4 
                   rounded-lg
-                  left-1/4
+                  left-1/3
                   transform
                   -translate-x-1/2
-                  w-3/4
-                  max-w-[30%]
+                  w-1/2
+                  max-w-[70%]
                   md:left-40
                   md:translate-x-0
                   md:max-w-[20%]
