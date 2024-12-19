@@ -1,11 +1,11 @@
 "use client";
 
 import { DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { TableBody, TableCell, TableRow } from '@/components/ui/table'
+import { TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import { Edit, MoreVertical } from 'lucide-react';
 import Image from 'next/image';
-import React from 'react'
+import React from 'react';
 import { DeleteCategoryDropDownItem } from './DeleteCategoryDropDownItem';
 import { useAdminNav } from '@/context/AdminNavContext';
 
@@ -58,7 +58,7 @@ function CategoriesTable({ categories }: CategoriesTableProps) {
         </thead>
 
         <TableBody>
-          {categories && categories.map((category) => (
+          {categories?.map((category) => (
             <TableRow className="border-b-0" key={category.id}>
               <TableCell className="py-1">{category.name}</TableCell>
               <TableCell className="py-1">
@@ -69,8 +69,8 @@ function CategoriesTable({ categories }: CategoriesTableProps) {
                       alt={category.name}
                       width={80}
                       height={80}
-                      className="rounded"
-                      style={{ objectFit: 'cover' }}
+                      className="rounded object-cover"
+                      priority
                     />
                   </div>
                 ) : (
@@ -79,15 +79,19 @@ function CategoriesTable({ categories }: CategoriesTableProps) {
               </TableCell>
               <TableCell className="py-1">
                 <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <MoreVertical />
-                    <span className="sr-only">Actions</span>
+                  <DropdownMenuTrigger asChild>
+                    <button className="p-2 hover:bg-accent rounded-full">
+                      <MoreVertical className="h-4 w-4" />
+                      <span className="sr-only">Actions</span>
+                    </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="pt-0 ml-[10.5rem]">
+                  <DropdownMenuContent align="end" className="w-[160px]">
                     <DropdownMenuItem
-                      onSelect={() => handleEditClick(category.id, category.name)}
+                      onClick={() => handleEditClick(category.id, category.name)}
+                      className="flex items-center gap-2"
                     >
-                      <Edit className="mr-2 h-4 w-4"/> Edit
+                      <Edit className="h-4 w-4" />
+                      Edit
                     </DropdownMenuItem>
                     <DeleteCategoryDropDownItem id={category.id} />
                   </DropdownMenuContent>

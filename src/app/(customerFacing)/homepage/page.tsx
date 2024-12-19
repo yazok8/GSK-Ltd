@@ -35,7 +35,6 @@ export default async function Homepage({ searchParams }: HomepageProps) {
     (category) => category.name === "Mix Spices"
   );
 
-
   // **Fetch products in the "Mix Spices" category**
   let mixedSpicesProducts: Product[] = [];
   if (mixedSpicesCategory) {
@@ -46,15 +45,13 @@ export default async function Homepage({ searchParams }: HomepageProps) {
   }
   
   // **For Other Sliders, select different categories**
-  let CategoriesGridSliderIndices = [8, 4, 5, 6]; // Default indices for other sliders
+  let CategoriesGridSliderIndices = [0, 2, 5, 6]; // Default indices for other sliders
   if (searchParams?.indices) {
     CategoriesGridSliderIndices = searchParams.indices
       .split(",")
       .map((str) => parseInt(str, 10))
       .filter((num) => !isNaN(num));
   }
-
-  
 
   const filteredCatGridSlider =
     categories.length > 0

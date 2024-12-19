@@ -19,13 +19,13 @@ function CategoriesGridSlider({ categories }: CategoryProps) {
     dots: true,
     infinite: false, // Enable infinite scrolling if needed
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: 4,
     slidesToScroll: 2,
     responsive: [
       {
         breakpoint: 768, // Medium screens
         settings: {
-          slidesToShow: 2,
+          slidesToShow: 1,
           slidesToScroll: 1,
         },
       },
