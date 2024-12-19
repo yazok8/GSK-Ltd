@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
+  username:z.string().min(1, "Username is required"),
   email: z.string().min(1, "Email is required").email("Invalid email"),
   password: z
     .string()
@@ -31,6 +32,7 @@ export default function UserSignUp() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      username:"",
       email: "",
       password: "",
     },
@@ -45,6 +47,7 @@ export default function UserSignUp() {
         },
         body: JSON.stringify({
           name: values.name,
+          username:values.username,
           email: values.email,
           password: values.password,
         }),
@@ -81,6 +84,20 @@ export default function UserSignUp() {
               <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
             )}
           </div>
+          <div className="mb-4">
+            <Label htmlFor="username">Username</Label>
+            <Input
+              id="username"
+              type="text"
+              {...register("username")}
+              placeholder="Enter your username"
+              className="mt-1 block w-full"
+            />
+            {errors.username && (
+              <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
+            )}
+          </div>
+          
 
           <div className="mb-4">
             <Label htmlFor="email">Email</Label>

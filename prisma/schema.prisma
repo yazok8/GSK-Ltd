@@ -60,6 +60,7 @@ model User {
   emailVerified  DateTime?
   hashedPassword String
   name           String
+  username       String    @unique
   address        String?
   profileImage   String?
   role           Role      @default(ADMIN)

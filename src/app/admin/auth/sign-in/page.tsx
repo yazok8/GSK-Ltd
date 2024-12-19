@@ -1,5 +1,3 @@
-// src/app/admin/auth/sign-in/page.tsx
-
 "use client";
 
 import * as z from "zod";
@@ -14,7 +12,7 @@ import toast from "react-hot-toast";
 
 // Define the validation schema
 const adminFormSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Invalid email"),
+  identifier: z.string().min(1, "Email or Username is required"),
   password: z
     .string()
     .min(1, "Password is required")
@@ -34,7 +32,7 @@ export default function AdminSignIn() {
   } = useForm<SignInFormValues>({
     resolver: zodResolver(adminFormSchema),
     defaultValues: {
-      email: "",
+      identifier: "",
       password: "",
       isAdmin: "true", // Set default value to "true"
     },
@@ -43,7 +41,7 @@ export default function AdminSignIn() {
   async function onSubmit(values: SignInFormValues) {
     const callbackUrl = "/admin/manage-products"; // Redirect to admin dashboard after sign-in
     const signinCreds = await signIn("credentials", {
-      email: values.email,
+      identifier: values.identifier,
       password: values.password,
       redirect: false,
       callbackUrl,
@@ -51,7 +49,7 @@ export default function AdminSignIn() {
     });
 
     if (signinCreds?.error) {
-      toast("Invalid email or password, or you do not have admin access.");
+      toast.error("Invalid credentials or you do not have admin access.");
     } else {
       router.push(callbackUrl);
       router.refresh();
@@ -63,15 +61,15 @@ export default function AdminSignIn() {
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
         <form onSubmit={handleSubmit(onSubmit)} className="sign-in-form">
           <div className="max-w-sm">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="identifier">Email or Username</Label>
             <Input
-              id="email"
-              type="email"
-              {...register("email")}
-              placeholder="Enter your admin email"
+              id="identifier"
+              type="text"
+              {...register("identifier")}
+              placeholder="Enter your admin email or username"
             />
-            {errors.email && (
-              <p className="text-red-500">{errors.email.message}</p>
+            {errors.identifier && (
+              <p className="text-red-500">{errors.identifier.message}</p>
             )}
           </div>
 

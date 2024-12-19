@@ -1,10 +1,9 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter"; 
-import prisma from "@/lib/prisma"; // Correct default import
+import prisma from "@/lib/prisma";
 import bcrypt from "bcrypt";
-import { NextResponse } from "next/server";
-import { Role } from "@prisma/client"; // Ensure correct import
+import { Role } from "@prisma/client";
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -20,51 +19,50 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "john@gmail.com" },
+        identifier: { label: "Email or Username", type: "text" },
         password: { label: "Password", type: "password" },
+        isAdmin: { type: "hidden" },
       },
-      async authorize(credentials) { // Updated signature
+      async authorize(credentials) {
         try {
-          if (!credentials) {
+          if (!credentials?.identifier || !credentials?.password) {
             console.log("Missing credentials");
             return null;
           }
 
-          const { email, password } = credentials as {
-            email: string;
-            password: string;
-          };
+          const { identifier, password } = credentials;
 
-          if (!email || !password) {
-            console.log("Missing email or password");
-            return null;
-          }
-
-          const normalizedEmail = email.toLowerCase();
-
-          const user = await prisma.user.findUnique({
-            where: { email: normalizedEmail },
+          // Find user by email or username
+          const user = await prisma.user.findFirst({
+            where: {
+              OR: [
+                { email: identifier.toLowerCase() },
+                { username: identifier }
+              ]
+            },
           });
 
-          if (!user) {
-            console.log("Invalid credentials");
+          if (!user || !user.hashedPassword) {
+            console.log("Invalid credentials or user not found");
             return null;
           }
-
-          if (!user.hashedPassword) {
-            console.log("User does not have a hashed password set.");
-            return null;
-          }          
 
           const isValid = await bcrypt.compare(password, user.hashedPassword);
 
           if (!isValid) {
-            console.log("Invalid credentials");
+            console.log("Invalid password");
+            return null;
+          }
+
+          // Ensure the user has admin role
+          if (user.role !== Role.ADMIN) {
+            console.log("User is not an admin");
             return null;
           }
 
           return {
-            id: user.id, // Non-undefined
+            id: user.id,
+            username: user.username,
             name: user.name,
             email: user.email,
             role: user.role,
@@ -81,15 +79,17 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.username = user.username;
         token.name = user.name;
         token.email = user.email;
       }
       return token;
     },
     async session({ session, token }) {
-      if (token) {
+      if (token && session.user) {
         session.user = {
           id: token.id as string,
+          username: token.username as string,
           name: token.name as string,
           email: token.email as string,
           role: token.role as Role,
@@ -105,14 +105,14 @@ export const authOptions: NextAuthOptions = {
         : "next-auth.session-token",
       options: {
         httpOnly: true,
-        secure: isProduction, // true in production, false otherwise
+        secure: isProduction,
         sameSite: "lax",
-        path: "/", // Must be '/'
+        path: "/",
       },
     },
   },
   pages: {
     signIn: "/admin/auth/sign-in",
   },
-  debug: isProduction ? false : true, // Enable debug only in development
+  debug: !isProduction,
 };

@@ -7,7 +7,7 @@ import prisma  from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
-    const { email, password, name } = await req.json();
+    const { name, username, email, password} = await req.json();
 
     // Validate input
     if (!email || !password || !name) {
@@ -15,12 +15,17 @@ export async function POST(req: Request) {
     }
 
     // Check if the user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email: email.toLowerCase() },
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: email.toLowerCase() },
+          { username: username },
+        ],
+      },
     });
 
     if (existingUser) {
-      return NextResponse.error();
+      return NextResponse.json({ error: 'Email or Username already in use' }, { status: 400 });
     }
 
     // Hash the password with bcrypt
@@ -31,6 +36,7 @@ export async function POST(req: Request) {
     const user = await prisma.user.create({
       data: {
         name,
+        username,
         email: email.toLowerCase(),
         hashedPassword,
         role: "ADMIN", // Default role
@@ -44,8 +50,15 @@ export async function POST(req: Request) {
       },
       { status: 201 }
     );
-  } catch (error) {
-    console.error("Error during user sign-up:", error);
-    return NextResponse.error();
+  } catch (error: any) {
+    console.error('Error registering user:', error);
+
+    // Handle Prisma unique constraint errors
+    if (error.code === 'P2002') { // Unique constraint failed
+      return NextResponse.json({ error: 'Email or Username already in use' }, { status: 400 });
+    }
+
+    // Handle other errors
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
