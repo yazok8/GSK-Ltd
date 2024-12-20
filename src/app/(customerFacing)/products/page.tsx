@@ -9,7 +9,7 @@ export default async function ProductsPage() {
 
   return (
     <div id="products" className="py-8 px-4 md:px-8 transition-colors duration-500 max-w-[1920px] mx-auto">
-      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Our Products</h2>
+      <h2 className="text-3xl font-bold text-center mb-8">Our Products</h2>
       <ProductsGrid products={products} />
     </div>
   );
