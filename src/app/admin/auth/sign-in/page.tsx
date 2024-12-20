@@ -29,6 +29,7 @@ export default function AdminSignIn() {
     handleSubmit,
     formState: { errors },
     register,
+    setError, // Destructure setError to manually set form errors
   } = useForm<SignInFormValues>({
     resolver: zodResolver(adminFormSchema),
     defaultValues: {
@@ -39,7 +40,7 @@ export default function AdminSignIn() {
   });
 
   async function onSubmit(values: SignInFormValues) {
-    const callbackUrl = "/admin/manage-products"; // Redirect to admin dashboard after sign-in
+    const callbackUrl = "/admin"; // Redirect to admin dashboard after sign-in
     const signinCreds = await signIn("credentials", {
       identifier: values.identifier,
       password: values.password,
@@ -49,7 +50,34 @@ export default function AdminSignIn() {
     });
 
     if (signinCreds?.error) {
-      toast.error("Invalid credentials or you do not have admin access.");
+      switch (signinCreds.error) {
+        case "UserNotFound":
+          setError("identifier", {
+            type: "manual",
+            message: "User does not exist.",
+          });
+          break;
+        case "InvalidPassword":
+          setError("password", {
+            type: "manual",
+            message: "Incorrect password.",
+          });
+          break;
+        case "NotAdmin":
+          setError("identifier", {
+            type: "manual",
+            message: "You do not have admin access.",
+          });
+          break;
+        case "MissingCredentials":
+          toast.error("Please provide both email/username and password.");
+          break;
+        case "NoPasswordSet":
+          toast.error("No password is set for this user.");
+          break;
+        default:
+          toast.error("Invalid credentials or you do not have admin access.");
+      }
     } else {
       router.push(callbackUrl);
       router.refresh();
@@ -60,29 +88,31 @@ export default function AdminSignIn() {
     <div className="flex items-center justify-center min-h-[85vh] overflow-hidden p-5">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
         <form onSubmit={handleSubmit(onSubmit)} className="sign-in-form">
-          <div className="max-w-sm">
+          <div className="max-w-sm mb-4">
             <Label htmlFor="identifier">Email or Username</Label>
             <Input
               id="identifier"
               type="text"
               {...register("identifier")}
               placeholder="Enter your admin email or username"
+              className={errors.identifier ? "border-red-500" : ""}
             />
             {errors.identifier && (
-              <p className="text-red-500">{errors.identifier.message}</p>
+              <p className="text-red-500 mt-1">{errors.identifier.message}</p>
             )}
           </div>
 
-          <div className="max-w-sm">
+          <div className="max-w-sm mb-4">
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
               type="password"
               {...register("password")}
               placeholder="Enter your password"
+              className={errors.password ? "border-red-500" : ""}
             />
             {errors.password && (
-              <p className="text-red-500">{errors.password.message}</p>
+              <p className="text-red-500 mt-1">{errors.password.message}</p>
             )}
           </div>
 

@@ -1,6 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter"; 
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import { Role } from "@prisma/client";
@@ -23,41 +23,43 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
         isAdmin: { type: "hidden" },
       },
+      // Inside your NextAuth configuration file
+
       async authorize(credentials) {
+        if (!credentials?.identifier || !credentials?.password) {
+          throw new Error("MissingCredentials");
+        }
+
+        const { identifier, password } = credentials;
+
         try {
-          if (!credentials?.identifier || !credentials?.password) {
-            console.log("Missing credentials");
-            return null;
-          }
-
-          const { identifier, password } = credentials;
-
           // Find user by email or username
           const user = await prisma.user.findFirst({
             where: {
               OR: [
                 { email: identifier.toLowerCase() },
-                { username: identifier }
-              ]
+                { username: identifier },
+              ],
             },
           });
 
-          if (!user || !user.hashedPassword) {
-            console.log("Invalid credentials or user not found");
-            return null;
+          if (!user) {
+            throw new Error("UserNotFound");
+          }
+
+          if (!user.hashedPassword) {
+            throw new Error("NoPasswordSet");
           }
 
           const isValid = await bcrypt.compare(password, user.hashedPassword);
 
           if (!isValid) {
-            console.log("Invalid password");
-            return null;
+            throw new Error("InvalidPassword");
           }
 
           // Ensure the user has admin role
           if (user.role !== Role.ADMIN) {
-            console.log("User is not an admin");
-            return null;
+            throw new Error("NotAdmin");
           }
 
           return {
@@ -69,7 +71,8 @@ export const authOptions: NextAuthOptions = {
           };
         } catch (error) {
           console.error("Error in authorize function:", error);
-          return null;
+          // Re-throw the error to be handled by NextAuth
+          throw error;
         }
       },
     }),

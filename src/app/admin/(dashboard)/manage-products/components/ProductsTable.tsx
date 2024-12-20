@@ -86,7 +86,7 @@ export default function ProductsTable({ products }: ProductsTableProps) {
                   <MoreVertical />
                   <span className="sr-only">Actions</span>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
+                <DropdownMenuContent className='bg-white'>
                   <DropdownMenuItem
                     onSelect={() => handleEditClick(product.id, product.name)}
                   >

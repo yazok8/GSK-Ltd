@@ -5,7 +5,7 @@
 import React, { useState, Fragment } from 'react';
 import Image from 'next/image';
 import { getImageSrc } from '@/lib/imageHelper';
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog, DialogPanel, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { Product } from '@prisma/client'; // Ensure this includes 'images', 'name', 'description'
 
@@ -103,7 +103,7 @@ export default function ProductsGrid({ products }: ProductGridType) {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="inline-block w-full max-w-3xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-gray-800 rounded-lg shadow-xl">
+              <DialogPanel className="inline-block w-full max-w-3xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-gray-800 rounded-lg shadow-xl">
                 {/* Close Button */}
                 <button
                   onClick={closeModal}
@@ -135,7 +135,7 @@ export default function ProductsGrid({ products }: ProductGridType) {
                     {/* Additional product details can be added here */}
                   </div>
                 )}
-              </Dialog.Panel>
+              </DialogPanel>
             </Transition>
           </div>
         </Dialog>

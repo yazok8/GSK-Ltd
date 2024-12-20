@@ -1,44 +1,34 @@
 // src/context/AdminNavContext.tsx
-
 "use client";
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from "react";
 
 interface Tab {
-  path: string;
   label: string;
+  path: string;
 }
 
-interface AdminNavContextProps {
+interface AdminNavContextType {
   tabs: Tab[];
   addTab: (tab: Tab) => void;
   removeTab: (path: string) => void;
 }
 
-const AdminNavContext = createContext<AdminNavContextProps | undefined>(undefined);
+const AdminNavContext = createContext<AdminNavContextType | undefined>(undefined);
 
-export const useAdminNav = () => {
-  const context = useContext(AdminNavContext);
-  if (!context) {
-    throw new Error('useAdminNav must be used within an AdminNavProvider');
-  }
-  return context;
-};
-
-export const AdminNavProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [tabs, setTabs] = useState<Tab[]>([]); // Corrected type
+export const AdminNavProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [tabs, setTabs] = useState<Tab[]>([]);
 
   const addTab = (tab: Tab) => {
     setTabs((prevTabs) => {
-      if (!prevTabs.find((t) => t.path === tab.path)) {
-        return [...prevTabs, tab];
-      }
-      return prevTabs;
+      // Prevent duplicate tabs
+      if (prevTabs.find((t) => t.path === tab.path)) return prevTabs;
+      return [...prevTabs, tab];
     });
   };
 
   const removeTab = (path: string) => {
-    setTabs((prevTabs) => prevTabs.filter((t) => t.path !== path));
+    setTabs((prevTabs) => prevTabs.filter((tab) => tab.path !== path));
   };
 
   return (
@@ -46,4 +36,12 @@ export const AdminNavProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       {children}
     </AdminNavContext.Provider>
   );
+};
+
+export const useAdminNav = () => {
+  const context = useContext(AdminNavContext);
+  if (!context) {
+    throw new Error("useAdminNav must be used within an AdminNavProvider");
+  }
+  return context;
 };

@@ -85,7 +85,7 @@ function CategoriesTable({ categories }: CategoriesTableProps) {
                       <span className="sr-only">Actions</span>
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-[160px]">
+                  <DropdownMenuContent align="end" className="w-[160px] bg-white">
                     <DropdownMenuItem
                       onClick={() => handleEditClick(category.id, category.name)}
                       className="flex items-center gap-2"
