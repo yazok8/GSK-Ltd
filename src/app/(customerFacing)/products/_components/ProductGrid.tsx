@@ -1,6 +1,4 @@
-// components/ProductsGrid.jsx
-
-'use client'; // This directive makes the component a client component
+'use client';
 
 import React, { useState, Fragment } from 'react';
 import Image from 'next/image';

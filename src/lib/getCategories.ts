@@ -1,5 +1,3 @@
-// src/lib/getCategories.ts
-
 import { Category, Product } from "@prisma/client";
 import prisma  from "@/lib/prisma"; 
 

@@ -1,5 +1,3 @@
-// src/app/(customerFacing)/category/[id]/page.tsx
-
 import React from 'react';
 import Image from 'next/image';
 import { getImageSrc } from '@/lib/imageHelper';

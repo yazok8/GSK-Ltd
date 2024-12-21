@@ -1,5 +1,3 @@
-// components/Services.tsx
-
 "use client";
 
 import React from "react";

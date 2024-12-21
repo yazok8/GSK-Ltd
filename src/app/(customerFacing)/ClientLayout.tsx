@@ -1,13 +1,10 @@
-// src/app/(customerFacing)/layout/ClientLayout.tsx
-
 "use client";
 
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import GSKLogo from "../../../public/logo/new-logo.png";
-import { Input } from "@/components/ui/input";
-import { FaSearch, FaBars } from "react-icons/fa";
+import { FaBars } from "react-icons/fa";
 import dynamic from "next/dynamic"; // Import dynamic
 import { Category } from "@prisma/client";
 import SearchBox from "@/components/SearchBox";

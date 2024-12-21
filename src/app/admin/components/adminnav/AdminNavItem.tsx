@@ -1,5 +1,3 @@
-// src/app/admin/components/AdminNavItem.tsx
-
 import { IconType } from "react-icons";
 import { MdClose } from "react-icons/md";
 

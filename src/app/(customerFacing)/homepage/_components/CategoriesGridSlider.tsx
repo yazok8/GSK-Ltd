@@ -1,5 +1,3 @@
-// src/app/(customerFacing)/homepage/_components/CategoriesGridSlider.tsx
-
 "use client";
 
 import React from "react";

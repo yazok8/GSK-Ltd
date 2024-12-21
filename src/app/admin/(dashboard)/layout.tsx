@@ -1,5 +1,3 @@
-//src/app/admin/layout.tsx
-
 import { AdminNavProvider } from "@/context/AdminNavContext";
 import AdminNav from "../components/adminnav/AdminNav";
 import { getServerSession } from "next-auth";

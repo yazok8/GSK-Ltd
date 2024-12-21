@@ -1,5 +1,3 @@
-// src/app/admin/manage-products/ProductsTable.tsx
-
 "use client";
 
 import React from "react";

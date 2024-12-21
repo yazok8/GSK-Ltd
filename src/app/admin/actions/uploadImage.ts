@@ -1,5 +1,3 @@
-// src/app/admin/actions/uploadImage.ts
-
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { randomUUID } from 'crypto';
 import { ServerFile } from '@/types/File';

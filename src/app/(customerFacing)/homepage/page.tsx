@@ -1,5 +1,3 @@
-// src/app/(customerFacing)/homepage/page.tsx
-
 import React from "react";
 import dynamic from "next/dynamic";
 import { getAllCategories, getProductsByCategoryId } from "@/lib/getCategories";

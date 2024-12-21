@@ -1,5 +1,3 @@
-// src/utils/typeGuards.ts
-
 import { Prisma } from "@prisma/client";
 
 /**

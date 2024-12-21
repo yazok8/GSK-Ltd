@@ -1,5 +1,3 @@
-//src/app/admin/signup/page.tsx
-
 "use client";
 
 import * as z from "zod";

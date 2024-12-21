@@ -1,5 +1,3 @@
-// src/hooks/useOnClickOutside.ts
-
 import { useEffect } from 'react';
 
 export function useOnClickOutside(ref: React.RefObject<HTMLElement>, handler: (event: MouseEvent | TouchEvent) => void) {

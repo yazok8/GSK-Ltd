@@ -1,5 +1,3 @@
-// src/types/File.ts
-
 export interface ServerFile {
   fieldname: string; 
   buffer: Buffer;

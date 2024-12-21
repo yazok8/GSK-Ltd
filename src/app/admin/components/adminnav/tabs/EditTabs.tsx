@@ -1,5 +1,3 @@
-// src/app/admin/components/tabs/EditTab.tsx
-
 import { useAdminNav } from "@/context/AdminNavContext";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

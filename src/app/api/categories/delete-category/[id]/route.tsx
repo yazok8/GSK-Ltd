@@ -1,5 +1,3 @@
-// src/app/api/categories/[id]/route.ts
-
 import { NextRequest, NextResponse } from "next/server";
 import { deleteCategory } from "@/app/admin/actions/categories";
 import { revalidatePath } from "next/cache";

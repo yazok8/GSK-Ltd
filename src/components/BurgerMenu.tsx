@@ -1,5 +1,3 @@
-// src/app/(customerFacing)/components/BurgerMenu.tsx
-
 "use client";
 
 import Image from "next/image";

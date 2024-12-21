@@ -1,4 +1,3 @@
-// types/Category.ts
 import { Product } from "@prisma/client";
 import { Category as PrismaCategory } from "@prisma/client";
 

@@ -1,5 +1,3 @@
-//src/app/(customerFacing)/actions/categories.ts
-
 import { cache } from "@/lib/cache";
 import { CategoryWithImage, ProductWithCategory } from "@/types/Category";
 import prisma  from '@/lib/prisma';

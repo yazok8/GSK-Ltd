@@ -1,5 +1,3 @@
-// app/products/page.jsx (Assuming a Next.js 13+ App Router structure)
-
 import React from 'react';
 import prisma from '@/lib/prisma';
 import ProductsGrid from './_components/ProductGrid'; // We'll create this next

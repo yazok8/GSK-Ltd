@@ -1,5 +1,3 @@
-//src/app/api/categories/edit-category/[id]/route.ts
-
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { updateCategory } from "@/app/admin/actions/categories";
