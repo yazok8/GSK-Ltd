@@ -111,7 +111,7 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
     <div className="relative w-full mx-auto bg-teal-50 lg:max-w-[1920px]">
       {/* Slider Container */}
       <div
-        className="relative w-full h-[300px] md:h-[400px] lg:h-[700px]"
+        className="relative w-full h-[500px] md:h-[400px] lg:h-[700px]"
         onMouseEnter={stopSlideTimer}
         onMouseLeave={startSlideTimer}
         onTouchStart={handleTouchStart}
