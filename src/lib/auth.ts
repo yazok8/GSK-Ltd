@@ -21,10 +21,7 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         identifier: { label: "Email or Username", type: "text" },
         password: { label: "Password", type: "password" },
-        isAdmin: { type: "hidden" },
       },
-      // Inside your NextAuth configuration file
-
       async authorize(credentials) {
         if (!credentials?.identifier || !credentials?.password) {
           throw new Error("MissingCredentials");
@@ -33,7 +30,6 @@ export const authOptions: NextAuthOptions = {
         const { identifier, password } = credentials;
 
         try {
-          // Find user by email or username
           const user = await prisma.user.findFirst({
             where: {
               OR: [
@@ -41,12 +37,13 @@ export const authOptions: NextAuthOptions = {
                 { username: identifier },
               ],
             },
+            
           });
-
+          
           if (!user) {
             throw new Error("UserNotFound");
           }
-
+          console.log("User role from DB:", user.role); 
           if (!user.hashedPassword) {
             throw new Error("NoPasswordSet");
           }
@@ -57,9 +54,9 @@ export const authOptions: NextAuthOptions = {
             throw new Error("InvalidPassword");
           }
 
-          // Ensure the user has admin role
-          if (user.role !== Role.ADMIN) {
-            throw new Error("NotAdmin");
+          // Allow both ADMIN and VIEW_ONLY roles to access the dashboard
+          if (user.role !== Role.ADMIN && user.role !== Role.VIEW_ONLY) {
+            throw new Error("InsufficientPermissions");
           }
 
           return {
@@ -71,36 +68,38 @@ export const authOptions: NextAuthOptions = {
           };
         } catch (error) {
           console.error("Error in authorize function:", error);
-          // Re-throw the error to be handled by NextAuth
           throw error;
         }
       },
     }),
   ],
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.role = user.role;
-        token.username = user.username;
-        token.name = user.name;
-        token.email = user.email;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (token && session.user) {
-        session.user = {
-          id: token.id as string,
-          username: token.username as string,
-          name: token.name as string,
-          email: token.email as string,
-          role: token.role as Role,
-        };
-      }
-      return session;
-    },
+  callbacks: {  
+    async jwt({ token, user }) {  
+     if (user) {  
+      console.log("[jwt callback] user.role:", user.role);
+      token.id = user.id;  
+      token.role = user.role; // Add this line to include the user's role in the token's payload  
+      token.username = user.username;  
+      token.name = user.name;  
+      token.email = user.email;  
+     }  
+     console.log("[jwt callback] token.role:", token.role);
+     return token;  
+    },  
+    async session({ session, token }) {  
+     if (token && session.user) {  
+      session.user = {  
+        id: token.id as string,  
+        username: token.username as string,  
+        name: token.name as string,  
+        email: token.email as string,  
+        role: token.role as Role, // Add this line to include the user's role in the session  
+      };  
+     }  
+     return session;  
+    },  
   },
+  
   cookies: {
     sessionToken: {
       name: isProduction

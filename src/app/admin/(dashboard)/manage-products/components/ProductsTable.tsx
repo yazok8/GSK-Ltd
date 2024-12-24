@@ -24,17 +24,19 @@ interface Product {
 
 interface ProductsTableProps {
   products: Product[];
+  readonly?: boolean;
 }
 
-export default function ProductsTable({ products }: ProductsTableProps) { 
+export default function ProductsTable({
+  products,
+  readonly,
+}: ProductsTableProps) {
   const { addTab } = useAdminNav();
 
   const handleEditClick = (productId: string, productName: string) => {
     const editPath = `/admin/edit-product/${productId}`;
     addTab({ path: editPath, label: `Edit ${productName}` });
   };
-
-
 
   if (products.length === 0) return <p>No Products Found</p>;
 
@@ -79,26 +81,29 @@ export default function ProductsTable({ products }: ProductsTableProps) {
             <TableCell>{formatPrice(product.price)}</TableCell>
             <TableCell>{product.category?.name}</TableCell>
             <TableCell>
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <MoreVertical />
-                  <span className="sr-only">Actions</span>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className='bg-white'>
-                  <DropdownMenuItem
-                    onSelect={() => handleEditClick(product.id, product.name)}
-                  >
-                  <Edit className="mr-2 h-4 w-4"/>  Edit
-                  </DropdownMenuItem>
-                  <ActiveToggleDropDownItem
-                    id={product.id}
-                    inStock={product.inStock}
-                  />
-                  <DropdownMenuSeparator />
-                  <DeleteDropDownItem productId={product.id}/>
-                  {/* Other menu items */}
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {!readonly && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <MoreVertical />
+
+                    <span className="sr-only">Actions</span>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-white">
+                    <DropdownMenuItem
+                      onSelect={() => handleEditClick(product.id, product.name)}
+                    >
+                      <Edit className="mr-2 h-4 w-4" /> Edit
+                    </DropdownMenuItem>
+                    <ActiveToggleDropDownItem
+                      id={product.id}
+                      inStock={product.inStock}
+                    />
+                    <DropdownMenuSeparator />
+                    <DeleteDropDownItem productId={product.id} />
+                    {/* Other menu items */}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </TableCell>
           </TableRow>
         ))}

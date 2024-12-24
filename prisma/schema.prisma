@@ -81,4 +81,5 @@ model Session {
 enum Role {
   USER
   ADMIN
+  VIEW_ONLY
 }

@@ -1,5 +1,6 @@
 import { NavigationProvider } from "@/context/ClientNavigationContext";
 import ClientLayout from "./ClientLayout";
+
 export default async function Layout({
   children,
 }: {

@@ -13,12 +13,17 @@ import { useRouter } from 'next/navigation'; // Updated import
 
 type Product = Prisma.ProductGetPayload<object>;
 
-export default function ProductForm({
-  product,
-}: {
+interface ProductFormProps {
   product: Product | null;
-}) {
+  session?: any; // Adjust if you have a custom Session type
+}
+
+export default function ProductForm({ product, session }: ProductFormProps) {
   const router = useRouter();
+
+    // Check if user is VIEW_ONLY
+    const isViewOnly = session?.user?.role === "VIEW_ONLY";
+
   // State for form fields
   const [name, setName] = useState<string>(product?.name || "");
   const [price, setPrice] = useState<string>(product?.price?.toString() || "");
@@ -86,6 +91,53 @@ export default function ProductForm({
       setExistingImages(product.images || []);
     }
   }, [product, hasSubmitted]);
+
+  if (isViewOnly && !product) {
+    return <p className='flex justify-center'>You do not have permission to add new products.</p>;
+  }
+
+
+  if (isViewOnly && product) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Product Details (Read-only)</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <p>
+              <strong>Name:</strong> {product.name}
+            </p>
+            <p>
+              <strong>Price:</strong> {formatPrice(product.price || 0)}
+            </p>
+            <p>
+              <strong>Description:</strong> {product.description}
+            </p>
+
+            {product.images?.length > 0 && (
+              <div>
+                <strong>Images:</strong>
+                <div className="flex space-x-2 mt-2">
+                  {product.images.map((imgKey, idx) => (
+                    <div key={idx}>
+                      <Image
+                        src={getImageSrc(imgKey)}
+                        alt={`Image ${idx + 1}`}
+                        width={150}
+                        height={150}
+                        className="object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   /**
    * Handles changes to new image inputs.

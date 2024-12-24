@@ -3,6 +3,8 @@ import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import ProductForm from "./components/ProductForm";
 import AdminContainer from "@/components/ui/AdminContainer";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 
 type Product = Prisma.ProductGetPayload<object>;
 
@@ -11,6 +13,9 @@ export default async function AddProducts({
 }: {
   params: { id?: string };
 }) {
+
+  const session = await getServerSession(authOptions);
+
   let product: Product | null = null;
 
   if (params.id) {
@@ -21,8 +26,7 @@ export default async function AddProducts({
 
   return (
     <>
-      <AdminContainer />
-      <ProductForm product={product} />
+      <ProductForm product={product} session={session} />
     </>
   );
 }

@@ -47,6 +47,13 @@ const AdminNav = () => {
           selected={pathname === "/admin/manage-categories"}  
         />  
        </Link>  
+       <Link href="/admin/add-category">  
+        <AdminNavItem  
+          label="Add Category"  
+          icon={MdDns}  
+          selected={pathname === "/admin/add-category"}  
+        />  
+       </Link>  
        {/* Render additional tabs from context */}  
        <EditTab />  
        {session && (  

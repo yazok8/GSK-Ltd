@@ -19,7 +19,7 @@ const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
   }
 
   // If user is not an admin, redirect to 403
-  if (session.user.role !== "ADMIN") {
+  if (session.user.role !== "ADMIN" && session.user.role !== "VIEW_ONLY") {
     redirect("/403");
   }
 
