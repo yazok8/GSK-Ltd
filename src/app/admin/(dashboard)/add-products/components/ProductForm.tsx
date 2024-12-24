@@ -250,7 +250,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
       <CardContent>
         <form onSubmit={handleSubmit}>
           {/* Product Name */}
-          <div className='space-y-2'>
+          <div className='space-y-2 my-3'>
             <Label htmlFor='name'>Name</Label>
             <Input
               type="text"
@@ -263,7 +263,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
           </div>
 
           {/* Product Price */}
-          <div className="space-y-2">
+          <div className="space-y-2 my-3">
             <Label htmlFor="price">Price</Label>
             <Input
               type="number"
@@ -279,7 +279,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
           </div>
 
           {/* Product Description */}
-          <div className="space-y-2">
+          <div className="space-y-2 my-3">
             <Label htmlFor='description'>Description</Label>
             <Textarea
               id="description"
@@ -291,7 +291,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
           </div>
 
           {/* Category Field */}
-          <div className="space-y-2 text-sm">
+          <div className="space-y-2 text-sm my-3">
             <Label htmlFor="categoryId">Category</Label>
             <select
               id="categoryId"
@@ -311,7 +311,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
           </div>
 
           {/* Existing Images */}
-          <div className="space-y-2">
+          <div className="space-y-2 my-3">
             <Label>Existing Images</Label>
             {existingImages.map((imageKey, index) => (
               <div key={index} className="relative">

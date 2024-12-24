@@ -39,7 +39,7 @@ export async function POST(req: Request) {
         username,
         email: email.toLowerCase(),
         hashedPassword,
-        role: "ADMIN", // Default role
+        role: "VIEW_ONLY", // Default role
       },
     });
 
