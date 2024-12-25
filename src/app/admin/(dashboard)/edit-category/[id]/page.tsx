@@ -1,5 +1,4 @@
 import prisma from '@/lib/prisma';
-import AdminContainer from '@/components/ui/AdminContainer';
 import CategoryForm from '../../manage-categories/_components/CategoryForm'; 
 import { Card, CardContent } from '@/components/ui/card';
 import { authOptions } from '@/lib/auth';
@@ -27,7 +26,6 @@ export default async function EditCategoryPage({
   return (
     <>
       <Card>
-        <AdminContainer />
         <CardContent>
           <CategoryForm category={category} />
         </CardContent>
