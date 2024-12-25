@@ -26,6 +26,7 @@ export default function UserSignUp() {
     handleSubmit,
     formState: { errors },
     register,
+    setError
   } = useForm<SignUpFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,34 +37,61 @@ export default function UserSignUp() {
     },
   });
 
-  async function onSubmit(values: SignUpFormValues) {
-    try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: values.name,
-          username:values.username,
-          email: values.email,
-          password: values.password,
-        }),
-      });
-
-        await response.json();
-
-      if (response.ok) {
-        toast("Account created successfully")
-        router.push("/admin/auth/sign-in");
-      } else {
-        toast("Something went wrong!")
-      }
-    } catch (error) {
-      console.error("Sign-up failed:", error);
-        toast("Something went wrong!")
-    }
-  }
+  async function onSubmit(values: SignUpFormValues) {  
+    try {  
+     const response = await fetch("/api/auth/register", {  
+      method: "POST",  
+      headers: {  
+        "Content-Type": "application/json",  
+      },  
+      body: JSON.stringify({  
+        name: values.name,  
+        username: values.username,  
+        email: values.email,  
+        password: values.password,  
+      }),  
+     });  
+    
+     const data = await response.json();  
+    
+     if (response.ok) {  
+      toast("Account created successfully");  
+      router.push("/admin/auth/sign-in");  
+     } else {  
+      if (data.error) {  
+        if (typeof data.error === "object") {  
+         if (data.error.email) {  
+          setError("email", {  
+            type: "manual",  
+            message: data.error.email,  
+          });  
+         }  
+         if (data.error.username) {  
+          setError("username", {  
+            type: "manual",  
+            message: data.error.username,  
+          });  
+         }  
+        } else {  
+         switch (data.error) {  
+          case "MissingCredentials":  
+            toast.error("Please provide all required fields.");  
+            break;  
+          case "InternalServerError":  
+            toast.error("Something went wrong!");  
+            break;  
+          default:  
+            toast.error("Something went wrong!");  
+         }  
+        }  
+      }  
+     }  
+    } catch (error: any) {  
+     console.error("Sign-up failed:", error);  
+     toast.error("Something went wrong!");  
+    }  
+  }  
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen p-5">

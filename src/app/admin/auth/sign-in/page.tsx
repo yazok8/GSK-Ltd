@@ -17,7 +17,7 @@ const adminFormSchema = z.object({
     .string()
     .min(1, "Password is required")
     .min(8, "Password must have minimum 8 characters"),
-  isAdmin: z.literal("true"), // Ensure isAdmin is always "true" for admin sign-in
+  isAdmin: z.literal("false"), // Ensure isAdmin is always "true" for admin sign-in
 });
 
 type SignInFormValues = z.infer<typeof adminFormSchema>;
@@ -35,17 +35,17 @@ export default function AdminSignIn() {
     defaultValues: {
       identifier: "",
       password: "",
-      isAdmin: "true", // Set default value to "true"
+      isAdmin: "false", // Set default value to "true"
     },
   });
 
   async function onSubmit(values: SignInFormValues) {
-    const callbackUrl = "/admin"; // Redirect to admin dashboard after sign-in
+    const callbackUrl = "/admin";
     const signinCreds = await signIn("credentials", {
       identifier: values.identifier,
       password: values.password,
       redirect: false,
-      callbackUrl,
+      callbackUrl,  
       isAdmin: values.isAdmin, // Pass 'isAdmin' as part of the credentials
     });
 

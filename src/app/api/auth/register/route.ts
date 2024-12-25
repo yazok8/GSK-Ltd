@@ -2,30 +2,52 @@
 
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import prisma  from "@/lib/prisma";
-// Adjust the path as necessary
+import prisma from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
-    const { name, username, email, password} = await req.json();
+    const { name, username, email, password } = await req.json();
 
     // Validate input
     if (!email || !password || !name) {
-      return NextResponse.error();
+      return NextResponse.json(
+        { error: "MissingCredentials" },
+        { status: 400 }
+      );
     }
 
     // Check if the user already exists
     const existingUser = await prisma.user.findFirst({
       where: {
-        OR: [
-          { email: email.toLowerCase() },
-          { username: username },
-        ],
+        OR: [{ email: email.toLowerCase() }, { username: username }],
       },
     });
 
     if (existingUser) {
-      return NextResponse.json({ error: 'Email or Username already in use' }, { status: 400 });
+      if (
+        existingUser.email === email.toLowerCase() &&
+        existingUser.username === username
+      ) {
+        return NextResponse.json(
+          {
+            error: {
+              email: "Email already in use",
+              username: "Username already in use",
+            },
+          },
+          { status: 400 }
+        );
+      } else if (existingUser.email === email.toLowerCase()) {
+        return NextResponse.json(
+          { error: { email: "Email already in use" } },
+          { status: 400 }
+        );
+      } else {
+        return NextResponse.json(
+          { error: { username: "Username already in use" } },
+          { status: 400 }
+        );
+      }
     }
 
     // Hash the password with bcrypt
@@ -51,14 +73,17 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (error: any) {
-    console.error('Error registering user:', error);
+    console.error("Error registering user:", error);
 
     // Handle Prisma unique constraint errors
-    if (error.code === 'P2002') { // Unique constraint failed
-      return NextResponse.json({ error: 'Email or Username already in use' }, { status: 400 });
+    if (error.code === "P2002") {
+      return NextResponse.json(
+        { error: "InternalServerError" },
+        { status: 500 }
+      );
     }
 
     // Handle other errors
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: "InternalServerError" }, { status: 500 });
   }
 }

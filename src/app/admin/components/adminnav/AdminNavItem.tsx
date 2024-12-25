@@ -5,7 +5,7 @@ interface AdminNavItemProps {
   selected?: boolean;
   icon: IconType;
   label: string;
-  onClose?: () => void; // Optional onClose prop
+  onClose?: () => void; // Optional
 }
 
 const AdminNavItem: React.FC<AdminNavItemProps> = ({
@@ -16,14 +16,14 @@ const AdminNavItem: React.FC<AdminNavItemProps> = ({
 }) => {
   return (
     <div
-      className={`flex items-center justify-center text-center gap-1 p-2 border-b-2 hover:text-slate-800 transition cursor-pointer ${
+      className={`flex items-start text-start gap-1 p-2 border-b-2 hover:text-slate-800 transition cursor-pointer${
         selected
           ? "border-b-slate-800 text-slate-800"
           : "border-transparent text-slate-500"
       }`}
     >
       <Icon size={20} />
-      <div className="font-medium text-sm text-center break-normal flex items-center">
+      <div className="font-medium text-sm text-center break-normal flex items-center text-nowrap">
         {label}
         {onClose && (
           <MdClose
@@ -32,7 +32,7 @@ const AdminNavItem: React.FC<AdminNavItemProps> = ({
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              onClose(); // Trigger the close action
+              onClose();
             }}
           />
         )}

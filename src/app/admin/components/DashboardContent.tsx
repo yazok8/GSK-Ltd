@@ -16,9 +16,6 @@ export default function DashboardContent({ products, categories }: DashboardCont
 
   return (
     <>
-      <CardHeader>
-        <CardTitle>Admin Dashboard</CardTitle>
-      </CardHeader>
       {isViewOnly && (
         <div className="bg-blue-100 p-4 rounded-md mx-4 mb-4">
           <p className="text-blue-800">

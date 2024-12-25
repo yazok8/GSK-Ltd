@@ -10,7 +10,6 @@ export const metadata = {
 };
 
 const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
-
   const session = await getServerSession(authOptions);
 
   // If no session, redirect to sign-in
@@ -18,18 +17,28 @@ const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
     redirect("/admin/auth/sign-in");
   }
 
-  // If user is not an admin, redirect to 403
+  // If user is not an admin (or VIEW_ONLY), redirect to 403
   if (session.user.role !== "ADMIN" && session.user.role !== "VIEW_ONLY") {
     redirect("/403");
   }
 
   return (
-    <>
     <AdminNavProvider>
-      <AdminNav />
-      <div className="container mt-20 mb-5">{children}</div>
-      </AdminNavProvider>
-    </>
+      <div className="flex min-h-screen">
+        {/* Left Sidebar */}
+        <div className="w-64 border-r">
+          {/*
+            Pass the session object to the Navbar as a prop.
+            This means the Navbar will have the session data immediately,
+            without a client-side loading step.
+          */}
+          <AdminNav session={session} />
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 p-5">{children}</div>
+      </div>
+    </AdminNavProvider>
   );
 };
 

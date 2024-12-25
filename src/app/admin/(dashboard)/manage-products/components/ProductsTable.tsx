@@ -24,12 +24,10 @@ interface Product {
 
 interface ProductsTableProps {
   products: Product[];
-  readonly?: boolean;
 }
 
 export default function ProductsTable({
-  products,
-  readonly,
+  products
 }: ProductsTableProps) {
   const { addTab } = useAdminNav();
 
@@ -41,6 +39,10 @@ export default function ProductsTable({
   if (products.length === 0) return <p>No Products Found</p>;
 
   return (
+    <div>
+      <h2 className="text-xl font-semibold mt-8 mb-4 text-center">
+        Existing Products
+      </h2>
     <table className="min-w-full divide-y divide-gray-200 dark:divide-neutral-700 mx-auto text-center">
       <thead>
         <tr>
@@ -81,7 +83,6 @@ export default function ProductsTable({
             <TableCell>{formatPrice(product.price)}</TableCell>
             <TableCell>{product.category?.name}</TableCell>
             <TableCell>
-              {!readonly && (
                 <DropdownMenu>
                   <DropdownMenuTrigger>
                     <MoreVertical />
@@ -103,11 +104,11 @@ export default function ProductsTable({
                     {/* Other menu items */}
                   </DropdownMenuContent>
                 </DropdownMenu>
-              )}
             </TableCell>
           </TableRow>
         ))}
       </TableBody>
     </table>
+    </div>
   );
 }

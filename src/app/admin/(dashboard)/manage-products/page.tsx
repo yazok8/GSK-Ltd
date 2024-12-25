@@ -1,6 +1,5 @@
 import React from "react";
 import prisma from "@/lib/prisma";
-import AdminContainer from "@/components/ui/AdminContainer";
 import ProductsTable from "./components/ProductsTable";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -23,7 +22,6 @@ export default async function ManageProducts() {
 
   return (
     <>
-      <AdminContainer />
       <ProductsTable products={products} />
     </>
   );

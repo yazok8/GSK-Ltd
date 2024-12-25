@@ -17,10 +17,9 @@ interface Category {
 
 interface CategoriesTableProps {
   categories: Category[];
-  readonly?:boolean
 }
 
-function CategoriesTable({ categories, readonly }: CategoriesTableProps) {
+function CategoriesTable({ categories }: CategoriesTableProps) {
   const { addTab } = useAdminNav();
 
   const handleEditClick = (categoryId: string, categoryName: string) => {
@@ -79,7 +78,7 @@ function CategoriesTable({ categories, readonly }: CategoriesTableProps) {
                 )}
               </TableCell>
               <TableCell className="py-1">
-                {!readonly &&                 <DropdownMenu>
+                <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="p-2 hover:bg-accent rounded-full">
                       <MoreVertical className="h-4 w-4" />
@@ -96,7 +95,7 @@ function CategoriesTable({ categories, readonly }: CategoriesTableProps) {
                     </DropdownMenuItem>
                     <DeleteCategoryDropDownItem id={category.id} />
                   </DropdownMenuContent>
-                </DropdownMenu> }
+                </DropdownMenu> 
 
               </TableCell>
             </TableRow>
