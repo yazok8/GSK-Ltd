@@ -247,7 +247,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
       <CardHeader>
         <CardTitle>{product ? 'Edit Product' : 'Add A Product'}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className='bg-white border-solid b-2 shadow-xl'>
         <form onSubmit={handleSubmit}>
           {/* Product Name */}
           <div className='space-y-2 my-3'>
@@ -259,6 +259,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
+              className='border-solid b-2'
             />
           </div>
 
@@ -272,6 +273,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
               required
               value={price}
               onChange={(e) => setPrice(e.target.value)}
+              className='border-solid b-2'
             />
             <div className="text-muted-foreground">
               {formatPrice(Number(price) || 0)}
@@ -287,6 +289,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
               required
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              className='border-solid b-2'
             />
           </div>
 
@@ -344,6 +347,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
               accept="image/*"
               onChange={handleNewImagesChange}
               ref={fileInputRef}
+              className='border-solid b-2'
             />
             {newImagePreviews.map((url, index) => (
               <div key={`new-image-${index}`} className="relative">

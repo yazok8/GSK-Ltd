@@ -35,6 +35,45 @@ span{
   .text-balance {
     text-wrap: balance;
   }
+
+  .table-container {
+    @apply overflow-x-auto rounded-lg shadow-lg;
+  }
+
+  .table {
+    @apply w-full border-collapse;
+  }
+
+  .table th,
+  .table td {
+    @apply pl-4 py-4 md:py-2 border-b border-gray-200 dark:border-neutral-700 text-center;
+  }
+
+  .table th {
+    @apply text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500 bg-gray-100;
+  }
+
+  .table td {
+    @apply text-start text-sm font-normal text-gray-600 dark:text-neutral-400 bg-white;
+  }
+   
+   /* @media (max-width: 768px) {  
+    .table-container {  
+     @apply overflow-x-auto;  
+    }  
+    .table {  
+     @apply border-collapse;  
+    }  
+    .table th {  
+     display: none;  
+    }  
+    .table td {  
+     @apply block w-full bg-white;  
+    }  
+    .table td[data-label]::before {  
+     @apply content-[attr(data-label)] float-left font-bold mr-2;  
+    }  
+   }    */
 }
 
 @layer base {
@@ -116,3 +155,4 @@ span{
     @apply bg-teal-50; /* Valid Tailwind classes */
   }
 }
+

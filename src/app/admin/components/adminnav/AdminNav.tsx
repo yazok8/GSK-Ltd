@@ -18,7 +18,7 @@ const AdminNav: React.FC<AdminNavProps> = ({ session }) => {
   const pathname = usePathname();
 
   return (
-    <nav className="h-full px-4 py-6 flex flex-col items-start text-left gap-6">
+    <nav className="h-full px-4 py-6 flex flex-col items-start text-left gap-6 bg-white">
       {/* Header / Logo */}
       <div className="w-full p-6 border-b border-gray-800 text-start flex items-start">
         <Link href="/admin">

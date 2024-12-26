@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { formatPrice } from "utils/formatPrice"; // Adjusted import path
+import { formatPrice } from "utils/formatPrice"; // Adjust import path as needed
 import { ActiveToggleDropDownItem, DeleteDropDownItem } from "./ProductAction";
 
 interface Product {
@@ -26,9 +26,7 @@ interface ProductsTableProps {
   products: Product[];
 }
 
-export default function ProductsTable({
-  products
-}: ProductsTableProps) {
+export default function ProductsTable({ products }: ProductsTableProps) {
   const { addTab } = useAdminNav();
 
   const handleEditClick = (productId: string, productName: string) => {
@@ -39,54 +37,76 @@ export default function ProductsTable({
   if (products.length === 0) return <p>No Products Found</p>;
 
   return (
-    <div>
+    <div className="table-container">
       <h2 className="text-xl font-semibold mt-8 mb-4 text-center">
         Existing Products
       </h2>
-    <table className="min-w-full divide-y divide-gray-200 dark:divide-neutral-700 mx-auto text-center">
-      <thead>
-        <tr>
-          <th className="text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500 w-0">
-            <span className="sr-only">Available for purchase</span>
-          </th>
-          <th className="text-center text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">
-            Name
-          </th>
-          <th className="text-center text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">
-            Price
-          </th>
-          <th className="text-center text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">
-            Category
-          </th>
-          <th className="text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">
-            <span className="sr-only">Actions</span>
-          </th>
-        </tr>
-      </thead>
-      <TableBody>
-        {products.map((product) => (
-          <TableRow key={product.id}>
-            <TableCell>
-              {product.inStock ? (
-                <>
-                  <CheckCircle2 />
-                  <span className="sr-only">In Stock</span>
-                </>
-              ) : (
-                <>
-                  <XCircle className="stroke-destructive" />
-                  <span className="sr-only">Out of Stock</span>
-                </>
-              )}
-            </TableCell>
-            <TableCell>{product.name}</TableCell>
-            <TableCell>{formatPrice(product.price)}</TableCell>
-            <TableCell>{product.category?.name}</TableCell>
-            <TableCell>
+      <table className="table bg-white">
+        {/* Table Head (Desktop) */}
+        <thead className="hidden md:table-header-group">
+          <tr className='p-4'>
+            <th className="w-0">
+              <span className="sr-only">Available</span>
+            </th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>
+              Actions
+            </th>
+          </tr>
+        </thead>
+
+        {/* Table Head (Mobile) */}
+        <thead className="md:hidden p-4">
+          <tr>
+            <th>Product</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <TableBody>
+          {products.map((product) => (
+            <TableRow key={product.id}>
+              {/* Desktop: In Stock / Out of Stock */}
+              <TableCell className="hidden md:table-cell">
+                {product.inStock ? (
+                  <>
+                    <CheckCircle2 />
+                    <span className="sr-only">In Stock</span>
+                  </>
+                ) : (
+                  <>
+                    <XCircle className="stroke-destructive" />
+                    <span className="sr-only">Out of Stock</span>
+                  </>
+                )}
+              </TableCell>
+
+              {/* Mobile: Name */}
+              <TableCell className="md:hidden">
+                {product.name}
+              </TableCell>
+              {/* Desktop: Name */}
+              <TableCell className="hidden md:table-cell">
+                {product.name}
+              </TableCell>
+
+              {/* Desktop: Price */}
+              <TableCell className="hidden md:table-cell">
+                {formatPrice(product.price)}
+              </TableCell>
+
+              {/* Desktop: Category */}
+              <TableCell className="hidden md:table-cell">
+                {product.category?.name}
+              </TableCell>
+
+              {/* Mobile: Actions */}
+              <TableCell className="md:hidden">
                 <DropdownMenu>
                   <DropdownMenuTrigger>
                     <MoreVertical />
-
                     <span className="sr-only">Actions</span>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-white">
@@ -101,14 +121,36 @@ export default function ProductsTable({
                     />
                     <DropdownMenuSeparator />
                     <DeleteDropDownItem productId={product.id} />
-                    {/* Other menu items */}
                   </DropdownMenuContent>
                 </DropdownMenu>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </table>
+              </TableCell>
+
+              {/* Desktop: Actions */}
+              <TableCell className="hidden md:table-cell">
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <MoreVertical />
+                    <span className="sr-only">Actions</span>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-white">
+                    <DropdownMenuItem
+                      onSelect={() => handleEditClick(product.id, product.name)}
+                    >
+                      <Edit className="mr-2 h-4 w-4" /> Edit
+                    </DropdownMenuItem>
+                    <ActiveToggleDropDownItem
+                      id={product.id}
+                      inStock={product.inStock}
+                    />
+                    <DropdownMenuSeparator />
+                    <DeleteDropDownItem productId={product.id} />
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </table>
     </div>
   );
 }

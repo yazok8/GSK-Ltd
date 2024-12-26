@@ -1,13 +1,17 @@
 "use client";
 
-import { DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { TableBody, TableCell, TableRow } from '@/components/ui/table';
-import { DropdownMenu, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
-import { Edit, MoreVertical } from 'lucide-react';
-import Image from 'next/image';
-import React from 'react';
-import { DeleteCategoryDropDownItem } from './DeleteCategoryDropDownItem';
-import { useAdminNav } from '@/context/AdminNavContext';
+import React from "react";
+import { useAdminNav } from "@/context/AdminNavContext";
+import { TableBody, TableCell, TableRow } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
+import { Edit, MoreVertical } from "lucide-react";
+import Image from "next/image";
+import { DeleteCategoryDropDownItem } from "./DeleteCategoryDropDownItem";
 
 interface Category {
   id: string;
@@ -19,7 +23,7 @@ interface CategoriesTableProps {
   categories: Category[];
 }
 
-function CategoriesTable({ categories }: CategoriesTableProps) {
+export default function CategoriesTable({ categories }: CategoriesTableProps) {
   const { addTab } = useAdminNav();
 
   const handleEditClick = (categoryId: string, categoryName: string) => {
@@ -28,40 +32,45 @@ function CategoriesTable({ categories }: CategoriesTableProps) {
   };
 
   return (
-    <div className="w-full">
+    <div className="table-container">
       <h2 className="text-xl font-semibold mt-8 mb-4 text-center">
         Existing Categories
       </h2>
 
-      <table className="mx-auto min-w-[40rem]">
-        <thead className="border-none">
+      <table className="table bg-white">
+        {/* Desktop Table Head */}
+        <thead className="hidden md:table-header-group">
           <tr>
-            <th
-              scope="col"
-              className="text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500 p-4"
-            >
-              Name
-            </th>
-            <th
-              scope="col"
-              className="text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500 p-4"
-            >
-              Image
-            </th>
-            <th
-              scope="col"
-              className="text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500 p-4"
-            >
+            <th>Name</th>
+            <th>Image</th>
+            <th>
               Action
             </th>
           </tr>
         </thead>
 
+        {/* Mobile Table Head */}
+        <thead className="md:hidden">
+          <tr>
+            <th>Category</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
         <TableBody>
           {categories?.map((category) => (
-            <TableRow className="border-b-0" key={category.id}>
-              <TableCell className="py-1">{category.name}</TableCell>
-              <TableCell className="py-1">
+            <TableRow key={category.id} className="border-b-0">
+              {/* Mobile: Name */}
+              <TableCell className="md:hidden">
+                {category.name}
+              </TableCell>
+              {/* Desktop: Name */}
+              <TableCell className="hidden md:table-cell">
+                {category.name}
+              </TableCell>
+
+              {/* Desktop: Image */}
+              <TableCell className="hidden md:table-cell">
                 {category.image ? (
                   <div className="relative h-20 w-20">
                     <Image
@@ -77,7 +86,9 @@ function CategoriesTable({ categories }: CategoriesTableProps) {
                   <span>No Image</span>
                 )}
               </TableCell>
-              <TableCell className="py-1">
+
+              {/* Mobile: Actions */}
+              <TableCell className="md:hidden">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="p-2 hover:bg-accent rounded-full">
@@ -95,8 +106,29 @@ function CategoriesTable({ categories }: CategoriesTableProps) {
                     </DropdownMenuItem>
                     <DeleteCategoryDropDownItem id={category.id} />
                   </DropdownMenuContent>
-                </DropdownMenu> 
+                </DropdownMenu>
+              </TableCell>
 
+              {/* Desktop: Actions */}
+              <TableCell className="hidden md:table-cell">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="p-2 hover:bg-accent rounded-full">
+                      <MoreVertical className="h-4 w-4" />
+                      <span className="sr-only">Actions</span>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[160px] bg-white">
+                    <DropdownMenuItem
+                      onClick={() => handleEditClick(category.id, category.name)}
+                      className="flex items-center gap-2"
+                    >
+                      <Edit className="h-4 w-4" />
+                      Edit
+                    </DropdownMenuItem>
+                    <DeleteCategoryDropDownItem id={category.id} />
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
             </TableRow>
           ))}
@@ -105,5 +137,3 @@ function CategoriesTable({ categories }: CategoriesTableProps) {
     </div>
   );
 }
-
-export default CategoriesTable;

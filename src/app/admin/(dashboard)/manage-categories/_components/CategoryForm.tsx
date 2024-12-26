@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Category } from '@prisma/client';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@radix-ui/react-label';
 import { Input } from '@/components/ui/input';
 import Image from 'next/image';
@@ -118,22 +119,23 @@ export default function CategoryForm({ category, onSuccess }: CategoryFormProps)
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">
-        {isEditing ? 'Edit Category' : 'Add Category'}
-      </h1>
+    <Card>
+      <CardHeader className="text-2xl font-bold mb-4">
+      <CardTitle>  {isEditing ? 'Edit Category' : 'Add Category'}</CardTitle>
+      </CardHeader>
+      <CardContent className='bg-white border-solid b-4 shadow-xl'>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <div className='mt-4'>
             <Label className='mt-4' htmlFor="name">Category Name</Label>
-            <Input id="name" {...register('name')} />
+            <Input id="name" {...register('name')} className='border-solid b-2'/>
             {errors.name && (
               <p className="text-destructive">{errors.name.message}</p>
             )}
           </div>
           <div className='mt-4'>
             <Label htmlFor="description">Description</Label>
-            <Input id="description" {...register('description')} />
+            <Input id="description" {...register('description')} className='border-solid b-2' />
           </div>
           {isEditing && category?.image && (
             <div>
@@ -156,6 +158,8 @@ export default function CategoryForm({ category, onSuccess }: CategoryFormProps)
               type="file"
               accept="image/*"
               {...register('image')}
+              className='border-solid b-2'
+
             />
           </div>
           {errors.image && (
@@ -186,6 +190,7 @@ export default function CategoryForm({ category, onSuccess }: CategoryFormProps)
             : 'Add Category'}
         </Button>
       </form>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
