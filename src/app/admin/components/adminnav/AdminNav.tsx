@@ -22,7 +22,7 @@ const AdminNav: React.FC<AdminNavProps> = ({ session }) => {
       {/* Header / Logo */}
       <div className="w-full p-6 border-b border-gray-800 text-start flex items-start">
         <Link href="/admin">
-          <span className="text-xl font-semibold">Admin Dashboard</span>
+          <span className="text-xl font-semibold text-nowrap">Admin Dashboard</span>
         </Link>
       </div>
 

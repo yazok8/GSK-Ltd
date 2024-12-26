@@ -26,7 +26,7 @@ const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
     <AdminNavProvider>
       <div className="flex min-h-screen">
         {/* Left Sidebar */}
-        <div className="w-64 border-r">
+        <div className="w-60 border-r">
           {/*
             Pass the session object to the Navbar as a prop.
             This means the Navbar will have the session data immediately,
