@@ -45,7 +45,6 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         <div className='grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4'>
           {products && products.map((product) => (
             <div key={product.id} className='flex flex-col justify-center items-center max-h-[300px] hover:underline'>
-              <Link href={`/products/${product.id}`}>
                 <Image
                   src={getImageSrc(product.images[0])}
                   alt={product.name}
@@ -56,13 +55,9 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                   quality={80}
                 />
                 <h1>{product.name}</h1>
-              </Link>
             </div>
           ))}
         </div>
-
-        {/* Pagination Component (Optional) */}
-        {/* Implement pagination if needed */}
       </div>
     </div>
   );
