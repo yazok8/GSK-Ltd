@@ -21,6 +21,13 @@ function CategoriesGridSlider({ categories }: CategoryProps) {
     slidesToScroll: 2,
     responsive: [
       {
+        breakpoint: 1022, // Medium screens
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+        },
+      },
+      {
         breakpoint: 768, // Medium screens
         settings: {
           slidesToShow: 1,
@@ -35,7 +42,7 @@ function CategoriesGridSlider({ categories }: CategoryProps) {
       <Slider {...settings}>
         {categories.map((cat) => (
           <div key={cat.id} className="px-2">
-            <div className="bg-white rounded-lg shadow-md overflow-hidden transform transition-transform duration-200 hover:scale-105 h-[16em] md:h-auto">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden transform transition-transform duration-200 hover:scale-105 h-[16em]">
               <Link href={`/category/${cat.id}`}>
                 <div className="block">
                   {/* Image Container */}
