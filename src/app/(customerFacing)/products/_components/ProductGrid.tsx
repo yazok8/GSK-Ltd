@@ -1,28 +1,40 @@
 'use client';
 
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment, useEffect } from 'react';
 import Image from 'next/image';
 import { getImageSrc } from '@/lib/imageHelper';
 import { Dialog, DialogPanel, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { Product } from '@prisma/client'; // Ensure this includes 'images', 'name', 'description'
 
-export type ProductGridType = {
-  products: Product[];
-};
 
-export default function ProductsGrid({ products }: ProductGridType) {
+
+export default function ProductsGrid() {
   // State to hold the selected product or null
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
+  const [products, setProducts] = useState<Product[]>([]);
+
   // Function to close the modal
   const closeModal = () => setSelectedProduct(null);
+
+  useEffect(() => {
+    (async () => {
+      const res = await fetch("/api/products");
+      if (res.ok) {
+        const data = await res.json();
+        setProducts(data);
+      } else {
+        console.error("Failed to fetch team data.");
+      }
+    })();
+  }, []);
 
   return (
     <>
       {/* Products Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {products && products.map((product) => (
+        {products.map((product) => (
           <div
             key={product.id}
             className="flex flex-col items-center mt-6 p-2 bg-transparent"
