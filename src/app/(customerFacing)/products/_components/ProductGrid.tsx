@@ -20,12 +20,14 @@ export default function ProductsGrid() {
 
   useEffect(() => {
     (async () => {
-      const res = await fetch("/api/products");
+      const res = await fetch("/api/products", {
+        cache: "no-store",  
+      });
       if (res.ok) {
         const data = await res.json();
         setProducts(data);
       } else {
-        console.error("Failed to fetch team data.");
+        console.error("Failed to fetch product data.");
       }
     })();
   }, []);
