@@ -134,7 +134,6 @@ export async function updateCategory(req: NextRequest, { params }: { params: { i
           Key: existingCategory.image,
         };
         await s3Client.send(new DeleteObjectCommand(deleteParams));
-        console.log(`Deleted old image from S3: ${existingCategory.image}`);
       } catch (error) {
         console.error('Error deleting old image from S3:', error);
         // You may choose to return an error or continue silently

@@ -26,8 +26,6 @@ export default function MissonVison() {
                 height={260}
                 className="w-full h-full object-cover"
                 loading="lazy"
-                placeholder="blur"
-                blurDataURL="/placeholder.webp"
         
               />
         </div>
@@ -80,8 +78,6 @@ export default function MissonVison() {
                 height={300}
                 className="w-full h-full object-cover"
                 loading="lazy"
-                placeholder="blur"
-                blurDataURL="/placeholder.webp"
         
               />
         </div>

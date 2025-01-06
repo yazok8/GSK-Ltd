@@ -1,157 +1,92 @@
-'use client';
+// components/ProductGrid.tsx
 
-import React, { useState, Fragment, useEffect } from 'react';
-import Image from 'next/image';
-import { getImageSrc } from '@/lib/imageHelper';
-import { Dialog, DialogPanel, Transition } from '@headlessui/react';
-import { XMarkIcon } from '@heroicons/react/24/solid';
-import { Product } from '@prisma/client'; // Ensure this includes 'images', 'name', 'description'
+"use client";
 
+import React, { useState } from "react";
+import ProductDetails from "./ProductDetails";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { MappedProduct } from "@/types/MappedProduct";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { getImageSrc } from "@/lib/imageHelper";
+import { Category } from "@prisma/client";
 
+type ProductListProps = {
+  products: MappedProduct[];
+  category: Category; // Include category in the props
+};
 
-export default function ProductsGrid() {
-  // State to hold the selected product or null
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+const ProductsGrid: React.FC<ProductListProps> = ({ products, category }) => {
+  const [expandedProductId, setExpandedProductId] = useState<string | null>(null);
 
-  const [products, setProducts] = useState<Product[]>([]);
-
-  // Function to close the modal
-  const closeModal = () => setSelectedProduct(null);
-
-  useEffect(() => {
-    (async () => {
-      const res = await fetch("/api/products", {
-        cache: "no-store",  
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setProducts(data);
-      } else {
-        console.error("Failed to fetch product data.");
-      }
-    })();
-  }, []);
+  const toggleProductDetails = (id: string) => {
+    setExpandedProductId((prevId) => (prevId === id ? null : id));
+  };
 
   return (
-    <>
-      {/* Products Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="flex flex-col items-center mt-6 p-2 bg-transparent"
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {products.map((product) => (
+        <React.Fragment key={product.id}>
+          {/* Product Card */}
+          <Card
+            className={`cursor-pointer flex flex-col h-full transition-transform transform hover:scale-105 hover:shadow-lg ${
+              expandedProductId === product.id ? "border-blue-500" : "border-gray-300"
+            } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            onClick={() => toggleProductDetails(product.id)}
+            role="button"
+            aria-expanded={expandedProductId === product.id}
+            aria-controls={`product-details-${product.id}`}
+            tabIndex={0}
+            onKeyPress={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                toggleProductDetails(product.id);
+              }
+            }}
           >
-            {/* Product Image */}
-            <div
-              className="w-72 h-52 sm:w-72 sm:h-60 relative mb-3 cursor-pointer"
-              onClick={(e) => {
-                e.preventDefault(); // Prevent default behavior
-                setSelectedProduct(product); // Set the selected product
-              }}
-            >
-              <Image
-                src={getImageSrc(product.images[0])}
-                alt={product.name}
-                fill
-                className="object-cover rounded-md -z-10"
-                loading="lazy"
-                quality={80}
-              />
-            </div>
+            <CardHeader className="flex-1">
+              {/* Product Image */}
+              <div className="w-full h-48 relative mb-4">
+                <Image
+                  src={getImageSrc(product.images[0])}
+                  alt={product.name}
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-lg"
+                  loading="lazy"
+                />
+              </div>
+              <CardTitle className="text-xl font-semibold truncate">{product.name}</CardTitle>
+            </CardHeader>
+          </Card>
 
-            {/* Product Name */}
-            <h3
-              className="text-center text-base sm:text-lg font-medium cursor-pointer"
-              onClick={(e) => {
-                e.preventDefault(); // Prevent default behavior
-                setSelectedProduct(product); // Set the selected product
-              }}
-            >
-              {product.name}
-            </h3>
-          </div>
-        ))}
-      </div>
-
-      {/* Modal */}
-      <Transition appear show={!!selectedProduct} as={Fragment}>
-        <Dialog
-          as="div"
-          className="fixed inset-0 z-50 overflow-y-auto"
-          onClose={closeModal}
-        >
-          <div className="min-h-screen px-4 text-center">
-            {/* Overlay Transition */}
-            <Transition
-              as={Fragment}
-              show={!!selectedProduct} // Added show prop
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              {/* Manually create the overlay */}
-              <div className="fixed inset-0 bg-black bg-opacity-50" />
-            </Transition>
-
-            {/* Trick to center the modal */}
-            <span
-              className="inline-block h-screen align-middle"
-              aria-hidden="true"
-            >
-              &#8203;
-            </span>
-
-            {/* Modal Content Transition */}
-            <Transition
-              as={Fragment}
-              show={!!selectedProduct} // Added show prop
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <DialogPanel className="inline-block w-full max-w-3xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-gray-800 rounded-lg shadow-xl">
-                {/* Close Button */}
-                <button
-                  onClick={closeModal}
-                  className="absolute top-4 right-4 text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white focus:outline-none"
-                >
-                  <XMarkIcon className="h-6 w-6" />
-                  <span className="sr-only">Close</span>
-                </button>
-
-                {/* Modal Content */}
-                {selectedProduct && (
-                  <div className="p-4">
-                    <Image
-                      src={getImageSrc(selectedProduct.images[0])}
-                      alt={selectedProduct.name}
-                      width={800}
-                      height={600}
-                      className="object-contain rounded-md"
-                      priority
-                      placeholder="blur"
-                      blurDataURL="/placeholder.webp"
-                    />
-                    <h3 className="mt-4 text-2xl font-semibold text-gray-800 dark:text-gray-100">
-                      {selectedProduct.name}
-                    </h3>
-                    <p className='mt-2 text-gray-600 dark:text-gray-300'>
-                      {selectedProduct.description}
-                    </p>
-                    {/* Additional product details can be added here */}
-                  </div>
-                )}
-              </DialogPanel>
-            </Transition>
-          </div>
-        </Dialog>
-      </Transition>
-    </>
+          {/* Expandable Product Details */}
+          <AnimatePresence>
+            {expandedProductId === product.id && (
+              <motion.div
+                id={`product-details-${product.id}`}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="col-span-full mt-2 overflow-hidden relative"
+              >
+                {/* Triangle Indicator */}
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <svg width="20" height="10" viewBox="0 0 20 10" fill="white" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 0L20 10H0L10 0Z" fill="white" />
+                  </svg>
+                </div>
+                {/* Expanded Details Container */}
+                <div className="bg-white p-6 rounded-lg shadow-lg">
+                  <ProductDetails product={product} category={category} />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </React.Fragment>
+      ))}
+    </div>
   );
-}
+};
+
+export default ProductsGrid;

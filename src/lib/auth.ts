@@ -43,7 +43,6 @@ export const authOptions: NextAuthOptions = {
           if (!user) {
             throw new Error("UserNotFound");
           }
-          console.log("User role from DB:", user.role); 
           if (!user.hashedPassword) {
             throw new Error("NoPasswordSet");
           }
@@ -76,14 +75,12 @@ export const authOptions: NextAuthOptions = {
   callbacks: {  
     async jwt({ token, user }) {  
      if (user) {  
-      console.log("[jwt callback] user.role:", user.role);
       token.id = user.id;  
       token.role = user.role; // Add this line to include the user's role in the token's payload  
       token.username = user.username;  
       token.name = user.name;  
       token.email = user.email;  
      }  
-     console.log("[jwt callback] token.role:", token.role);
      return token;  
     },  
     async session({ session, token }) {  

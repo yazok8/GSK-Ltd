@@ -26,7 +26,6 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
     if (slideInterval.current) {
       clearInterval(slideInterval.current);
       slideInterval.current = null;
-      console.log("Slide timer stopped.");
     }
   }, []);
 
@@ -36,9 +35,7 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
       setCurrentIndex((prev) =>
         prev === selectedCategories.length - 1 ? 0 : prev + 1
       );
-      console.log("Auto-play to next slide.");
     }, 5000); // Change slide every 5 seconds
-    console.log("Slide timer started.");
   }, [selectedCategories.length, stopSlideTimer]);
 
   useEffect(() => {
@@ -55,14 +52,12 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
     setCurrentIndex((prev) =>
       prev === 0 ? selectedCategories.length - 1 : prev - 1
     );
-    console.log("Navigated to previous slide.");
   }, [selectedCategories.length]);
 
   const goToNext = useCallback(() => {
     setCurrentIndex((prev) =>
       prev === selectedCategories.length - 1 ? 0 : prev + 1
     );
-    console.log("Navigated to next slide.");
   }, [selectedCategories.length]);
 
   // Swipe Handlers
@@ -71,18 +66,10 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);
-    console.log(
-      "Touch start detected at position:",
-      e.targetTouches[0].clientX
-    );
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
     setTouchEnd(e.targetTouches[0].clientX);
-    console.log(
-      "Touch move detected at position:",
-      e.targetTouches[0].clientX
-    );
   };
 
   const handleTouchEnd = () => {
@@ -140,8 +127,6 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
                   style={{ objectFit: "cover" }}
                   className="rounded-lg"
                   loading="lazy"
-                  placeholder="blur"
-                  blurDataURL="/placeholder.webp"
                   onError={(e) => {
                     e.currentTarget.src = "/fallback.png";
                     console.error(
@@ -189,7 +174,6 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
             <button
               key={index}
               onClick={() => {
-                console.log(`Dot ${index + 1} clicked`);
                 setCurrentIndex(index);
                 startSlideTimer();
               }}

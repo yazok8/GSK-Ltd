@@ -31,6 +31,7 @@ const ProductImage: React.FC<ProductImageProps> = ({ product, selectedImg, handl
               width={100}
               height={100}
               className="object-cover w-full h-full"
+              // Removed placeholder and blurDataURL
             />
           </div>
         ))}
@@ -44,6 +45,10 @@ const ProductImage: React.FC<ProductImageProps> = ({ product, selectedImg, handl
           className="object-contain rounded-lg"
           loading="lazy"
           quality={80}
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).src = "/fallback-image.png";
+          }}
+          // Removed blurDataURL
         />
       </div>
     </div>

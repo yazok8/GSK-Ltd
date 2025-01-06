@@ -1,10 +1,10 @@
+// pages/category/[id].tsx or similar path
+
 import React from 'react';
-import Image from 'next/image';
-import { getImageSrc } from '@/lib/imageHelper';
-import Link from 'next/link';
+import { MappedProduct } from '@/types/MappedProduct';
+import CategoryPageClient from './CategoryPageClient';
 import { isValidObjectId } from '@/lib/validateObjectId';  // Utility function to validate ObjectID
 import { getCategoryById, getProductsByCategoryPaginated } from '../../actions/categories';
-import CategoryPageClient from './CategoryPageClient';
 
 type CategoryPageProps = {
   params: {
@@ -37,11 +37,21 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
 
   const totalPage = Math.ceil(total / PRODUCTS_PER_PAGE);
 
-  console.log(products);
+  // Map fetched products to MappedProduct type
+  const mappedProducts: MappedProduct[] = products.map((product) => ({
+    id: product.id,
+    images: product.images,
+    name: product.name,
+    description: product.description,
+    category: category.name, // Assigning category name
+    price: product.price,
+    inStock: product.inStock,
+    brand: product.brand,
+  }));
 
   return (
     <CategoryPageClient 
-    category={category}
-    products={products}/>
+      category={category}
+      products={mappedProducts} />
   );
 }

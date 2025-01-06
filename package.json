@@ -47,6 +47,7 @@
     "express": "^4.21.1",
     "focus-trap-react": "^10.3.0",
     "formidable": "^3.5.2",
+    "framer-motion": "^11.16.0",
     "fs.promises": "^0.1.2",
     "heroicons": "^2.2.0",
     "lodash.debounce": "^4.0.8",

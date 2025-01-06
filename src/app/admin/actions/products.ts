@@ -223,7 +223,6 @@ export async function deleteProduct(id: string) {
         try {
           const fullPath = `public/${imagePath}`; // Adjust the path as necessary
           await fs.unlink(fullPath);
-          console.log(`Deleted image: ${fullPath}`);
         } catch (error) {
           console.error(`Failed to delete image ${imagePath}:`, error);
         }

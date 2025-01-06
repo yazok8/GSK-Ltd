@@ -32,7 +32,6 @@ export default function ContactPage() {
 
   // Initialize EmailJS
   useEffect(() => {
-    console.log("Initializing EmailJS with User ID:", EMAILJS_USER_ID);
     emailjs.init(EMAILJS_USER_ID);
   }, [EMAILJS_USER_ID]);
 
@@ -93,7 +92,6 @@ export default function ContactPage() {
       )
       .then(
         (response) => {
-          console.log("SUCCESS!", response.status, response.text);
           setSubmissionStatus("success");
           setError(null);
           // Reset form after successful submission
@@ -107,7 +105,6 @@ export default function ContactPage() {
           setIsLoading(false); // Stop loading
         },
         (err) => {
-          console.error("FAILED...", err);
           setError("Failed to send the message. Please try again later.");
           setSubmissionStatus(null);
           setIsLoading(false); // Stop loading

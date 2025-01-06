@@ -24,13 +24,19 @@ model Category {
 model Product {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
   name        String    @unique
-  price       Float
+  price       Float?
   images      String[] 
   description String
-  inStock     Boolean   @default(true)
+  inStock     Boolean?   @default(true)
   brand       String?
   categoryId  String?   @db.ObjectId
   category    Category? @relation("CategoryProducts", fields: [categoryId], references: [id], onDelete: Restrict)
+}
+
+model partners {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  partnerName String    @unique
+  images      String
 }
 
 model Account {
