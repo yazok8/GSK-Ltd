@@ -15,11 +15,9 @@ export default function Distribution() {
           <Image
             src={distribution}
             alt="gsk-distribution"
-            layout="responsive"
-            width={300} 
-            height={200}
+            sizes="500"
             priority
-            style={{ objectFit: 'cover' }}
+      
           />
         </div>
 

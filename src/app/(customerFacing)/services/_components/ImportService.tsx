@@ -15,10 +15,8 @@ export default function ImportService() {
           <Image
             src={importService}
             alt="GSK Import Service"
-            layout="responsive" // For Next.js 12 and below
-            width={300} // Set based on your design
-            height={200} // Maintain aspect ratio (e.g., 3:2)
-            objectFit="cover" // Adjust as needed ('cover' or 'contain')
+            sizes="500"
+
             priority
           />
         </div>

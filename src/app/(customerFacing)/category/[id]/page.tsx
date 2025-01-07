@@ -2,9 +2,10 @@
 
 import React from 'react';
 import { MappedProduct } from '@/types/MappedProduct';
-import CategoryPageClient from './CategoryPageClient';
 import { isValidObjectId } from '@/lib/validateObjectId';  // Utility function to validate ObjectID
 import { getCategoryById, getProductsByCategoryPaginated } from '../../actions/categories';
+import ProductsGrid from '../../products/_components/ProductGrid';
+import CategoryPageClient from './CategoryPageClient';
 
 type CategoryPageProps = {
   params: {
@@ -35,8 +36,6 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
 
   const { products, total } = await getProductsByCategoryPaginated(id, page, PRODUCTS_PER_PAGE);
 
-  const totalPage = Math.ceil(total / PRODUCTS_PER_PAGE);
-
   // Map fetched products to MappedProduct type
   const mappedProducts: MappedProduct[] = products.map((product) => ({
     id: product.id,
@@ -50,8 +49,8 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   }));
 
   return (
-    <CategoryPageClient 
-      category={category}
-      products={mappedProducts} />
+    <div className="container mx-auto p-4">
+      <CategoryPageClient products={mappedProducts} category={category} /> {/* Passing category prop */}
+    </div>
   );
-}
+};

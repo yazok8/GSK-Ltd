@@ -32,6 +32,7 @@ export default function AboutPage() {
               loading="lazy"
               placeholder="blur"
               blurDataURL="/placeholder.webp"
+              sizes="500"
             />
           </div>
 
@@ -61,6 +62,7 @@ export default function AboutPage() {
               style={{ objectFit: "contain" }}
               loading="lazy"
               className="rounded-full"
+              sizes="500"
             />
           </section>
           <h2 className="text-white font-bold text-4xl mb-4">

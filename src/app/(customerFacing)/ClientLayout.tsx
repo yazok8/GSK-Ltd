@@ -49,10 +49,10 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
       {/* Top Navigation Bar: Logo and Search */}
       <nav className="w-full text-black duration-300 ease-in p-4 z-10 bg-teal-50">
         <div className="flex justify-between items-center">
-          <div className='w-[7rem] h-[4rem] md:w-[10rem] md:h-[6rem]'>
+          <div>
           {/* Logo */}
           <Link href="/">
-            <Image src={GSKLogo} alt="GSK Logo" />
+            <Image src={GSKLogo} alt="GSK Logo" width={212} height={64} />
           </Link>
           </div>
 

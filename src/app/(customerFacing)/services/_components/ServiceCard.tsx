@@ -25,7 +25,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, image, al
           className="rounded-lg"
           placeholder="blur"
           loading="lazy"
-          style={{ objectFit: 'cover' }}
+          sizes="500" 
         />
       </div>
       <h2 className="mt-4 text-2xl font-semibold">{title}</h2>

@@ -34,16 +34,6 @@ export default async function ProductPage({params:{id}}:{params:{id:string}}) {
       category: product.category ? product.category.name : 'Uncategorized',
       // Include other fields if necessary
     };
-
-
-      const category: Category = product.category || {
-        id: '67605159303de23aa0e8bd1e',
-        name: 'Uncategorized',
-        description:'',
-        image:'placeholder.webp',
-        featured:true
-        // Add other Category fields as required
-      };
     
-      return <ProductDetails product={mappedProduct} category={category} />;
+      return <ProductDetails product={mappedProduct} />;
     }

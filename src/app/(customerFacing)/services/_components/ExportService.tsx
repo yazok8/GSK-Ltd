@@ -15,11 +15,8 @@ export default function ExportService() {
           <Image
             src={exportService}
             alt="gsk-distribution"
-            layout="responsive"
-            width={300} 
-            height={200}
+            sizes="500"
             priority
-            style={{ objectFit: 'cover' }}
           />
         </div>
 

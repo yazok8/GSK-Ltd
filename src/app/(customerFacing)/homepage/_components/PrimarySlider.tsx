@@ -124,8 +124,7 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
                   src={`https://gsk-ltd.s3.us-east-2.amazonaws.com/${cat.image}`}
                   alt={cat.name}
                   fill
-                  style={{ objectFit: "cover" }}
-                  className="rounded-lg"
+                  className="rounded-lg object-cover"
                   loading="lazy"
                   onError={(e) => {
                     e.currentTarget.src = "/fallback.png";
@@ -133,6 +132,7 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
                       `Failed to load image for category ID ${cat.id}. Using fallback image.`
                     );
                   }}
+                sizes="500"
                 />
               </div>
 

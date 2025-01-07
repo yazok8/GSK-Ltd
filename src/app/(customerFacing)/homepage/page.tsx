@@ -99,6 +99,7 @@ export default async function Homepage({ searchParams }: HomepageProps) {
                         style={{ objectFit: "contain" }}
                         className="hover:opacity-90"
                         loading="lazy"
+                        sizes="500" 
                       />
                     </div>
 

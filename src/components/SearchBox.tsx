@@ -73,7 +73,7 @@ export default function SearchBox() {
     if (result.type === "category") {
       router.push(`/category/${result.id}`);
     } else {
-      router.push(`/products/${result.id}`);
+      router.push(`/products?expandedId=${result.id}`);
     }
   };
 

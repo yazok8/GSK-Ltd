@@ -57,9 +57,9 @@ function CategoriesGridSlider({ categories }: CategoryProps) {
                       quality={80}
                       alt={cat.name}
                       fill
-                      style={{ objectFit: "contain" }}
-                      className="hover:opacity-90"
+                      className="hover:opacity-90 object-contain"
                       loading="lazy"
+                      sizes="500"
                     />
                   </div>
 

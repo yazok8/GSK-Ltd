@@ -37,7 +37,7 @@ const ProductImage: React.FC<ProductImageProps> = ({ product, selectedImg, handl
         ))}
       </div>
       {/* Main Image */}
-      <div className="relative w-[300px] h-80 md:hidden mr-20">
+      <div className="relative h-80 md:hidden mr-20">
         <Image
           src={getImageSrc(selectedImg.image)}
           alt={`Selected Image of ${product.name}`}
@@ -48,8 +48,9 @@ const ProductImage: React.FC<ProductImageProps> = ({ product, selectedImg, handl
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).src = "/fallback-image.png";
           }}
-          // Removed blurDataURL
+          sizes="300"
         />
+        
       </div>
     </div>
   );

@@ -3,46 +3,31 @@
 "use client";
 
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import { getImageSrc } from "@/lib/imageHelper";
 import { MappedProduct } from "@/types/MappedProduct";
-import { Category } from "@prisma/client";
 
 export type ProductProps = {
   product: MappedProduct;
-  category: Category;
-};
-
-export type SelectedImgType = {
-  image: string;
-};
-
-export type ProductDetailType = {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  selectedImg: SelectedImgType;
 };
 
 const HorizontalLine = () => {
   return <hr className="w-full my-2 border-gray-300" />;
 };
 
-
-const ProductDetails: React.FC<ProductProps> = ({ product, category }) => {
+const ProductDetails: React.FC<ProductProps> = ({ product }) => {
   return (
+    <>
     <div className="flex flex-col md:flex-row items-start gap-4 mt-8">
       {/* Product Image Section */}
       <div className="w-full md:w-1/3 relative h-64 rounded-lg overflow-hidden">
         <Image
           src={getImageSrc(product.images[0])}
           alt={product.name}
-          layout="fill"
-          objectFit="contain"
-          className="rounded-lg"
+          className="rounded-lg object-contain"
           loading="lazy"
+          fill
+          sizes="500" 
         />
       </div>
 
@@ -50,26 +35,28 @@ const ProductDetails: React.FC<ProductProps> = ({ product, category }) => {
       <div className="w-full md:w-2/3">
         <Card className="border-none">
           <CardHeader className="text-start p-0">
-            <CardTitle className="text-2xl font-bold text-start">{product.name}</CardTitle>
+            <CardTitle className="text-4xl font-bold text-start">{product.name}</CardTitle>
           </CardHeader>
 
           <HorizontalLine />
 
-          <CardDescription className="text-gray-700 text-start">
+          <CardDescription className=" text-start font-semibold text-xl">
             {product.description}
           </CardDescription>
 
           <HorizontalLine />
 
-          {/* Displaying Category from prop */}
+          {/* Displaying Product's Own Category */}
           <div className="mt-2 text-start">
-            <span className="font-semibold">Category:</span> {category?.name || 'Uncategorized'}
+            <span className="font-semibold">Category:</span> {product.category || 'Uncategorized'}
           </div>
+
         </Card>
       </div>
     </div>
+    <hr className=" mt-4 mb-2 mx-8 border-2 border-solid border-teal-100"/>
+    </>
   );
 };
 
 export default ProductDetails;
-

@@ -57,6 +57,7 @@ function ReceipeSlider({ products, category }: ReceipeSliderProps) {
                     fill
                     className="object-cover"
                     loading="lazy"
+                    sizes="600px" 
                   />
                 </div>
                 <div className="md:hidden flex justify-end mb-3">
