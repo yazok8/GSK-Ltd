@@ -17,9 +17,9 @@ import { ActiveToggleDropDownItem, DeleteDropDownItem } from "./ProductAction";
 interface Product {
   id: string;
   name: string;
-  price: number;
-  inStock: boolean;
-  category?: { name: string } | null;
+  price: number | null;         // handle null
+  inStock: boolean | null;      // handle null
+  category: { name: string } | null;
 }
 
 interface ProductsTableProps {
@@ -117,7 +117,7 @@ export default function ProductsTable({ products }: ProductsTableProps) {
                     </DropdownMenuItem>
                     <ActiveToggleDropDownItem
                       id={product.id}
-                      inStock={product.inStock}
+                      inStock={product.inStock ?? false}
                     />
                     <DropdownMenuSeparator />
                     <DeleteDropDownItem productId={product.id} />
@@ -140,7 +140,7 @@ export default function ProductsTable({ products }: ProductsTableProps) {
                     </DropdownMenuItem>
                     <ActiveToggleDropDownItem
                       id={product.id}
-                      inStock={product.inStock}
+                      inStock={product.inStock ?? false}
                     />
                     <DropdownMenuSeparator />
                     <DeleteDropDownItem productId={product.id} />
