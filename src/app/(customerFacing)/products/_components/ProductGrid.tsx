@@ -36,6 +36,7 @@ const ProductsGrid: React.FC<ProductListProps> = ({ products, category, expanded
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {products.map((product) => (
           <React.Fragment key={product.id}>
+            
             {/* Product Card */}
             <Card
               className={`cursor-pointer flex flex-col h-full transition-transform transform hover:scale-105 hover:shadow-lg ${

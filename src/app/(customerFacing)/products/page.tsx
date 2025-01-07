@@ -1,17 +1,15 @@
-// pages/products/page.tsx
+// pages/products/page.tsx (Server Component)
 
-import React from 'react';
-import prisma from '@/lib/prisma';
-import { MappedProduct } from '@/types/MappedProduct';
-import ProductsGrid from './_components/ProductGrid';
-import ProductsPageClient from './_components/ProductsPageClient';
+import React, { Suspense } from "react";
+import prisma from "@/lib/prisma";
+import { MappedProduct } from "@/types/MappedProduct";
+import ProductsPageClient from "./_components/ProductsPageClient"; // <-- client component
 
-const ProductsPage: React.FC = async () => {
-
-  // Fetch products from your database
+export default async function ProductsPage() {
+  // 1. Fetch data on the server
   const productsRaw = await prisma.product.findMany({
     include: {
-      category: true, // Include category to access its name
+      category: true, 
     },
   });
 
@@ -27,10 +25,8 @@ const ProductsPage: React.FC = async () => {
   }));
 
   return (
-    <div className="container mx-auto p-4">
+    <Suspense fallback={<div>Loading Products...</div>}>
       <ProductsPageClient products={products} />
-    </div>
+    </Suspense>
   );
-};
-
-export default ProductsPage;
+}
