@@ -62,6 +62,13 @@ const AdminNav: React.FC<AdminNavProps> = ({ session }) => {
             selected={pathname === "/admin/add-category"}
           />
         </Link>
+        <Link href="/admin/manage-partners">
+          <AdminNavItem
+            label="Manage Partners"
+            icon={MdDns}
+            selected={pathname === "/admin/manage-partners"}
+          />
+        </Link>
 
         {/* Additional Tabs */}
         <EditTab />
