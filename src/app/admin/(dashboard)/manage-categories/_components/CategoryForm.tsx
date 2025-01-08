@@ -79,7 +79,7 @@ export default function CategoryForm({ category, onSuccess }: CategoryFormProps)
 
       const catApiEndPoints = category
         ? `/api/categories/edit-category/${category?.id}`
-        : '/api/categories';
+        : '/api/categories/add-category';
 
       const method = category ? 'PUT' : 'POST';
 
@@ -179,7 +179,7 @@ export default function CategoryForm({ category, onSuccess }: CategoryFormProps)
         <Button 
           type="submit" 
           disabled={isSubmitting}
-          className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
+          className="mt-4 px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-700 disabled:opacity-50"
         >
           {isSubmitting
             ? isEditing

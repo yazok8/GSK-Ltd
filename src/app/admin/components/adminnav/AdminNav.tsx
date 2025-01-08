@@ -34,18 +34,18 @@ const AdminNav: React.FC<AdminNavProps> = ({ session }) => {
         </Link>
 
         {/* Admin Nav Items */}
-        <Link href="/admin/add-products">
-          <AdminNavItem
-            label="Add Products"
-            icon={MdLibraryAdd}
-            selected={pathname === "/admin/add-products"}
-          />
-        </Link>
         <Link href="/admin/manage-products">
           <AdminNavItem
             label="Manage Products"
             icon={MdDns}
             selected={pathname === "/admin/manage-products"}
+          />
+        </Link>
+        <Link href="/admin/add-products">
+          <AdminNavItem
+            label="Add Products"
+            icon={MdLibraryAdd}
+            selected={pathname === "/admin/add-products"}
           />
         </Link>
         <Link href="/admin/manage-categories">
@@ -58,8 +58,15 @@ const AdminNav: React.FC<AdminNavProps> = ({ session }) => {
         <Link href="/admin/add-category">
           <AdminNavItem
             label="Add Category"
-            icon={MdDns}
+            icon={MdLibraryAdd}
             selected={pathname === "/admin/add-category"}
+          />
+        </Link>
+        <Link href="/admin/manage-partners">
+          <AdminNavItem
+            label="Manage Partners"
+            icon={MdDns}
+            selected={pathname === "/admin/manage-partners"}
           />
         </Link>
 
