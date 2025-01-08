@@ -17,7 +17,6 @@ export default async function ManagePartners() {
             <CardTitle>Manage Partners</CardTitle>
         </CardHeader>
         <CardContent>
-            <Link href="/admin/manage-partners/add-partner" className='my-5'>Add A New Partner</Link>
             <div>
                 <PartnersTable partners={partners} />
             </div>

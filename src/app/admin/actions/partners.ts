@@ -133,6 +133,125 @@ export async function addPartner(req: NextRequest) {
     }
   }
 
+  // The main update function
+export async function updatePartner(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params;
+
+  try {
+    // 1. Parse FormData
+    const formData = await req.formData();
+    const name = formData.get("name") as string | null;
+    const logo = formData.get("logo") as File | null; // <-- Key must match client
+
+    if (!name) {
+      return NextResponse.json(
+        { error: "Partner name is required" },
+        { status: 400 }
+      );
+    }
+
+    // 2. Validate or ensure the environment is set
+    const bucketName = await ensureBucketName();
+
+    let imagePath: string | undefined = undefined;
+
+    // 3. If user uploaded a new file
+    if (logo) {
+      // Validate file type
+      if (!logo.type.startsWith("image/")) {
+        return NextResponse.json(
+          { error: "Only image files are allowed." },
+          { status: 400 }
+        );
+      }
+
+      // Enforce size
+      const logoBuffer = await blobToBuffer(logo);
+      const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
+      if (logoBuffer.length > MAX_SIZE) {
+        return NextResponse.json(
+          { error: "Image size should not exceed 10 MB." },
+          { status: 400 }
+        );
+      }
+
+      // Build S3 key
+      const originalFilename = (logo as any).name || "uploaded-image";
+      const fileExtension = path.extname(originalFilename) || ".jpg";
+      const key = `partners/${uuidv4()}${fileExtension}`;
+
+      // 4. Upload new file to S3
+      const uploadParams = {
+        Bucket: bucketName,
+        Key: key,
+        Body: logoBuffer,
+        ContentType: logo.type,
+      };
+      await s3Client.send(new PutObjectCommand(uploadParams));
+
+      imagePath = key;
+    }
+
+    // 5. Fetch existing partner
+    const existingPartner = await prisma.partner.findUnique({ where: { id } });
+    if (!existingPartner) {
+      return NextResponse.json({ error: "Partner not found." }, { status: 404 });
+    }
+
+    // 6. Update partner in DB
+    const updatedPartner = await prisma.partner.update({
+      where: { id },
+      data: {
+        name,
+        ...(imagePath && { logo: imagePath }), // fix here
+      },
+    });
+
+    // 7. If a new image was uploaded, delete the old one from S3
+    if (imagePath && existingPartner.logo) {
+      try {
+        const deleteParams = {
+          Bucket: bucketName,
+          Key: existingPartner.logo,
+        };
+        await s3Client.send(new DeleteObjectCommand(deleteParams));
+      } catch (error) {
+        console.error("Error deleting old image from S3:", error);
+        // optional: decide if you want to fail or continue
+      }
+    }
+
+    // Optionally revalidate paths
+    revalidatePath("/admin/manage-partners");
+
+    // 8. Return the updated partner object (not the function!)
+    return NextResponse.json(updatedPartner, { status: 200 });
+  } catch (err: unknown) {
+    if (err instanceof z.ZodError) {
+      console.error("Validation Error:", err.flatten().fieldErrors);
+      return NextResponse.json(
+        { errors: err.flatten().fieldErrors },
+        { status: 400 }
+      );
+    }
+
+    // If it's a Prisma error
+    if (isPrismaClientKnownRequestError(err)) {
+      // handle uniqueness or other known codes
+    }
+
+    console.error("Error updating partner:", err);
+    return NextResponse.json(
+      { error: "An error occurred while updating the partner." },
+      { status: 500 }
+    );
+  }
+}
+
+
 export async function deletePartner(id: string) {
   try {
     const partner = await prisma.partner.findUnique({

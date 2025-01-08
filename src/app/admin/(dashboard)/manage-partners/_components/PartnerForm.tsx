@@ -119,11 +119,11 @@ export default function PartnerForm({ partner, onSuccess }: PartnerFormProps) {
         <CardTitle>{isEditing ? "Edit Partner" : "Add Partner"}</CardTitle>
       </CardHeader>
       <CardContent className="bg-white border-solid b-4 shadow-xl">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-5">
           {/* Partner Name */}
           <div>
             <Label htmlFor="name">Partner Name:</Label>
-            <Input id="name" {...register("name")} />
+            <Input id="name" {...register("name")} className="border-solid" />
             {errors.name && (
               <p className="text-destructive">{errors.name.message}</p>
             )}
@@ -153,6 +153,7 @@ export default function PartnerForm({ partner, onSuccess }: PartnerFormProps) {
               type="file"
               accept="image/*"
               {...register("logo")}
+              className="border-solid"
             />
             {errors.logo && (
               <p className="text-destructive">{errors.logo.message}</p>
@@ -172,7 +173,7 @@ export default function PartnerForm({ partner, onSuccess }: PartnerFormProps) {
           )}
 
           {/* Submit button */}
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting} className="bg-teal-500 text-white hover:bg-teal-700">
             {isSubmitting
               ? isEditing
                 ? "Updating..."

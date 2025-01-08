@@ -372,7 +372,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
           <button
             type="submit"
             disabled={pending}
-            className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
+            className="mt-4 px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-700 disabled:opacity-50"
           >
             {pending ? 'Submitting...' : 'Submit'}
           </button>

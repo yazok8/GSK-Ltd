@@ -12,6 +12,7 @@ import {
 import { Edit, MoreVertical } from "lucide-react";
 import Image from "next/image";
 import { DeletePartnerDropDownItem } from "./DeletePartnerDropDownItem";
+import Link from "next/link";
 
 
 interface Partner {
@@ -37,8 +38,8 @@ export default function PartnersTable({ partners }: PartnersTableProps) {
       <h2 className="text-xl font-semibold mt-8 mb-4 text-center">
         Existing Partners
       </h2>
-
-      <table className="table bg-white">
+      <Link href="/admin/manage-partners/add-partner" className='my-5 bg-teal-500 p-3 rounded-md text-white hover:bg-teal-700 float-right'>Add A New Partner</Link>
+      <table className="table bg-white mt-5">
         {/* Desktop Table Head */}
         <thead className="hidden md:table-header-group">
           <tr>
@@ -73,7 +74,7 @@ export default function PartnersTable({ partners }: PartnersTableProps) {
               {/* Desktop: Image */}
               <TableCell className="hidden md:table-cell">
                 {partner.logo ? (
-                  <div className="relative h-20 w-20">
+                  <div className="relative w-20">
                     <Image
                       src={`https://gsk-ltd.s3.us-east-2.amazonaws.com/${partner.logo}`}
                       alt={partner.name}

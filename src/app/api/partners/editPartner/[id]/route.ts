@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { updatePartner } from "@/app/admin/actions/partners";
+import { updatePartner } from '@/app/admin/actions/partners';
 
 export async function PUT(
   request: NextRequest,
