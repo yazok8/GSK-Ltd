@@ -77,10 +77,10 @@ function ReceipeSlider({ products, category }: ReceipeSliderProps) {
                     {product.name}
                   </h2>
                   <p className="text-lg text-white">{product.description}</p>
-                  <Button className="mt-5 justify-center flex pl-0 bg-teal-100">
+                  <Button className="mt-5 justify-center flex p-0 bg-teal-100 w-[150px] mx-auto">
                     <Link
-                      href={`/products/${product.id}`}
-                      className="text-lg font-semibold text-teal-600 border-b-4 border-teal-600 hover:text-teal-500 transition-colors duration-200 hover:underline"
+                      href={`/products?expandedId=${product.id}`}
+                      className="text-lg flex justify-center items-center font-semibold text-teal-600 border-b-4 border-teal-600 hover:text-teal-500 transition-colors duration-200 hover:underline"
                     >
                       Learn More
                     </Link>
