@@ -14,7 +14,7 @@ const PrimarySlider = dynamic(() => import("./_components/PrimarySlider"));
 const CategoriesGridSlider = dynamic(
   () => import("./_components/CategoriesGridSlider")
 );
-const ReceipeSlider = dynamic(() => import("./_components/ReceipeSlider"));
+const ReceipeSlider = dynamic(() => import("./_components/PetFoodSlider"));
 
 interface HomepageProps {
   searchParams?: {
@@ -29,21 +29,21 @@ export default async function Homepage({ searchParams }: HomepageProps) {
  
 
   // Find the "Mixed Spices" category
-  const mixedSpicesCategory = categories.find(
-    (category) => category.name === "Mix Spices"
+  const pedFoodCategory = categories.find(
+    (category) => category.name === "Pet Food"
   );
 
   // **Fetch products in the "Mix Spices" category**
-  let mixedSpicesProducts: Product[] = [];
-  if (mixedSpicesCategory) {
-    mixedSpicesProducts = await getProductsByCategoryId(mixedSpicesCategory.id);
+  let pedFoodProducts: Product[] = [];
+  if (pedFoodCategory) {
+    pedFoodProducts = await getProductsByCategoryId(pedFoodCategory.id);
   } else {
     // Handle the case where the category is not found
-    mixedSpicesProducts = [];
+    pedFoodProducts = [];
   }
   
   // **For Other Sliders, select different categories**
-  let CategoriesGridSliderIndices = [0, 2, 5, 6]; // Default indices for other sliders
+  let CategoriesGridSliderIndices = [1, 2, 5, 3]; // Default indices for other sliders
   if (searchParams?.indices) {
     CategoriesGridSliderIndices = searchParams.indices
       .split(",")
@@ -58,7 +58,7 @@ export default async function Homepage({ searchParams }: HomepageProps) {
         )
       : [];
 
-      const primarySliderIndices = [3, 4, 1]; // Adjust these indices as needed
+      const primarySliderIndices = [7, 6, 0]; // Adjust these indices as needed
       const primarySliderCategories = primarySliderIndices
         .map((index) => categories[index])
         .filter(Boolean);
@@ -123,13 +123,13 @@ export default async function Homepage({ searchParams }: HomepageProps) {
       </div>
       <div>
         <CardHeader>
-          <CardTitle className="text-4xl text-center">Mixed Spices</CardTitle>
+          <CardTitle className="text-4xl text-center">Pet Food</CardTitle>
         </CardHeader>
         {/* Ensure mixedSpicesCategory is found before passing  */}
-        {mixedSpicesCategory && (
+        {pedFoodCategory && (
           <ReceipeSlider
-            products={mixedSpicesProducts}
-            category={mixedSpicesCategory}
+            products={pedFoodProducts}
+            category={pedFoodCategory}
           />
         )}
       </div>

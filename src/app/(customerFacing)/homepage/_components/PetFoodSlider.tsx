@@ -36,7 +36,7 @@ function ReceipeSlider({ products, category }: ReceipeSliderProps) {
               href={`/category/${category.id}`}
               className="flex items-center space-x-2 text-white hover:underline"
             >
-              View All Receipes
+              View All Pet Food
               <ArrowRight className="w-4 h-4" />
             </Link>
           </Button>
@@ -72,12 +72,12 @@ function ReceipeSlider({ products, category }: ReceipeSliderProps) {
                   </Button>
                 </div>
                 {/* Product Details */}
-                <div className="py-4 flex flex-col mr-auto justify-center bg-teal-500 lg:h-full px-5">
+                <div className="py-4 flex flex-col mr-auto justify-center bg-teal-500 lg:h-full px-5 md:max-w-[50%]">
                   <h2 className="text-2xl text-start font-semibold text-white mb-8">
                     {product.name}
                   </h2>
                   <p className="text-lg text-white">{product.description}</p>
-                  <Button className="mt-5 justify-center flex pl-0 bg-teal-100 max-w-[150px]">
+                  <Button className="mt-5 justify-center flex pl-0 bg-teal-100">
                     <Link
                       href={`/products/${product.id}`}
                       className="text-lg font-semibold text-teal-600 border-b-4 border-teal-600 hover:text-teal-500 transition-colors duration-200 hover:underline"
