@@ -4,7 +4,6 @@ import React from 'react';
 import { MappedProduct } from '@/types/MappedProduct';
 import { isValidObjectId } from '@/lib/validateObjectId';  // Utility function to validate ObjectID
 import { getCategoryById, getProductsByCategoryPaginated } from '../../actions/categories';
-import ProductsGrid from '../../products/_components/ProductGrid';
 import CategoryPageClient from './CategoryPageClient';
 
 type CategoryPageProps = {
