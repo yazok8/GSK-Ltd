@@ -44,7 +44,7 @@ export default async function Homepage({ searchParams }: HomepageProps) {
   }
   
   // **For Other Sliders, select different categories**
-  let CategoriesGridSliderIndices = [0, 2, 1, 8]; // Default indices for other sliders
+  let CategoriesGridSliderIndices = [0, 2, 1, 7]; // Default indices for other sliders
   if (searchParams?.indices) {
     CategoriesGridSliderIndices = searchParams.indices
       .split(",")
@@ -59,7 +59,7 @@ export default async function Homepage({ searchParams }: HomepageProps) {
         )
       : [];
 
-      const primarySliderIndices = [7, 6, 5]; // Adjust these indices as needed
+      const primarySliderIndices = [4, 6, 5]; // Adjust these indices as needed
       const primarySliderCategories = primarySliderIndices
         .map((index) => categories[index])
         .filter(Boolean);
