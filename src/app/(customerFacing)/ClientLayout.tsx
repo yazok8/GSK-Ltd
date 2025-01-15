@@ -26,7 +26,9 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
     // Fetch categories once the component mounts
     const fetchCategories = async () => {
       try {
-        const response = await fetch("/api/categories"); // Ensure this API returns ObjectIDs as strings
+        const response = await fetch("/api/categories",{
+            cache: 'no-store'
+        }); // Ensure this API returns ObjectIDs as strings
         if (response.ok) {
           const data: Category[] = await response.json();
           if (data.length > 0) {
