@@ -29,12 +29,12 @@ export default async function Homepage({ searchParams }: HomepageProps) {
   // **For PrimarySlider, select categories**
  
 
-  // Find the "Mixed Spices" category
+  // Find the "Pet Food" category
   const petFoodCategory = categories.find(
     (category) => category.name === "Pet Food"
   );
 
-  // **Fetch products in the "Mix Spices" category**
+  // **Fetch products in the "Pet Food" category**
   let petFoodProducts: Product[] = [];
   if (petFoodCategory) {
     petFoodProducts = await getProductsByCategoryId(petFoodCategory.id);
@@ -124,7 +124,7 @@ export default async function Homepage({ searchParams }: HomepageProps) {
       </div>
       <div>
         <CardHeader>
-          <CardTitle className="text-4xl text-center">Mixed Spices</CardTitle>
+          <CardTitle className="text-4xl text-center">Pet Food</CardTitle>
         </CardHeader>
         {/* Ensure petFoodCategory is found before passing  */}
         {petFoodCategory && (

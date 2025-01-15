@@ -66,7 +66,7 @@ function ReceipeSlider({ products, category }: ReceipeSliderProps) {
                       href={`/category/${category.id}`}
                       className="flex items-center space-x-2 text-white hover:underline"
                     >
-                      View All Receipes
+                      View All Pet Food
                       <ArrowRight className="w-4 h-4" />
                     </Link>
                   </Button>
