@@ -3,6 +3,8 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Category } from "@prisma/client";
 import Image from "next/image";
+import Link from "next/link"; 
+import { Button } from "@/components/ui/button";
 
 interface PrimarySliderProps {
   categories: Category[];
@@ -163,6 +165,14 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
                 <p className="mt-3 md:mt-5 text-lg">
                   Explore more about {cat.name}
                 </p>
+                <Button className="mt-5 justify-center flex p-0 bg-teal-100  w-[150px] mx-auto">
+                    <Link
+                      href={`/category/${cat.id}`}
+                      className="text-lg flex justify-center items-center font-semibold text-teal-600 border-b-4 border-teal-500 hover:text-teal-600 transition-colors duration-200 hover:underline"
+                    >
+                      Learn More
+                    </Link>
+                  </Button>
               </div>
             </div>
           </div>

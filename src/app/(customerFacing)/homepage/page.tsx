@@ -8,13 +8,14 @@ import { CardHeader, CardTitle } from "@/components/ui/card";
 import { Product } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import PartnersSections from "./_components/PartnersSections";
 
 // Dynamically import client components
 const PrimarySlider = dynamic(() => import("./_components/PrimarySlider"));
 const CategoriesGridSlider = dynamic(
   () => import("./_components/CategoriesGridSlider")
 );
-const ReceipeSlider = dynamic(() => import("./_components/PetFoodSlider"));
+const PetFoodSlider = dynamic(() => import("./_components/PetFoodSlider"));
 
 interface HomepageProps {
   searchParams?: {
@@ -29,21 +30,21 @@ export default async function Homepage({ searchParams }: HomepageProps) {
  
 
   // Find the "Mixed Spices" category
-  const pedFoodCategory = categories.find(
+  const petFoodCategory = categories.find(
     (category) => category.name === "Pet Food"
   );
 
   // **Fetch products in the "Mix Spices" category**
-  let pedFoodProducts: Product[] = [];
-  if (pedFoodCategory) {
-    pedFoodProducts = await getProductsByCategoryId(pedFoodCategory.id);
+  let petFoodProducts: Product[] = [];
+  if (petFoodCategory) {
+    petFoodProducts = await getProductsByCategoryId(petFoodCategory.id);
   } else {
     // Handle the case where the category is not found
-    pedFoodProducts = [];
+    petFoodProducts = [];
   }
   
   // **For Other Sliders, select different categories**
-  let CategoriesGridSliderIndices = [1, 2, 5, 3]; // Default indices for other sliders
+  let CategoriesGridSliderIndices = [0, 2, 1, 8]; // Default indices for other sliders
   if (searchParams?.indices) {
     CategoriesGridSliderIndices = searchParams.indices
       .split(",")
@@ -58,7 +59,7 @@ export default async function Homepage({ searchParams }: HomepageProps) {
         )
       : [];
 
-      const primarySliderIndices = [7, 6, 0]; // Adjust these indices as needed
+      const primarySliderIndices = [7, 6, 5]; // Adjust these indices as needed
       const primarySliderCategories = primarySliderIndices
         .map((index) => categories[index])
         .filter(Boolean);
@@ -123,17 +124,18 @@ export default async function Homepage({ searchParams }: HomepageProps) {
       </div>
       <div>
         <CardHeader>
-          <CardTitle className="text-4xl text-center">Pet Food</CardTitle>
+          <CardTitle className="text-4xl text-center">Mixed Spices</CardTitle>
         </CardHeader>
-        {/* Ensure mixedSpicesCategory is found before passing  */}
-        {pedFoodCategory && (
-          <ReceipeSlider
-            products={pedFoodProducts}
-            category={pedFoodCategory}
+        {/* Ensure petFoodCategory is found before passing  */}
+        {petFoodCategory && (
+          <PetFoodSlider
+            products={petFoodProducts}
+            category={petFoodCategory}
           />
         )}
       </div>
       <Services />
+      <PartnersSections />
     </div>
   );
 }
