@@ -33,9 +33,6 @@ const ProductDetails: React.FC<ProductProps> = ({ product }) => {
         {/* Product Information */}
         <div className="w-full md:w-2/3">
           <Card className="border-none">
-            <CardHeader className="text-start p-0">
-              <CardTitle className="text-4xl font-bold text-start">{product.name}</CardTitle>
-            </CardHeader>
 
             <HorizontalLine />
 
