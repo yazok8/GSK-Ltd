@@ -31,7 +31,13 @@ export default async function ProductPage({params:{id}}:{params:{id:string}}) {
       images: product.images,
       name: product.name,
       description: product.description,
-      category: product.category ? product.category.name : 'Uncategorized',
+      category: product.category? {
+        id: product.category.id,
+        name: product.category.name,
+        description: product.category.description,
+        image: product.category.image,
+        featured: product.category.featured,
+      } : null,
       // Include other fields if necessary
     };
     
