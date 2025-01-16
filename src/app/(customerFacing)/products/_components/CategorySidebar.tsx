@@ -41,7 +41,7 @@ export default function CategorySidebar({
         Search By Category
       </div>
 
-      <div className="flex flex-col w-full gap-4 space-y-5">
+      <div className="flex flex-wrap justify-center md:flex-col w-full gap-4 space-y-5">
         {categories.map((cat) => (
           <div key={cat.id} className="flex items-center space-x-2">
             <Checkbox

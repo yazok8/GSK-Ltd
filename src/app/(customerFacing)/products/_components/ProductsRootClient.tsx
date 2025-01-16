@@ -29,7 +29,7 @@ export default function ProductsRootClient({ categories, products }: RootClientP
 
 
   return (
-    <div style={{ display: "flex" }}>
+    <div className="flex flex-col md:flex-row">
       {/* Now the handler is defined in *this client component* */}
       <CategorySidebar categories={categories} onCategoryChange={handleCategoryChange} />
       <ProductsPageClient products={filteredProducts} />
