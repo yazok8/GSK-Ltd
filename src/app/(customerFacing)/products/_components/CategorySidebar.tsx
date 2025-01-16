@@ -38,7 +38,7 @@ export default function CategorySidebar({
   return (
     <nav className="h-full px-4 py-6 flex flex-col items-start text-left gap-6 bg-white">
       <div className="w-full border-b border-gray-800 text-start text-nowrap">
-        Filtered By Category
+        Search By Category
       </div>
 
       <div className="flex flex-col w-full gap-4 space-y-5">

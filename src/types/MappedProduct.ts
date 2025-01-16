@@ -1,14 +1,22 @@
 // types/MappedProduct.ts
 
-import { Category } from "@prisma/client";
+export interface MappedCategory {
+  id: string;
+  name: string;
+  description?: string | null;
+  image?: string | null;
+  featured?: boolean;
+}
 
-export type MappedProduct = {
+export interface MappedProduct {
   id: string;
   images: string[];
   name: string;
   description: string;
-  category: Category | null; // This can be replaced with a reference if needed
+
+  category: MappedCategory | null;
+
   price?: number | null;
   inStock?: boolean | null;
   brand?: string | null;
-};
+}
