@@ -59,7 +59,7 @@ export default async function Homepage({ searchParams }: HomepageProps) {
         )
       : [];
 
-      const primarySliderIndices = [4, 6, 5]; // Adjust these indices as needed
+      const primarySliderIndices = [8, 4, 6, 5]; // Adjust these indices as needed
       const primarySliderCategories = primarySliderIndices
         .map((index) => categories[index])
         .filter(Boolean);

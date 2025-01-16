@@ -1,19 +1,21 @@
-// pages/products/page.tsx (Server Component)
-
 import React, { Suspense } from "react";
 import prisma from "@/lib/prisma";
-import { MappedProduct } from "@/types/MappedProduct";
-import ProductsPageClient from "./_components/ProductsPageClient"; // <-- client component
+// Import your new "root-level" client component
+import ProductsRootClient from "./_components/ProductsRootClient";
 
 export default async function ProductsPage() {
-  // 1. Fetch data on the server
-  const productsRaw = await prisma.product.findMany({
-    include: {
-      category: true, 
+  const allCategories = await prisma.category.findMany({
+    select: {
+      id: true,
+      name: true,
     },
   });
 
-  const products: MappedProduct[] = productsRaw.map((product) => ({
+
+  const productsRaw = await prisma.product.findMany({
+    include: { category: true },
+  });
+  const products = productsRaw.map((product) => ({
     id: product.id,
     images: product.images,
     name: product.name,
@@ -22,11 +24,13 @@ export default async function ProductsPage() {
     price: product.price,
     inStock: product.inStock,
     brand: product.brand,
+    categoryId: product.category?.id ?? null,
   }));
 
   return (
-    <Suspense fallback={<div>Loading Products...</div>}>
-      <ProductsPageClient products={products} />
+    <Suspense fallback={<div>Loading...</div>}>
+      {/* Pass only data as props, not functions */}
+      <ProductsRootClient categories={allCategories} products={products} />
     </Suspense>
   );
 }

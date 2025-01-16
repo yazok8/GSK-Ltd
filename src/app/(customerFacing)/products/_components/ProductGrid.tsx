@@ -40,8 +40,8 @@ const ProductsGrid: React.FC<ProductListProps> = ({ products, category, expanded
             {/* Product Card */}
             <Card
               className={`cursor-pointer flex flex-col h-full transition-transform transform hover:scale-105 hover:shadow-lg ${
-                expandedProductId === product.id ? "border-blue-500" : "border-gray-300"
-              } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                expandedProductId === product.id ? "border-teal-500" : "border-gray-300"
+              } focus:outline-none focus:ring-2 focus:ring-teal-500`}
               onClick={() => toggleProductDetails(product.id)}
               role="button"
               aria-expanded={expandedProductId === product.id}

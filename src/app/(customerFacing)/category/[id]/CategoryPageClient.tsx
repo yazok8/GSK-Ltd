@@ -9,7 +9,7 @@ import Image from 'next/image';
 import ProductsGrid from '../../products/_components/ProductGrid';
 import { MappedProduct } from '@/types/MappedProduct';
 
-interface CategoryPageClientProps {
+export interface CategoryPageClientProps {
   category: Category;
   products: MappedProduct[];
 }

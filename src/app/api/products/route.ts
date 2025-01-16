@@ -1,20 +1,32 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-//Handle GET Categories
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const categories = await prisma.product.findMany({
-      orderBy: { name: "asc" },
-    });
-    return NextResponse.json(categories, { status: 200 });
+    const { searchParams } = new URL(request.url);
+    const categoryIds = searchParams.get("categoryIds"); // e.g. "64b0f9...,64b1a0..."
+
+    if (!categoryIds) {
+      // return ALL products
+      const allProducts = await prisma.product.findMany({
+        orderBy: { name: "asc" },
+        include: { category: true },
+      });
+      return NextResponse.json(allProducts, { status: 200 });
+    } else {
+      // Filter by these IDs
+      const ids = categoryIds.split(",");
+      const filteredProducts = await prisma.product.findMany({
+        where: { categoryId: { in: ids } },
+        orderBy: { name: "asc" },
+        include: { category: true },
+      });
+      return NextResponse.json(filteredProducts, { status: 200 });
+    }
   } catch (err) {
-    console.error("Error fetching categories:", err);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error("Error fetching products:", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
