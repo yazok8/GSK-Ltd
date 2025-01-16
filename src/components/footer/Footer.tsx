@@ -65,8 +65,9 @@ export default async function Footer() {
         </div>
         <div className="mt-8 text-center">
           <p className="text-sm font-bold text-white">
-            © GSK LTD., 2024. All rights reserved.
+            © GSK LTD., 2025. All rights reserved.
           </p>
+          <p>Developed by Yazan Kherfan</p>
         </div>
       </div>
     </footer>
