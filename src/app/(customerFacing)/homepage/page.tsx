@@ -1,3 +1,5 @@
+// Homepage.tsx
+
 import React from "react";
 import dynamic from "next/dynamic";
 import { getAllCategories, getProductsByCategoryId } from "@/lib/getCategories";
@@ -26,25 +28,24 @@ interface HomepageProps {
 export default async function Homepage({ searchParams }: HomepageProps) {
   // Fetch all categories
   const categories = await getAllCategories();
-  // **For PrimarySlider, select categories**
- 
 
   // Find the "Pet Food" category
   const petFoodCategory = categories.find(
     (category) => category.name === "Pet Food"
   );
 
-  // **Fetch products in the "Pet Food" category**
+  // Fetch products in the "Pet Food" category
   let petFoodProducts: Product[] = [];
   if (petFoodCategory) {
     petFoodProducts = await getProductsByCategoryId(petFoodCategory.id);
   } else {
-    // Handle the case where the category is not found
     petFoodProducts = [];
   }
+
+  const numberOfVisibleCategories = 4;
   
-  // **For Other Sliders, select different categories**
-  let CategoriesGridSliderIndices = [0, 2, 1, 7]; // Default indices for other sliders
+  // Select indices for CategoriesGridSlider
+  let CategoriesGridSliderIndices = [0, 2, 1, 7, 8]; // Ensure this includes all categories or adjust as needed
   if (searchParams?.indices) {
     CategoriesGridSliderIndices = searchParams.indices
       .split(",")
@@ -52,81 +53,48 @@ export default async function Homepage({ searchParams }: HomepageProps) {
       .filter((num) => !isNaN(num));
   }
 
-  const filteredCatGridSlider =
-    categories.length > 0
-      ? CategoriesGridSliderIndices.map((index) => categories[index]).filter(
-          Boolean
-        )
-      : [];
+  const filteredCatGridSlider = categories; 
 
-      const primarySliderIndices = [8, 4, 6, 5]; // Adjust these indices as needed
-      const primarySliderCategories = primarySliderIndices
-        .map((index) => categories[index])
-        .filter(Boolean);
+   
+  
+  const primarySliderIndices = [8, 4, 6, 5]; // Adjust these indices as needed
+  const primarySliderCategories = primarySliderIndices
+    .map((index) => categories[index])
+    .filter(Boolean);
 
   return (
     <div className="w-full mx-auto">
-      {/* Pass categories as props */}
+      {/* Primary Slider */}
       <PrimarySlider categories={primarySliderCategories} />
+      
       <div className="bg-slate-50 py-8 max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="text-center">
           <h1 className="text-5xl font-bold">Our Products</h1>
         </div>
+        
         <div className="flex justify-end ml-auto mb-3">
-          <Button className="outline-none text-xl"><Link href="/products" className="flex items-center space-x-2 hover:underline">View All Products</Link><ArrowRight className="w-4 h-4" /></Button>
-          </div>
-        {/* Categories Grid for Large Screens */}
+          <Button className="outline-none text-xl">
+            <Link href="/products" className="flex items-center space-x-2 hover:underline">
+              View All Products
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </Button>
+        </div>
+        
+        {/* Categories Slider for All Screens */}
         {filteredCatGridSlider.length > 0 && (
-          <div className="hidden lg:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
-            {filteredCatGridSlider.map((category, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg shadow-md overflow-hidden transform transition-transform duration-200 hover:scale-105"
-              >
-                <Link href={`/category/${category.id}`}>
-                  <div className="block">
-                    {/* Image Container */}
-                    <div className="w-full h-48 relative">
-                      <Image
-                        src={
-                          category.image
-                            ? `https://gsk-ltd.s3.us-east-2.amazonaws.com/${category.image}`
-                            : "/images/fallback.jpg"
-                        }
-                        quality={80}
-                        alt={category.name}
-                        fill
-                        style={{ objectFit: "contain" }}
-                        className="hover:opacity-90"
-                        loading="lazy"
-                        sizes="500" 
-                      />
-                    </div>
-
-                    {/* Category Name */}
-                    <div className="p-4 text-center">
-                      <h2 className="text-xl font-semibold">{category.name}</h2>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Categories Slider for Small and Medium Screens */}
-        {filteredCatGridSlider.length > 0 && (
-          <div className="lg:hidden px-4">
+          <div className="px-4">
             <CategoriesGridSlider categories={filteredCatGridSlider} />
           </div>
         )}
       </div>
+      
+      {/* Pet Food Section */}
       <div>
         <CardHeader>
           <CardTitle className="text-4xl text-center">Pet Food</CardTitle>
         </CardHeader>
-        {/* Ensure petFoodCategory is found before passing  */}
         {petFoodCategory && (
           <PetFoodSlider
             products={petFoodProducts}
@@ -134,6 +102,8 @@ export default async function Homepage({ searchParams }: HomepageProps) {
           />
         )}
       </div>
+      
+      {/* Additional Sections */}
       <Services />
       <PartnersSections />
     </div>
