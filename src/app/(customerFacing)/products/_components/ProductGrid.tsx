@@ -16,7 +16,7 @@ type ProductListProps = {
   expandedId?: string;   
 };
 
-const ProductsGrid: React.FC<ProductListProps> = ({ products, category, expandedId }) => {
+const ProductsGrid: React.FC<ProductListProps> = ({ products, expandedId }) => {
   const [expandedProductId, setExpandedProductId] = useState<string | null>(null);
 
   const toggleProductDetails = (id: string) => {

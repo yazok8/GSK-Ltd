@@ -1,4 +1,3 @@
-// components/ProductDetails.tsx
 "use client";
 
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

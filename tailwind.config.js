@@ -19,7 +19,6 @@ const tailwindConfig = {
         fontFamily: {
           'roboto': ['Roboto', 'sans-serif'],  // Custom font family
         },
-        // Add other theme extensions here
       },
     },
     plugins: [
