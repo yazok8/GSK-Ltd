@@ -21,8 +21,8 @@ interface ProductFormProps {
 export default function ProductForm({ product, session }: ProductFormProps) {
   const router = useRouter();
 
-    // Check if user is VIEW_ONLY
-    const isViewOnly = session?.user?.role === "VIEW_ONLY";
+  // Check if user is VIEW_ONLY
+  const isViewOnly = session?.user?.role === "VIEW_ONLY";
 
   // State for form fields
   const [name, setName] = useState<string>(product?.name || "");
@@ -47,6 +47,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
   // State for form feedback
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string[] }>({});
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [pending, setPending] = useState<boolean>(false);
@@ -58,7 +59,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
     // Fetch categories from the API
     const fetchCategories = async () => {
       try {
-        const response = await fetch('/api/categories',{
+        const response = await fetch('/api/categories', {
           cache: 'no-store'
         });
         if (!response.ok) {
@@ -87,7 +88,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
   useEffect(() => {
     if (product && !hasSubmitted) {
       setName(product.name);
-      setPrice(product.price?.toString() || '');
+      setPrice(product.price !== null && product.price !== undefined ? product.price.toString() : '');
       setDescription(product.description);
       setSelectedCategory(product.categoryId || "");
       setExistingImages(product.images || []);
@@ -178,13 +179,17 @@ export default function ProductForm({ product, session }: ProductFormProps) {
     setPending(true);
     setError(null);
     setSuccess(null);
+    setFieldErrors({});
 
     const formData = new FormData();
 
     try {
       // Append form fields
       formData.append('name', name);
-      formData.append('price', price || '0');
+      // Only append price if it's not empty
+      if (price.trim() !== '') {
+        formData.append('price', price);
+      }
       formData.append('description', description);
       formData.append('categoryId', selectedCategory);
 
@@ -234,7 +239,12 @@ export default function ProductForm({ product, session }: ProductFormProps) {
         
       } else {
         const errorData = await response.json();
-        setError(errorData.errors?.general?.[0] || 'An error occurred.');
+        if (errorData.errors) {
+          setFieldErrors(errorData.errors);
+          setError(errorData.errors.general?.[0] || 'An error occurred.');
+        } else {
+          setError('An error occurred.');
+        }
       }
     } catch (err: unknown) {
       console.error('Error submitting form:', err);
@@ -263,6 +273,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
               onChange={(e) => setName(e.target.value)}
               className='border-solid b-2'
             />
+            {fieldErrors.name && <p className="text-red-500">{fieldErrors.name.join(' ')}</p>}
           </div>
 
           {/* Product Price */}
@@ -272,7 +283,6 @@ export default function ProductForm({ product, session }: ProductFormProps) {
               type="number"
               id="price"
               name="price"
-              required
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               className='border-solid b-2'
@@ -280,6 +290,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
             <div className="text-muted-foreground">
               {formatPrice(Number(price) || 0)}
             </div>
+            {fieldErrors.price && <p className="text-red-500">{fieldErrors.price.join(' ')}</p>}
           </div>
 
           {/* Product Description */}
@@ -293,6 +304,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
               onChange={(e) => setDescription(e.target.value)}
               className='border-solid b-2'
             />
+            {fieldErrors.description && <p className="text-red-500">{fieldErrors.description.join(' ')}</p>}
           </div>
 
           {/* Category Field */}
@@ -313,6 +325,7 @@ export default function ProductForm({ product, session }: ProductFormProps) {
                 </option>
               ))}
             </select>
+            {fieldErrors.categoryId && <p className="text-red-500">{fieldErrors.categoryId.join(' ')}</p>}
           </div>
 
           {/* Existing Images */}

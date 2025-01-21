@@ -15,7 +15,7 @@ import fs  from 'fs/promises';
 export const addSchema = z.object({
   name: z.string().min(1, { message: 'Name is required.' }),
   description: z.string().min(1, { message: 'Description is required.' }),
-  price: z.coerce.number().min(0.01, { message: 'Price must be at least 0.01.' }),
+  price: z.coerce.number().min(0, { message: 'Price must be at least 0.' }).optional(),
   categoryId: z.string().min(1, { message: 'Category is required.' }),
 });
 
@@ -89,7 +89,7 @@ export const updateSchema = z.object({
   productId: z.string().min(1, { message: 'Product ID is required.' }),
   name: z.string().min(1, { message: 'Name is required.' }),
   description: z.string().min(1, { message: 'Description is required.' }),
-  price: z.coerce.number().min(0.01, { message: 'Price must be at least 0.01.' }),
+  price: z.coerce.number().min(0, { message: 'Price must be at least 0.' }).optional(),
   categoryId: z.string().min(1, { message: 'Category is required.' }),
   imagesToRemove: z.string().optional(),
 });
@@ -141,15 +141,21 @@ export async function UpdateProduct(
       );
     }
 
+    // Prepare the data object for updating
+    const updateData: any = {
+      name,
+      description,
+      categoryId,
+    };
+
+    if (price !== undefined) {
+      updateData.price = price === 0 ? null : price; // Set to null if 0, else set the value
+    }
+
     // Update product details
     product = await prisma.product.update({
       where: { id: productId },
-      data: {
-        name,
-        description,
-        price,
-        categoryId,
-      },
+      data: updateData,
     });
 
     let currentImages = product.images || [];
@@ -160,7 +166,7 @@ export async function UpdateProduct(
       if (imagesToRemoveList.length > 0) {
         // Delete images from S3
         await Promise.all(
-          imagesToRemoveList.map((imageKey:string) => deleteImageFromS3(imageKey))
+          imagesToRemoveList.map((imageKey: string) => deleteImageFromS3(imageKey))
         );
 
         // Remove images from currentImages
