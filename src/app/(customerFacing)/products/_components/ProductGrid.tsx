@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { getImageSrc } from "@/lib/imageHelper";
 import { Category } from "@prisma/client";
+import { Pagination } from "@/components/ui/Pagination";
 
 type ProductListProps = {
   products: MappedProduct[];
@@ -16,8 +17,20 @@ type ProductListProps = {
   expandedId?: string;   
 };
 
+const PRODUCTS_PER_PAGE = 20; // Update this to 5 if needed
+
 const ProductsGrid: React.FC<ProductListProps> = ({ products, expandedId }) => {
   const [expandedProductId, setExpandedProductId] = useState<string | null>(null);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+
+  useEffect(() => {
+    setTotalPages(Math.ceil(products.length / PRODUCTS_PER_PAGE));
+    // Reset to first page if products change
+    setCurrentPage(1);
+  }, [products]);
 
   const toggleProductDetails = (id: string) => {
     setExpandedProductId((prevId) => (prevId === id ? null : id));
@@ -29,12 +42,32 @@ const ProductsGrid: React.FC<ProductListProps> = ({ products, expandedId }) => {
     }
   }, [expandedId]);
 
+  const handlePageChange = (page: number) => {
+    // Ensure the new page is within bounds
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  // Calculate the products to display on the current page
+  const indexOfLastProduct = currentPage * PRODUCTS_PER_PAGE;
+  const indexOfFirstProduct = indexOfLastProduct - PRODUCTS_PER_PAGE;
+  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  // Generate page numbers (optional, for displaying page numbers)
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
+
+  if (products.length === 0) return <p>No Products Found</p>;
+
   return (
     <div>
       {/* Conditionally render category-specific UI if category is provided */}
       
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((product) => (
+        {currentProducts.map((product) => (
           <React.Fragment key={product.id}>
             
             {/* Product Card */}
@@ -96,6 +129,17 @@ const ProductsGrid: React.FC<ProductListProps> = ({ products, expandedId }) => {
           </React.Fragment>
         ))}
       </div>
+
+       {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center mt-4">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          )}
     </div>
   );
 };
