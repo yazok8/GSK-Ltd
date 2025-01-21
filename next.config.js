@@ -1,25 +1,36 @@
-// next.config.js
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Define __filename and __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const nextConfig = {
+  output: 'standalone',
+  experimental: {
+    serverActions: true,  // Fix: 'serverAction' to 'serverActions'
+  },
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname:'gsk-ltd.s3.us-east-2.amazonaws.com',
+        hostname: 'gsk-ltd.s3.us-east-2.amazonaws.com',
         port: '',
         pathname: '/**',
       }
-    ], // Replace with your actual bucket domain
+    ],
   },
   env: {
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     BUCKET_NAME: process.env.AWS_S3_BUCKET_NAME,
+  },
+  // Move rewrites inside the config object properly
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: '/api/:path*',
+      },
+    ];
   },
   webpack: (config, { dev, isServer }) => {
     if (dev) {
@@ -31,8 +42,6 @@ const nextConfig = {
           "**/*.log",
           "**/temp/**",
         ],
-        // Optional: Adjust polling if necessary
-        // poll: 1000, // Check for changes every second
       };
     }
     return config;
@@ -40,5 +49,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-
-//["gsk-ltd.s3.us-east-2.amazonaws.com"]

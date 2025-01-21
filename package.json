@@ -9,14 +9,14 @@
   "scripts": {
     "dev": "NODE_ENV=development node server.js",
     "start": "NODE_ENV=production node server.js",
-    "build": "next build && prisma db push && tsc",
+    "build": "prisma generate && next build",
     "watcher": "ts-node --esm scripts/watcher.ts",
     "dev:all": "concurrently \"npm run watcher\" \"npm run dev\"",
 
     "lint": "next lint",
     "seed": "prisma db seed",
     "migrate:prod": "prisma migrate deploy",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate && prisma db push"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.2",

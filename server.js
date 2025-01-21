@@ -36,7 +36,7 @@ app.prepare().then(() => {
           base-uri 'self';
           form-action 'self';
           `
-            .replace(/\s{2,}/g, ' ')
+            .replace(/\s{2,}/g, " ")
             .trim()
         : // Production CSP (more restrictive)
           `
@@ -50,35 +50,40 @@ app.prepare().then(() => {
           base-uri 'self';
           form-action 'self';
           `
-            .replace(/\s{2,}/g, ' ')
+            .replace(/\s{2,}/g, " ")
             .trim()
     );
     next();
   });
 
   // Rate limiting configuration
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === "production") {
     const limiter = rateLimit({
       windowMs: 15 * 60 * 1000,
       max: 100,
-      message: "Too many requests from this IP, please try again after 15 minutes"
+      message:
+        "Too many requests from this IP, please try again after 15 minutes",
     });
     server.use(limiter);
-    console.log('Rate limiting enabled for production');
+    console.log("Rate limiting enabled for production");
   } else {
-    console.log('Rate limiting disabled for development');
+    console.log("Rate limiting disabled for development");
   }
 
   // Cookie parser and CSRF protection
   server.use(cookieParser());
   const csrfProtection = csrf({ cookie: true });
 
-  server.post("*", csrfProtection, (req, res, next) => {
+  // Only apply CSRF to non-Next.js API routes
+  server.post(/^(?!\/api\/).*/, csrfProtection, (req, res, next) => {
     next();
   });
 
   server.get("*", (req, res, next) => {
-    res.locals.csrfToken = req.csrfToken ? req.csrfToken() : null;
+    // Only generate CSRF token for non-API routes
+    if (!req.path.startsWith("/api/")) {
+      res.locals.csrfToken = req.csrfToken ? req.csrfToken() : null;
+    }
     next();
   });
 
