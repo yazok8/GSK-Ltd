@@ -6,9 +6,6 @@ const __dirname = path.dirname(__filename);
 
 const nextConfig = {
   output: 'standalone',
-  experimental: {
-    serverActions: true,  // Fix: 'serverAction' to 'serverActions'
-  },
   images: {
     remotePatterns: [
       {
