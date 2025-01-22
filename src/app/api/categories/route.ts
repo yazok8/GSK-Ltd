@@ -2,9 +2,11 @@
 
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { NextApiRequest, NextApiResponse } from "next";
 
 // Handle GET Categories
-export async function GET() {
+export async function GET(req:NextApiRequest, res: NextApiResponse) {
+  const { categoryIds, page = '1', perPage = '8' } = req.query;
   try {
     const categories = await prisma.category.findMany({
       orderBy: { name: "asc" },

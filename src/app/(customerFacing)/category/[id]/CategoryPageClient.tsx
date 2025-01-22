@@ -8,16 +8,19 @@ import { Category } from '@prisma/client';
 import Image from 'next/image';
 import ProductsGrid from '../../products/_components/ProductGrid';
 import { MappedProduct } from '@/types/MappedProduct';
+import { Pagination } from '@/components/ui/Pagination';
+import Link from 'next/link';
 
 export interface CategoryPageClientProps {
   category: Category;
   products: MappedProduct[];
+  currentPage: number;
+  totalPages: number;
 }
 
-export default function CategoryPageClient({ category, products }: CategoryPageClientProps) {
+export default function CategoryPageClient({ category, products, currentPage, totalPages }: CategoryPageClientProps) {
   const categoryImage = category.image ? getImageSrc(category.image) : '/default-category-image.png';
-
-  console.log(categoryImage);
+  const baseUrl = `/category/${category.id}`; // Corrected baseUrl
 
   return (
     <div className="container mx-auto px-4 py-8 flex flex-col justify-center text-center">
@@ -36,7 +39,13 @@ export default function CategoryPageClient({ category, products }: CategoryPageC
       </div>
 
       {/* Render products using ProductGrid */}
-      <ProductsGrid products={products} category={category} />
+      <ProductsGrid 
+        products={products} 
+        category={category} 
+        currentPage={currentPage} 
+        totalPages={totalPages} 
+        baseUrl={baseUrl} 
+      />
     </div>
   );
 }

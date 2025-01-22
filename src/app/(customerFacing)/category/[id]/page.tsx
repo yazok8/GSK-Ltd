@@ -1,4 +1,4 @@
-// pages/category/[id].tsx or similar path
+// pages/category/[id]/page.tsx or app/category/[id]/page.tsx
 
 import React from 'react';
 import { MappedProduct } from '@/types/MappedProduct';
@@ -15,8 +15,7 @@ type CategoryPageProps = {
   };
 };
 
-const PRODUCTS_PER_PAGE = 30;
-
+const PRODUCTS_PER_PAGE = 16;
 
 export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
   const { id } = params;
@@ -54,9 +53,16 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     brand: product.brand,
   }));
 
+  const totalPages = Math.ceil(total / PRODUCTS_PER_PAGE);
+
   return (
     <div className="container mx-auto p-4">
-      <CategoryPageClient products={mappedProducts} category={category} /> {/* Passing category prop */}
+      <CategoryPageClient 
+        products={mappedProducts} 
+        category={category} 
+        currentPage={page} 
+        totalPages={totalPages} 
+      />
     </div>
   );
 };
