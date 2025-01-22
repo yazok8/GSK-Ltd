@@ -14,6 +14,8 @@ type DashboardContentProps = {
 export default function DashboardContent({ products, categories }: DashboardContentProps) {
   const { isViewOnly } = usePermissions();
 
+  const manageProductsUrl = "/admin/manage-products";
+
   return (
     <>
       {isViewOnly && (
@@ -30,7 +32,11 @@ export default function DashboardContent({ products, categories }: DashboardCont
             See all products
           </Link>
         </div>
-        <ProductsTable products={products} />
+        <ProductsTable products={products}
+               currentPage={1} 
+               totalPages={1} 
+               baseUrl={manageProductsUrl} 
+        />
       </div>
       <div className="mt-8">
         <div className="flex justify-end items-end">

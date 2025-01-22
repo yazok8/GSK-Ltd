@@ -8,11 +8,18 @@ type ReadOnlyDashboardProps = {
 };  
   
 export default function ReadOnlyDashboard({ products, categories }: ReadOnlyDashboardProps) {  
+
+  const manageProductsUrl = "/admin/manage-products";
+
   return (  
    <>  
     <h1 className="text-3xl ml-3">Summary</h1>  
     <div className="mt-8">  
-      <ProductsTable products={products}/>  
+      <ProductsTable products={products}
+      
+      currentPage={1} 
+      totalPages={1} 
+      baseUrl={manageProductsUrl} />  
     </div>  
     <div className="mt-8">  
       <CategoriesTable categories={categories}/>  
