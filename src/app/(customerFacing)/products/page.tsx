@@ -1,4 +1,4 @@
-// pages/products/page.tsx or app/products/page.tsx
+// components/products/ProductsPage.tsx
 
 import React, { Suspense } from "react";
 import prisma from "@/lib/prisma";
@@ -8,26 +8,40 @@ import { MappedProduct } from "@/types/MappedProduct";
 type ProductsPageProps = {
   searchParams: {
     page?: string;
+    categoryIds?: string;
+    // Add other search params if necessary
   };
 };
 
-const PRODUCTS_PER_PAGE = 20; // Define how many products per page
+const PRODUCTS_PER_PAGE = 20;
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const page = parseInt(searchParams.page || '1', 10);
-
-  // Validate page number
   const currentPage = isNaN(page) || page < 1 ? 1 : page;
 
-  const totalProducts = await prisma.product.count();
+  // Fetch total count of products (consider filters if applied)
+  const totalProducts = await prisma.product.count({
+    where: searchParams.categoryIds
+      ? {
+          categoryId: {
+            in: searchParams.categoryIds.split(","),
+          },
+        }
+      : {},
+  });
 
   const totalPages = Math.ceil(totalProducts / PRODUCTS_PER_PAGE);
-
-  // Ensure currentPage does not exceed totalPages
   const safeCurrentPage = Math.min(currentPage, totalPages || 1);
 
-  // Fetch paginated products
+  // Fetch products for the current page (consider filters if applied)
   const productsRaw = await prisma.product.findMany({
+    where: searchParams.categoryIds
+      ? {
+          categoryId: {
+            in: searchParams.categoryIds.split(","),
+          },
+        }
+      : {},
     include: { category: true },
     skip: (safeCurrentPage - 1) * PRODUCTS_PER_PAGE,
     take: PRODUCTS_PER_PAGE,
@@ -53,7 +67,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     categoryId: product.category?.id ?? null,
   }));
 
-  // Fetch all categories
+  // Fetch all categories for the sidebar (if applicable)
   const allCategories = await prisma.category.findMany({
     select: {
       id: true,

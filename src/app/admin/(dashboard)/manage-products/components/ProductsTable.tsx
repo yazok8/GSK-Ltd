@@ -1,6 +1,8 @@
+// components/products/_components/ProductsTable.tsx
+
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useAdminNav } from "@/context/AdminNavContext";
 import { TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { CheckCircle2, Edit, MoreVertical, XCircle } from "lucide-react";
@@ -13,7 +15,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { formatPrice } from "utils/formatPrice"; // Adjust import path as needed
 import { ActiveToggleDropDownItem, DeleteDropDownItem } from "./ProductAction";
-import { Button } from "@/components/ui/button"; // Assuming you have a Button component
 import { Pagination } from "@/components/ui/Pagination";
 
 interface Product {
@@ -26,47 +27,23 @@ interface Product {
 
 interface ProductsTableProps {
   products: Product[];
+  currentPage: number;
+  totalPages: number;
+  baseUrl: string;
 }
 
-const PRODUCTS_PER_PAGE = 20;
-
-export default function ProductsTable({ products }: ProductsTableProps) {
+export default function ProductsTable({
+  products,
+  currentPage,
+  totalPages,
+  baseUrl,
+}: ProductsTableProps) {
   const { addTab } = useAdminNav();
-  
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
-
-  const baseUrl = `/admin/manage-products`
-  
-  useEffect(() => {
-    setTotalPages(Math.ceil(products.length / PRODUCTS_PER_PAGE));
-    // Reset to first page if products change
-    setCurrentPage(1);
-  }, [products]);
 
   const handleEditClick = (productId: string, productName: string) => {
     const editPath = `/admin/edit-product/${productId}`;
     addTab({ path: editPath, label: `Edit ${productName}` });
   };
-
-  const handlePageChange = (page: number) => {
-    // Ensure the new page is within bounds
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
-  // Calculate the products to display on the current page
-  const indexOfLastProduct = currentPage * PRODUCTS_PER_PAGE;
-  const indexOfFirstProduct = indexOfLastProduct - PRODUCTS_PER_PAGE;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
-
-  // Generate page numbers (optional, for displaying page numbers)
-  const pageNumbers = [];
-  for (let i = 1; i <= totalPages; i++) {
-    pageNumbers.push(i);
-  }
 
   if (products.length === 0) return <p>No Products Found</p>;
 
@@ -100,7 +77,7 @@ export default function ProductsTable({ products }: ProductsTableProps) {
         </thead>
 
         <TableBody>
-          {currentProducts.map((product) => (
+          {products.map((product) => (
             <TableRow key={product.id}>
               {/* Desktop: In Stock / Out of Stock */}
               <TableCell className="hidden md:table-cell">
@@ -193,7 +170,6 @@ export default function ProductsTable({ products }: ProductsTableProps) {
             currentPage={currentPage}
             totalPages={totalPages}
             baseUrl={baseUrl}
-
           />
         </div>
       )}

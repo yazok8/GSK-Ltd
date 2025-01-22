@@ -3,30 +3,41 @@ import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
+const PRODUCTS_PER_PAGE = 20;
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const categoryIds = searchParams.get("categoryIds"); // e.g. "64b0f9...,64b1a0..."
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
+    const categoryIds = searchParams.get("categoryIds")?.split(",");
+    
+    const whereClause = categoryIds?.length 
+      ? { categoryId: { in: categoryIds } }
+      : {};
 
-    if (!categoryIds) {
-      // return ALL products
-      const allProducts = await prisma.product.findMany({
+    const [products, total] = await prisma.$transaction([
+      prisma.product.findMany({
+        where: whereClause,
         orderBy: { name: "asc" },
         include: { category: true },
-      });
-      return NextResponse.json(allProducts, { status: 200 });
-    } else {
-      // Filter by these IDs
-      const ids = categoryIds.split(",");
-      const filteredProducts = await prisma.product.findMany({
-        where: { categoryId: { in: ids } },
-        orderBy: { name: "asc" },
-        include: { category: true },
-      });
-      return NextResponse.json(filteredProducts, { status: 200 });
-    }
+        skip: (page - 1) * PRODUCTS_PER_PAGE,
+        take: PRODUCTS_PER_PAGE,
+      }),
+      prisma.product.count({ where: whereClause })
+    ]);
+
+    return NextResponse.json({
+      products,
+      currentPage: page,
+      totalPages: Math.ceil(total / PRODUCTS_PER_PAGE),
+      totalProducts: total
+    }, { status: 200 });
+
   } catch (err) {
     console.error("Error fetching products:", err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch products" }, 
+      { status: 500 }
+    );
   }
 }

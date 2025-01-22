@@ -1,5 +1,3 @@
-// components/products/_components/ProductsRootClient.tsx
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -21,49 +19,57 @@ export default function ProductsRootClient({
   currentPage,
   totalPages,
 }: RootClientProps) {
-  
   const [filteredProducts, setFilteredProducts] = useState(products);
+  const [filteredTotalPages, setFilteredTotalPages] = useState(totalPages);
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const handleCategoryChange = async (categoryIds: string[]) => {
-    // Build the query string
-    const query = new URLSearchParams();
+  const handleCategoryChange = (categoryIds: string[]) => {
+    const query = new URLSearchParams(searchParams.toString());
     if (categoryIds.length > 0) {
       query.set("categoryIds", categoryIds.join(","));
+    } else {
+      query.delete("categoryIds");
     }
-    // Reset to page 1 when category changes
     query.set("page", "1");
-
-    // Navigate to the new URL with updated query parameters
     router.push(`/products?${query.toString()}`);
   };
 
   useEffect(() => {
     const categoryIds = searchParams.get("categoryIds")?.split(",") || [];
+    
     const fetchFilteredProducts = async () => {
       if (categoryIds.length === 0) {
         setFilteredProducts(products);
+        setFilteredTotalPages(totalPages);
         return;
       }
+
       const res = await fetch(
-        `/api/products?categoryIds=${categoryIds.join(",")}&page=${currentPage}`
+        `/api/products?categoryIds=${categoryIds.join(",")}&page=${currentPage}&limit=20`
       );
       const data = await res.json();
       setFilteredProducts(data.products);
+      setFilteredTotalPages(data.totalPages);
     };
 
     fetchFilteredProducts();
-  }, [searchParams, products, currentPage]);
+  }, [searchParams, currentPage, products,totalPages]);
 
   return (
     <div className="flex flex-col md:flex-row">
-      <CategorySidebar categories={categories} onCategoryChange={handleCategoryChange} />
-      <ProductsPageClient
-        products={filteredProducts}
-        currentPage={currentPage}
-        totalPages={totalPages}
+      <CategorySidebar 
+        categories={categories} 
+        onCategoryChange={handleCategoryChange} 
       />
+      <div className="flex-1">
+        <ProductsPageClient
+          products={filteredProducts}
+          currentPage={currentPage}
+          totalPages={filteredTotalPages}
+          baseUrl="/products"
+        />
+      </div>
     </div>
   );
 }
