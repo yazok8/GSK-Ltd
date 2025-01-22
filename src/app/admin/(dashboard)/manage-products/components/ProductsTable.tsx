@@ -36,6 +36,8 @@ export default function ProductsTable({ products }: ProductsTableProps) {
   // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+
+  const baseUrl = `/admin/manage-products`
   
   useEffect(() => {
     setTotalPages(Math.ceil(products.length / PRODUCTS_PER_PAGE));
@@ -190,7 +192,8 @@ export default function ProductsTable({ products }: ProductsTableProps) {
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            onPageChange={handlePageChange}
+            baseUrl={baseUrl}
+
           />
         </div>
       )}
