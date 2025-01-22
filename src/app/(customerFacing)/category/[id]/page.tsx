@@ -15,7 +15,7 @@ type CategoryPageProps = {
   };
 };
 
-const PRODUCTS_PER_PAGE = 6;
+const PRODUCTS_PER_PAGE = 30;
 
 
 export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
