@@ -61,13 +61,13 @@ export default function BurgerMenu({
   return (
     <div
       ref={mobileMenuRef}
-      className={`fixed top-0 left-0 w-[75%] sm:w-2/3 lg:hidden h-screen bg-teal-50 p-10 ease-in-out duration-500 z-50 overflow-y-auto ${
+      className={`fixed top-0 left-0 w-[75%] sm:w-2/3 lg:hidden h-screen bg-teal-50 ease-in-out duration-500 z-50 overflow-y-auto ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       }`}
       id="mobile-menu"
       aria-hidden={!isOpen}
     >
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center">
         {/* Logo */}
         <Link href="/">
           <div className="relative block w-[150px] h-[150px]">
@@ -84,17 +84,20 @@ export default function BurgerMenu({
 
         {/* Close (X) Icon */}
         <button
-          className="text-teal-800 focus:outline-none hover:cursor-pointer"
+          className="text-teal-500 focus:outline-none hover:cursor-pointer m-10"
           onClick={toggleMenu}
           aria-label="Close menu"
         >
           <FaTimes size={24} />
         </button>
       </div>
+      <div className="px-10">
       <SearchBox />
+      </div>
+     
 
       {/* Navigation Links */}
-      <nav className="flex-col py-4 text-teal-800" role="navigation">
+      <nav className="flex-col py-4 text-teal-500 px-10" role="navigation">
         <ul>
           {/* Static Links */}
           <li className="py-4 hover:underline hover:decoration-yellow-300">
@@ -119,7 +122,7 @@ export default function BurgerMenu({
               aria-haspopup="true"
               aria-expanded={openSubmenu === "services"}
             >
-              <span className="text-teal-800 text-lg hover:text-yellow-500">
+              <span className="text-teal-500 text-lg hover:text-yellow-500">
                 Our Services
               </span>
               {/* Dropdown Indicator Icon */}
@@ -190,7 +193,7 @@ export default function BurgerMenu({
               aria-haspopup="true"
               aria-expanded={openSubmenu === "products"}
             >
-              <span className="text-teal-800 text-lg hover:text-yellow-500">
+              <span className="text-teal-500 text-lg hover:text-yellow-500">
                 Our Products
               </span>
               {/* Dropdown Indicator Icon */}
