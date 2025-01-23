@@ -7,11 +7,16 @@ import { Inter } from "next/font/google";
 import { Providers } from "./Provider";
 import Footer from "@/components/footer/Footer";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap", // Ensures text remains visible during font load
+  fallback: ['system-ui', 'arial'], // Fallback fonts
+});
 
 export const metadata: Metadata = {
   title: "GSK Limited",
-  description: "Food export services",
+  description: "Food trading services",
 };
 
 export default function RootLayout({
@@ -28,7 +33,6 @@ export default function RootLayout({
         )}
       >
         <Providers>
-          {/* Wrap the main content in a flex-grow container */}
           <main className="flex-grow w-full overflow-x-hidden">{children}</main>
           <Footer />
         </Providers>

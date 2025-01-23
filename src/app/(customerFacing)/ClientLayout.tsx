@@ -26,8 +26,8 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
     // Fetch categories once the component mounts
     const fetchCategories = async () => {
       try {
-        const response = await fetch("/api/categories",{
-            cache: 'no-store'
+        const response = await fetch("/api/categories", {
+          cache: "no-store",
         }); // Ensure this API returns ObjectIDs as strings
         if (response.ok) {
           const data: Category[] = await response.json();
@@ -49,20 +49,29 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
   return (
     <>
       {/* Top Navigation Bar: Logo and Search */}
-      <nav className="w-full text-black duration-300 ease-in p-4 z-10 bg-teal-50">
+      <nav className="w-full text-black duration-300 ease-in px-4 z-10 bg-teal-50">
         <div className="flex justify-between items-center">
           <div>
-          {/* Logo */}
-          <Link href="/">
-            <Image src={GSKLogo} alt="GSK Logo" width={212} height={64} />
-          </Link>
+            {/* Logo */}
+            <Link href="/">
+              <div className="relative block w-[150px] h-[150px]">
+                <Image
+                  src={GSKLogo}
+                  alt="GSK Logo"
+                  className="object-contain"
+                  sizes="500px"
+                  priority
+                  fill
+                />
+              </div>
+            </Link>
           </div>
 
           {/* Search Input and Burger Icon Container */}
           <div className="flex items-center">
-            <div className='hidden md:block'>
-           <SearchBox/>
-           </div>
+            <div className="hidden md:block">
+              <SearchBox />
+            </div>
 
             {/* Burger Icon: Visible Only on Mobile */}
             <button

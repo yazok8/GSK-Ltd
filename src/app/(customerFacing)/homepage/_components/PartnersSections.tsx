@@ -21,6 +21,7 @@ export default async function PartnersSections() {
               height={200}
               style={{ objectFit: 'contain' }}
               className="w-full h-auto"
+              loading="lazy"
             />
           </div>
         ))}

@@ -3,10 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
-import { FaSearch, FaTimes } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
 import GSKLogo from "../../public/logo/new-logo.png";
-import { Input } from "./ui/input";
-import slugify from "slugify";
 import { Category } from "@prisma/client"; // Import Category type
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import SearchBox from "./SearchBox";
@@ -14,7 +12,7 @@ import SearchBox from "./SearchBox";
 interface BurgerMenuProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  categories?: Category[]; // Ensure categories are required
+  categories: Category[]; // Make categories required
 }
 
 export default function BurgerMenu({
@@ -63,7 +61,7 @@ export default function BurgerMenu({
   return (
     <div
       ref={mobileMenuRef}
-      className={`fixed top-0 left-0 w-[75%] sm:w-2/3 lg:hidden h-screen bg-teal-500 p-10 ease-in-out duration-500 z-50 ${
+      className={`fixed top-0 left-0 w-[75%] sm:w-2/3 lg:hidden h-screen bg-teal-50 p-10 ease-in-out duration-500 z-50 overflow-y-auto ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       }`}
       id="mobile-menu"
@@ -72,18 +70,21 @@ export default function BurgerMenu({
       <div className="flex justify-between items-center mb-8">
         {/* Logo */}
         <Link href="/">
-          <Image
-            src={GSKLogo}
-            alt="GSK Logo"
-            width={150}
-            height={50}
-            className="cursor-pointer"
-          />
+          <div className="relative block w-[150px] h-[150px]">
+            <Image
+              src={GSKLogo}
+              alt="GSK Logo"
+              className="object-contain"
+              sizes="500px"
+              priority // Retain only if logo is critical
+              fill
+            />
+          </div>
         </Link>
 
         {/* Close (X) Icon */}
         <button
-          className="text-white focus:outline-none hover:cursor-pointer"
+          className="text-teal-800 focus:outline-none hover:cursor-pointer"
           onClick={toggleMenu}
           aria-label="Close menu"
         >
@@ -91,10 +92,9 @@ export default function BurgerMenu({
         </button>
       </div>
       <SearchBox />
-      
 
       {/* Navigation Links */}
-      <nav className="flex-col py-4 text-white" role="navigation">
+      <nav className="flex-col py-4 text-teal-800" role="navigation">
         <ul>
           {/* Static Links */}
           <li className="py-4 hover:underline hover:decoration-yellow-300">
@@ -119,9 +119,9 @@ export default function BurgerMenu({
               aria-haspopup="true"
               aria-expanded={openSubmenu === "services"}
             >
-              <Link className="text-white text-lg hover:text-yellow-500" href="/services">
+              <span className="text-teal-800 text-lg hover:text-yellow-500">
                 Our Services
-              </Link>
+              </span>
               {/* Dropdown Indicator Icon */}
               <svg
                 className={`w-4 h-4 transition-transform ${
@@ -142,38 +142,40 @@ export default function BurgerMenu({
             </button>
 
             {/* Dropdown Menu for Services */}
-            <li className="text-sm uppercase text-white relative group">
-            <button
-              className="flex justify-between items-center w-full text-left focus:outline-none"
-              onClick={() =>
-                setOpenSubmenu((prev) =>
-                  prev === "services" ? null : "services"
-                )
-              }
-              aria-haspopup="true"
-              aria-expanded={openSubmenu === "services"}
-            >
-            </button>
             {openSubmenu === "services" && (
               <ul className="pl-4 mt-2">
-            <li className="py-2 hover:bg-teal-600 hover:underline" role="none">
-                <Link href="/services/#import" className="hover:text-yellow-500" role="menuitem">
-                  Import
-                </Link>
-              </li>
-              <li className="py-2 hover:bg-teal-600 hover:underline" role="none">
-                <Link href="/services/#export" className="hover:text-yellow-500" role="menuitem">
-                  Export
-                </Link>
-              </li>
-              <li className="py-2 hover:bg-teal-600 hover:underline" role="none">
-                <Link href="/services/#distribution" className="hover:text-yellow-500" role="menuitem">
-                  Distribution
-                </Link>
-              </li>
+                <li className="py-2 hover:bg-teal-600 hover:underline" role="none">
+                  <Link
+                    href="/services/#import"
+                    className="hover:text-yellow-500"
+                    role="menuitem"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Import
+                  </Link>
+                </li>
+                <li className="py-2 hover:bg-teal-600 hover:underline" role="none">
+                  <Link
+                    href="/services/#export"
+                    className="hover:text-yellow-500"
+                    role="menuitem"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Export
+                  </Link>
+                </li>
+                <li className="py-2 hover:bg-teal-600 hover:underline" role="none">
+                  <Link
+                    href="/services/#distribution"
+                    className="hover:text-yellow-500"
+                    role="menuitem"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Distribution
+                  </Link>
+                </li>
               </ul>
             )}
-          </li>         
           </li>
 
           {/* Dynamic Categories Submenu */}
@@ -188,9 +190,9 @@ export default function BurgerMenu({
               aria-haspopup="true"
               aria-expanded={openSubmenu === "products"}
             >
-              <Link className="text-white text-lg hover:text-yellow-500" href="/products">
+              <span className="text-teal-800 text-lg hover:text-yellow-500">
                 Our Products
-              </Link>
+              </span>
               {/* Dropdown Indicator Icon */}
               <svg
                 className={`w-4 h-4 transition-transform ${
@@ -213,15 +215,15 @@ export default function BurgerMenu({
             {/* Dropdown Menu for Products */}
             {openSubmenu === "products" && (
               <ul className="pl-4 mt-2">
-                {categories?.map((category) => (
+                {categories.map((category) => (
                   <li
                     key={category.id}
                     className="py-2 hover:bg-teal-600 hover:underline"
-                    onClick={() => setIsOpen(false)}
                   >
                     <Link
                       href={`/category/${encodeURIComponent(category.id)}`}
                       className="hover:text-yellow-500"
+                      onClick={() => setIsOpen(false)}
                     >
                       {category.name.charAt(0).toUpperCase() +
                         category.name.slice(1)}

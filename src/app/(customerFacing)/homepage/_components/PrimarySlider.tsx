@@ -127,7 +127,6 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
                   alt={cat.name}
                   fill
                   className="rounded-lg object-cover"
-                  loading="lazy"
                   onError={(e) => {
                     e.currentTarget.src = "/fallback.png";
                     console.error(
@@ -135,6 +134,7 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
                     );
                   }}
                 sizes="500"
+                priority
                 />
               </div>
 

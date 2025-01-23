@@ -92,7 +92,7 @@ export default function SearchBox() {
           className="w-full bg-white pr-10"
         />
         {/* Search Icon */}
-        <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+        <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-teal-800" size={16} />
       </div>
 
       {/* Search Results Dropdown */}
