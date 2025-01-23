@@ -34,7 +34,7 @@ function ReceipeSlider({ products, category }: ReceipeSliderProps) {
           <Button className="outline-none text-xl">
             <Link
               href={`/category/${category.id}`}
-              className="flex items-center space-x-2 text-white hover:underline"
+              className="flex items-center space-x-2 text-white hover:underline font-semibold"
             >
               View All Pet Food
               <ArrowRight className="w-4 h-4" />

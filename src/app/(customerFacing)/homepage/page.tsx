@@ -75,7 +75,7 @@ export default async function Homepage({ searchParams }: HomepageProps) {
         
         <div className="flex justify-end ml-auto mb-3">
           <Button className="outline-none text-xl">
-            <Link href="/products" className="flex items-center space-x-2 hover:underline">
+            <Link href="/products" className="flex items-center space-x-2 hover:underline font-semibold">
               View All Products
               <ArrowRight className="w-4 h-4" />
             </Link>

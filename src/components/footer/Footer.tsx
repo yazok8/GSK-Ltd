@@ -65,7 +65,7 @@ export default async function Footer() {
         </div>
         <div className="mt-8 text-center text-sm font-bold ">
           <p className="text-white">
-            © GSK LTD., 2025. All rights reserved. <Link href="https://www.yazankherfan.ca" target="_blank" className="hover:cursor-pointer text-black underline">Yazan Kherfan</Link>
+            © GSK LTD., 2025. All rights reserved. <Link href="https://www.yazankherfan.ca" target="_blank" className="hover:cursor-pointer text-black underline whitespace-nowrap">Yazan Kherfan</Link>
           </p>
         </div>
       </div>

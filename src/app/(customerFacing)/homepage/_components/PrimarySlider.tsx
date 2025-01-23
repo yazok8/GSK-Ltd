@@ -162,13 +162,13 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
                 <h2 className="text-xl md:text-2xl font-extrabold">
                   {cat.name}
                 </h2>
-                <p className="mt-3 md:mt-5 text-lg">
+                <p className="mt-3 md:mt-5 text-lg text-teal-800">
                   Explore more about {cat.name}
                 </p>
                 <Button className="mt-5 justify-center flex p-0 bg-teal-100  w-[150px] mx-auto">
                     <Link
                       href={`/category/${cat.id}`}
-                      className="text-lg flex justify-center items-center font-semibold text-teal-600 border-b-4 border-teal-500 hover:text-teal-600 transition-colors duration-200 hover:underline"
+                      className="text-lg flex justify-center items-center font-semibold text-teal-800 border-b-4 border-teal-500 hover:text-teal-600 transition-colors duration-200 hover:underline"
                     >
                       Learn More
                     </Link>

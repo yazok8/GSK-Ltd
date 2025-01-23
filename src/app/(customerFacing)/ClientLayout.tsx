@@ -69,20 +69,9 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
 
           {/* Search Input and Burger Icon Container */}
           <div className="flex items-center">
-            <div className="hidden md:block">
-              <SearchBox />
+            <div className="hidden lg:block">
+              <SearchBox tabIndex={!isOpen ? 0 : -1} />
             </div>
-
-            {/* Burger Icon: Visible Only on Mobile */}
-            <button
-              className="lg:hidden ml-4 text-teal-500 focus:outline-none"
-              onClick={() => setIsOpen(true)}
-              aria-label="Open menu"
-              aria-expanded={isOpen}
-              aria-controls="mobile-menu"
-            >
-              <FaBars size={24} />
-            </button>
           </div>
         </div>
       </nav>

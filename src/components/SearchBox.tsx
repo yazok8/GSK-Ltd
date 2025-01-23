@@ -12,10 +12,14 @@ interface SearchResult {
   id: string;
   name: string;
   type: "category" | "product";
-  price?: number; // Optional price field for products
+  price?: number;
 }
 
-export default function SearchBox() {
+interface SearchBoxProps {
+  tabIndex?: number; // Optional tabIndex prop
+}
+
+export default function SearchBox({tabIndex}:SearchBoxProps) {
   // State management for search functionality
   const [isOpen, setIsOpen] = useState(false);        
   const [query, setQuery] = useState("");             
@@ -90,6 +94,7 @@ export default function SearchBox() {
           }}
           onClick={() => setIsOpen(true)}
           className="w-full bg-white pr-10"
+          tabIndex={tabIndex}
         />
         {/* Search Icon */}
         <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-teal-800" size={16} />
@@ -97,7 +102,8 @@ export default function SearchBox() {
 
       {/* Search Results Dropdown */}
       {isOpen && (
-        <Command className="absolute top-full mt-1 w-full z-50 bg-white rounded-lg shadow-lg border">
+        <Command className="absolute top-full mt-1 w-full z-50 bg-white rounded-lg shadow-lg border"
+        tabIndex={tabIndex}>
           <CommandList>
             {/* Loading State */}
             {isLoading ? (

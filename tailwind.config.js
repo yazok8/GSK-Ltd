@@ -14,7 +14,6 @@ const tailwindConfig = {
         colors: {
           'brand-teal': '#14B8A6',  // Custom teal color
           'brand-blue': '#1E40AF',  // Custom blue color
-          // Add other custom colors here
         },
         fontFamily: {
           'roboto': ['Roboto', 'sans-serif'],  // Custom font family
