@@ -79,7 +79,9 @@ export default function BurgerMenu({
           role="dialog"
           aria-modal="true"
         >
-
+          <div className="px-6">
+          <SearchBox tabIndex={!isOpen ? 0 : -1} />
+</div>
           {/* Navigation Links */}
           <nav className="flex-col py-4 text-teal-600 px-10" role="navigation">
             <ul>
