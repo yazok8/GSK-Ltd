@@ -6,6 +6,8 @@ import { Category } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { getImageSrc } from "@/lib/imageHelper";
+import ImageErrorBoundary from '@/components/error-boundaries/ImageErrorBoundary'
 
 const Slider = dynamic(() => import("react-slick"), { ssr: false });
 
@@ -45,21 +47,23 @@ const CategoriesGridSlider = memo(({ categories }: CategoryProps) => {
                 <div className="bg-white rounded-lg shadow-md overflow-hidden transform transition-transform duration-200 hover:scale-105 h-[16em] mx-auto">
                   <Link href={`/category/${cat.id}`}>
                     <div className="block">
+                      <ImageErrorBoundary>
                       <div className="w-full h-48 relative">
                         <Image
-                          src={
-                            cat.image
-                              ? `https://gsk-ltd.s3.us-east-2.amazonaws.com/${cat.image}`
-                              : "/images/fallback.jpg"
-                          }
+                          src={getImageSrc(cat.image)}
                           quality={70}
                           alt={cat.name}
                           fill
                           className="hover:opacity-90 object-contain"
                           sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 23vw"
                           loading="lazy"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = "/fallback.jpg";
+                          }}
                         />
                       </div>
+                      </ImageErrorBoundary>
                       <div className="px-1 text-center">
                         <h2 className="text-xl font-semibold">{cat.name}</h2>
                       </div>

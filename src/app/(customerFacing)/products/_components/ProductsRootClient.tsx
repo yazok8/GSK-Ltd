@@ -1,73 +1,125 @@
+// components/products/_components/ProductsRootClient.tsx
+
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import ProductsPageClient from "./ProductsPageClient";
 import CategorySidebar from "./CategorySidebar";
 import { MappedProduct } from "@/types/MappedProduct";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 interface RootClientProps {
   categories: { id: string; name: string }[];
   products: MappedProduct[];
   currentPage: number;
   totalPages: number;
+  expandedId?: string; // Added expandedId prop
 }
 
 export default function ProductsRootClient({
   categories,
-  products,
+  products: initialProducts,
   currentPage,
-  totalPages,
+  totalPages: initialTotalPages,
+  expandedId, // Destructure expandedId
 }: RootClientProps) {
-  const [filteredProducts, setFilteredProducts] = useState(products);
-  const [filteredTotalPages, setFilteredTotalPages] = useState(totalPages);
-  const router = useRouter();
   const searchParams = useSearchParams();
+  const [products, setProducts] = useState(initialProducts);
+  const [totalPages, setTotalPages] = useState(initialTotalPages);
 
-  const handleCategoryChange = (categoryIds: string[]) => {
-    const query = new URLSearchParams(searchParams.toString());
-    if (categoryIds.length > 0) {
-      query.set("categoryIds", categoryIds.join(","));
-    } else {
-      query.delete("categoryIds");
-    }
-    query.set("page", "1");
-    router.push(`/products?${query.toString()}`);
+  const updateUrlWithoutRefresh = (params: { [key: string]: string | null }) => {
+    const currentParams = new URLSearchParams(Array.from(searchParams.entries()));
+    
+    // Update or add new parameters
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) {
+        currentParams.set(key, value);
+      } else {
+        currentParams.delete(key);
+      }
+    });
+
+    // Construct the new URL
+    const newUrl = `${window.location.pathname}?${currentParams.toString()}`;
+    
+    // Update URL without page refresh
+    window.history.pushState({}, '', newUrl);
+    return currentParams;
   };
 
-  useEffect(() => {
-    const categoryIds = searchParams.get("categoryIds")?.split(",") || [];
+  const handleCategoryChange = (categoryIds: string[]) => {
+    const params = new URLSearchParams(searchParams.toString());
     
-    const fetchFilteredProducts = async () => {
-      if (categoryIds.length === 0) {
-        setFilteredProducts(products);
-        setFilteredTotalPages(totalPages);
-        return;
-      }
+    if (categoryIds.length > 0) {
+      params.set("categoryIds", categoryIds.join(","));
+    } else {
+      params.delete("categoryIds");
+    }
 
-      const res = await fetch(
-        `/api/products?categoryIds=${categoryIds.join(",")}&page=${currentPage}&limit=20`
-      );
-      const data = await res.json();
-      setFilteredProducts(data.products);
-      setFilteredTotalPages(data.totalPages);
+    // Preserve expandedId and page
+    const expandedId = params.get('expandedId');
+    const currentPage = params.get('page');
+
+    // Create final URL parameters
+    const urlParams: { [key: string]: string | null } = {
+      categoryIds: categoryIds.length > 0 ? categoryIds.join(",") : null,
+      page: currentPage || "1",
+      ...(expandedId && { expandedId })
     };
 
-    fetchFilteredProducts();
-  }, [searchParams, currentPage, products,totalPages]);
+    // Update URL and fetch new data
+    updateUrlWithoutRefresh(urlParams);
+    fetchFilteredProducts(categoryIds, parseInt(currentPage || "1"));
+  };
+
+  const fetchFilteredProducts = useCallback(async (categoryIds: string[], page: number) => {
+    try {
+      const params = new URLSearchParams();
+      params.set('page', page.toString());
+      params.set('limit', '20');
+      
+      if (categoryIds.length > 0) {
+        params.set('categoryIds', categoryIds.join(','));
+      }
+
+      // Include expandedId if present
+      if (expandedId) {
+        params.set('expandedId', expandedId);
+      }
+
+      const response = await fetch(`/api/products?${params.toString()}`);
+      if (!response.ok) throw new Error('Failed to fetch products');
+      
+      const data = await response.json();
+      setProducts(data.products);
+      setTotalPages(data.totalPages);
+    } catch (error) {
+      console.error('Error fetching filtered products:', error);
+    }
+  },[expandedId])
+
+  // Effect to handle URL parameter changes
+  useEffect(() => {
+    const categoryIds = searchParams.get('categoryIds')?.split(',').filter(Boolean) || [];
+    const page = parseInt(searchParams.get('page') || '1');
+    
+    fetchFilteredProducts(categoryIds, page);
+  }, [searchParams,fetchFilteredProducts]);
 
   return (
     <div className="flex flex-col md:flex-row">
       <CategorySidebar 
         categories={categories} 
-        onCategoryChange={handleCategoryChange} 
+        onCategoryChange={handleCategoryChange}
+        selectedCategories={searchParams.get('categoryIds')?.split(',').filter(Boolean) || []} // Pass selectedCategories
       />
       <div className="flex-1">
         <ProductsPageClient
-          products={filteredProducts}
-          currentPage={currentPage}
-          totalPages={filteredTotalPages}
+          products={products}
+          currentPage={parseInt(searchParams.get('page') || '1')}
+          totalPages={totalPages}
           baseUrl="/products"
+          expandedId={searchParams.get('expandedId') || undefined} // Ensure type is string | undefined
         />
       </div>
     </div>

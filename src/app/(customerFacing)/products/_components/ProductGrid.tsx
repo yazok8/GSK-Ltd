@@ -14,38 +14,65 @@ import { Pagination } from "@/components/ui/Pagination";
 
 type ProductListProps = {
   products: MappedProduct[];
-  category?: Category; // Made optional if needed
-  expandedId?: string;   
+  category?: Category;
+  expandedId?: string; // Ensure this is optional and can be undefined
   currentPage: number;
   totalPages: number;
-  baseUrl: string; // e.g., '/products' or '/category/[id]'
+  baseUrl: string;
 };
 
-const ProductsGrid: React.FC<ProductListProps> = ({ products, expandedId, currentPage, totalPages, baseUrl }) => {
+const ProductsGrid: React.FC<ProductListProps> = ({ 
+  products = [],
+  expandedId, 
+  currentPage = 1,
+  totalPages = 1,
+  baseUrl 
+}) => {
   const [expandedProductId, setExpandedProductId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Define the toggleProductDetails function
   const toggleProductDetails = (id: string) => {
     setExpandedProductId((prevId) => (prevId === id ? null : id));
+    // Optionally, update URL here if needed
   };
+
+  useEffect(() => {
+    if (products) {
+      setIsLoading(false);
+    }
+  }, [products]);
 
   useEffect(() => {
     if (expandedId) {
       setExpandedProductId(expandedId);
+      // Optionally, scroll to the expanded product
+      const element = document.getElementById(`product-card-${expandedId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
   }, [expandedId]);
 
-  if (products.length === 0) return <p>No Products Found</p>;
+  if (isLoading) {
+    return <div className="flex justify-center items-center">Loading products...</div>;
+  }
+
+  if (!products || products.length === 0) {
+    return (
+      <div className="flex justify-center items-center p-4">
+        <p className="text-gray-600">No Products Found</p>
+      </div>
+    );
+  }
 
   return (
     <div>
-      {/* Conditionally render category-specific UI if category is provided */}
-      
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {products.map((product) => (
           <React.Fragment key={product.id}>
-            
-            {/* Product Card */}
             <Card
+              id={`product-card-${product.id}`} // Add an ID for scrolling
               className={`cursor-pointer flex flex-col h-full transition-transform transform hover:scale-105 hover:shadow-lg ${
                 expandedProductId === product.id ? "border-teal-500" : "border-gray-300"
               } focus:outline-none focus:ring-2 focus:ring-teal-500`}
@@ -61,22 +88,24 @@ const ProductsGrid: React.FC<ProductListProps> = ({ products, expandedId, curren
               }}
             >
               <CardHeader className="flex-1">
-                {/* Product Image */}
                 <div className="w-full h-48 relative mb-4">
                   <Image
-                    src={getImageSrc(product.images[0])}
+                    src={getImageSrc(product.images?.[0])}
                     alt={product.name}
                     fill
                     className="rounded-lg object-contain"
                     loading="lazy"
-                    sizes="500" 
+                    sizes="500"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/fallback-image.jpg';
+                    }}
                   />
                 </div>
                 <CardTitle className="text-xl font-semibold truncate">{product.name}</CardTitle>
               </CardHeader>
             </Card>
 
-            {/* Expandable Product Details */}
             <AnimatePresence>
               {expandedProductId === product.id && (
                 <motion.div
@@ -87,13 +116,11 @@ const ProductsGrid: React.FC<ProductListProps> = ({ products, expandedId, curren
                   transition={{ duration: 0.3 }}
                   className="col-span-full mt-2 overflow-hidden relative"
                 >
-                  {/* Triangle Indicator */}
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                     <svg width="20" height="10" viewBox="0 0 20 10" fill="white" xmlns="http://www.w3.org/2000/svg">
                       <path d="M10 0L20 10H0L10 0Z" fill="white" />
                     </svg>
                   </div>
-                  {/* Expanded Details Container */}
                   <div className="bg-white p-6 rounded-lg shadow-lg">
                     <ProductDetails product={product} />
                   </div>
@@ -104,16 +131,15 @@ const ProductsGrid: React.FC<ProductListProps> = ({ products, expandedId, curren
         ))}
       </div>
 
-       {/* Pagination Controls */}
-          {totalPages > 1 && (
-            <div className="flex justify-center items-center mt-4">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                baseUrl={baseUrl}
-              />
-            </div>
-          )}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center mt-4">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            baseUrl={baseUrl}
+          />
+        </div>
+      )}
     </div>
   );
 };

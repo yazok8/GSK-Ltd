@@ -1,73 +1,84 @@
-// components/products/ProductsPage.tsx
-
 import React, { Suspense } from "react";
 import prisma from "@/lib/prisma";
 import ProductsRootClient from "./_components/ProductsRootClient";
 import { MappedProduct } from "@/types/MappedProduct";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 type ProductsPageProps = {
   searchParams: {
     page?: string;
     categoryIds?: string;
+    expandedId?: string;
     // Add other search params if necessary
   };
 };
 
 const PRODUCTS_PER_PAGE = 20;
-
-export default async function ProductsPage({ searchParams }: ProductsPageProps) {
+async function ProductsContent({ searchParams }: ProductsPageProps) {
   const page = parseInt(searchParams.page || '1', 10);
   const currentPage = isNaN(page) || page < 1 ? 1 : page;
 
-  // Fetch total count of products (consider filters if applied)
+  const categoryIds = searchParams.categoryIds?.split(",").filter(Boolean) || [];
+  const expandedId = searchParams.expandedId;
+
+  // Fetch total count of products based on category filters (excluding expandedId)
   const totalProducts = await prisma.product.count({
-    where: searchParams.categoryIds
-      ? {
-          categoryId: {
-            in: searchParams.categoryIds.split(","),
-          },
-        }
+    where: categoryIds.length > 0
+      ? { categoryId: { in: categoryIds } }
       : {},
   });
 
   const totalPages = Math.ceil(totalProducts / PRODUCTS_PER_PAGE);
   const safeCurrentPage = Math.min(currentPage, totalPages || 1);
 
-  // Fetch products for the current page (consider filters if applied)
+  // Build the 'where' clause to include category filters and the expanded product
+  const whereClause: any = {};
+
+  if (categoryIds.length > 0 && expandedId) {
+    whereClause.OR = [
+      { categoryId: { in: categoryIds } },
+      { id: expandedId },
+    ];
+  } else if (categoryIds.length > 0) {
+    whereClause.categoryId = { in: categoryIds };
+  } else if (expandedId) {
+    whereClause.id = expandedId;
+  }
+
+  // Fetch products based on the 'where' clause
   const productsRaw = await prisma.product.findMany({
-    where: searchParams.categoryIds
-      ? {
-          categoryId: {
-            in: searchParams.categoryIds.split(","),
-          },
-        }
-      : {},
+    where: whereClause,
     include: { category: true },
     skip: (safeCurrentPage - 1) * PRODUCTS_PER_PAGE,
     take: PRODUCTS_PER_PAGE,
   });
 
-  const products: MappedProduct[] = productsRaw.map((product) => ({
-    id: product.id,
-    images: product.images,
-    name: product.name,
-    description: product.description,
-    category: product.category
-      ? {
-          id: product.category.id,
-          name: product.category.name,
-          description: product.category.description,
-          image: product.category.image,
-          featured: product.category.featured,
-        }
-      : null,
-    price: product.price,
-    inStock: product.inStock,
-    brand: product.brand,
-    categoryId: product.category?.id ?? null,
-  }));
+  // Ensure no duplicate products if the expanded product is also in the category filter
+  const uniqueProductsMap: { [key: string]: MappedProduct } = {};
+  productsRaw.forEach((product) => {
+    uniqueProductsMap[product.id] = {
+      id: product.id,
+      images: product.images,
+      name: product.name,
+      description: product.description,
+      category: product.category
+        ? {
+            id: product.category.id,
+            name: product.category.name,
+            description: product.category.description,
+            image: product.category.image,
+            featured: product.category.featured,
+          }
+        : null,
+      price: product.price,
+      inStock: product.inStock,
+      brand: product.brand,
+    };
+  });
 
-  // Fetch all categories for the sidebar (if applicable)
+  const products: MappedProduct[] = Object.values(uniqueProductsMap);
+
+  // Fetch all categories for the sidebar
   const allCategories = await prisma.category.findMany({
     select: {
       id: true,
@@ -82,7 +93,20 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         products={products}
         currentPage={safeCurrentPage}
         totalPages={totalPages}
+        expandedId={expandedId} // Pass expandedId here
       />
+    </Suspense>
+  );
+}
+
+export default async function ProductsPage(props: ProductsPageProps) {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center items-center min-h-screen">
+        <LoadingSpinner />
+      </div>
+    }>
+      <ProductsContent searchParams={props.searchParams} />
     </Suspense>
   );
 }

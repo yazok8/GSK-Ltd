@@ -5,6 +5,8 @@ import { Category } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link"; 
 import { Button } from "@/components/ui/button";
+import { getImageSrc } from "@/lib/imageHelper";
+import ImageErrorBoundary from "@/components/error-boundaries/ImageErrorBoundary";
 
 interface PrimarySliderProps {
   categories: Category[];
@@ -122,20 +124,25 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
 
               {/* Image */}
               <div className="w-full h-full md:w-4/5 relative -z-10">
-                <Image
-                  src={`https://gsk-ltd.s3.us-east-2.amazonaws.com/${cat.image}`}
-                  alt={cat.name}
-                  fill
-                  className="rounded-lg object-cover"
-                  onError={(e) => {
-                    e.currentTarget.src = "/fallback.png";
-                    console.error(
-                      `Failed to load image for category ID ${cat.id}. Using fallback image.`
-                    );
-                  }}
-                sizes="500"
-                priority
-                />
+              <ImageErrorBoundary>
+                  <Image
+                    src={getImageSrc(cat.image)}
+                    alt={cat.name || 'Category image'}
+                    fill
+                    className="rounded-lg object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "/fallback.jpg";
+                    }}
+                    onLoadingComplete={(image) => {
+                      image.classList.remove('opacity-0');
+                      image.classList.add('opacity-100');
+                    }}
+         
+                    priority
+                  />
+                </ImageErrorBoundary>
               </div>
 
               {/* Overlay Text */}

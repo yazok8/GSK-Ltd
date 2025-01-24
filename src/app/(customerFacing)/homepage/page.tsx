@@ -3,9 +3,7 @@
 import React, { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { getAllCategories, getProductsByCategoryId } from "@/lib/getCategories";
-import Image from "next/image";
 import Link from "next/link";
-import { CardHeader, CardTitle } from "@/components/ui/card";
 import { Product } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
