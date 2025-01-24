@@ -14,6 +14,9 @@ export type CategoryProps = {
 };
 
 const CategoriesGridSlider = memo(({ categories }: CategoryProps) => {
+
+  const S3_BASE_URL = process.env.NEXT_PUBLIC_S3_BASE_URL;
+
   const settings = {
     dots: true,
     infinite: false,
@@ -49,7 +52,7 @@ const CategoriesGridSlider = memo(({ categories }: CategoryProps) => {
                         <Image
                           src={
                             cat.image
-                              ? `https://gsk-ltd.s3.us-east-2.amazonaws.com/${cat.image}`
+                              ? `${S3_BASE_URL}/${cat.image}`
                               : "/images/fallback.jpg"
                           }
                           quality={70}

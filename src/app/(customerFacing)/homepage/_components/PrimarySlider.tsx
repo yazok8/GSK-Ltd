@@ -12,6 +12,9 @@ interface PrimarySliderProps {
 
 function PrimarySlider({ categories }: PrimarySliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const S3_BASE_URL = process.env.NEXT_PUBLIC_S3_BASE_URL;
+
   const slideInterval = useRef<NodeJS.Timeout | null>(null);
 
   // Function to select slides based on available data
@@ -123,7 +126,7 @@ function PrimarySlider({ categories }: PrimarySliderProps) {
               {/* Image */}
               <div className="w-full h-full md:w-4/5 relative -z-10">
                 <Image
-                  src={`https://gsk-ltd.s3.us-east-2.amazonaws.com/${cat.image}`}
+                  src={`${S3_BASE_URL}/${cat.image}`}
                   alt={cat.name}
                   fill
                   className="rounded-lg object-cover"
