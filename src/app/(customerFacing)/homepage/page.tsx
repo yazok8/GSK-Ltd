@@ -1,23 +1,40 @@
 // Homepage.tsx
 
-import React from "react";
+import React, { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { getAllCategories, getProductsByCategoryId } from "@/lib/getCategories";
 import Image from "next/image";
 import Link from "next/link";
-import Services from "./_components/Services";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 import { Product } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import PartnersSections from "./_components/PartnersSections";
 
-// Dynamically import client components
-const PrimarySlider = dynamic(() => import("./_components/PrimarySlider"));
-const CategoriesGridSlider = dynamic(
-  () => import("./_components/CategoriesGridSlider")
-);
-const PetFoodSlider = dynamic(() => import("./_components/PetFoodSlider"));
+const Services = dynamic(() => import("./_components/Services"), { 
+  ssr: false,
+  loading: () => <div className="h-96 bg-gray-100 animate-pulse"></div>
+});
+
+const PrimarySlider = dynamic(() => import("./_components/PrimarySlider"), {
+  ssr: false,
+  loading: () => <div className="h-[500px] bg-gray-200 animate-pulse"></div>
+});
+
+const CategoriesGridSlider = dynamic(() => import("./_components/CategoriesGridSlider"), {
+  ssr: false,
+  loading: () => <div className="h-96 bg-gray-100 animate-pulse"></div>
+});
+
+const PetFoodSlider = dynamic(() => import("./_components/PetFoodSlider"), {
+  ssr: false,
+  loading: () => <div className="h-[700px] bg-gray-200 animate-pulse"></div>
+});
+
+const PartnersSections = dynamic(() => import("./_components/PartnersSections"), {
+  ssr: false,
+  loading: () => <div className="h-64 bg-gray-100 animate-pulse"></div>
+});
+
 
 interface HomepageProps {
   searchParams?: {
@@ -42,19 +59,6 @@ export default async function Homepage({ searchParams }: HomepageProps) {
     petFoodProducts = [];
   }
 
-  const numberOfVisibleCategories = 4;
-  
-  // Select indices for CategoriesGridSlider
-  let CategoriesGridSliderIndices = [0, 2, 1, 7, 8]; // Ensure this includes all categories or adjust as needed
-  if (searchParams?.indices) {
-    CategoriesGridSliderIndices = searchParams.indices
-      .split(",")
-      .map((str) => parseInt(str, 10))
-      .filter((num) => !isNaN(num));
-  }
-
-  const filteredCatGridSlider = categories; 
-
    
   
   const primarySliderIndices = [8, 4, 6, 5]; // Adjust these indices as needed
@@ -62,50 +66,49 @@ export default async function Homepage({ searchParams }: HomepageProps) {
     .map((index) => categories[index])
     .filter(Boolean);
 
-  return (
-    <div className="w-full mx-auto">
-      {/* Primary Slider */}
-      <PrimarySlider categories={primarySliderCategories} />
-      
-      <div className="bg-slate-50 py-8 max-w-6xl mx-auto">
-        {/* Section Header */}
-        <div className="text-center">
-          <h1 className="text-5xl font-bold">Our Products</h1>
-        </div>
+    const categoriesGridSlider = categories.slice(0, 8);
+
+    return (
+      <div className="w-full mx-auto">
+        <Suspense fallback={<div className="h-[500px] bg-gray-200 animate-pulse"></div>}>
+          <PrimarySlider categories={primarySliderCategories} />
+        </Suspense>
         
-        <div className="flex justify-end ml-auto mb-3">
-          <Button className="outline-none text-xl">
-            <Link href="/products" className="flex items-center space-x-2 hover:underline font-semibold">
-              View All Products
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </Button>
-        </div>
-        
-        {/* Categories Slider for All Screens */}
-        {filteredCatGridSlider.length > 0 && (
-          <div className="px-4">
-            <CategoriesGridSlider categories={filteredCatGridSlider} />
+        <div className="bg-slate-50 py-8 max-w-6xl mx-auto">
+          <div className="text-center">
+            <h1 className="text-5xl font-bold">Our Products</h1>
           </div>
-        )}
-      </div>
-      
-      {/* Pet Food Section */}
-      <div>
-        <CardHeader>
-          <CardTitle className="text-4xl text-center">Pet Food</CardTitle>
-        </CardHeader>
+          
+          <div className="flex justify-end ml-auto mb-3">
+            <Button asChild variant="outline">
+              <Link href="/products" className="flex items-center space-x-2">
+                View All Products
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
+          </div>
+          
+          <Suspense fallback={<div className="h-96 bg-gray-100 animate-pulse"></div>}>
+            <CategoriesGridSlider categories={categoriesGridSlider} />
+          </Suspense>
+        </div>
+        
         {petFoodCategory && (
-          <PetFoodSlider
-            products={petFoodProducts}
-            category={petFoodCategory}
-          />
+          <Suspense fallback={<div className="h-[700px] bg-gray-200 animate-pulse"></div>}>
+            <PetFoodSlider
+              products={petFoodProducts}
+              category={petFoodCategory}
+            />
+          </Suspense>
         )}
+        
+        <Suspense fallback={<div className="h-96 bg-gray-100 animate-pulse"></div>}>
+          <Services />
+        </Suspense>
+        
+        <Suspense fallback={<div className="h-64 bg-gray-100 animate-pulse"></div>}>
+          <PartnersSections />
+        </Suspense>
       </div>
-      
-      {/* Additional Sections */}
-      <Services />
-      <PartnersSections />
-    </div>
-  );
+    );
 }
