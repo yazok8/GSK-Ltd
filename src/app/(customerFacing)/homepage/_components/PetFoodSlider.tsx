@@ -17,9 +17,6 @@ export type ReceipeSliderProps = {
 };
 
 function ReceipeSlider({ products, category }: ReceipeSliderProps) {
-
-  const S3_BASE_URL = process.env.NEXT_PUBLIC_S3_BASE_URL;
-
   const settings = {
     dots: true,
     infinite: false, // Set to true if you want infinite scrolling
@@ -53,7 +50,7 @@ function ReceipeSlider({ products, category }: ReceipeSliderProps) {
                   <Image
                     src={
                       product.images && product.images.length > 0
-                        ? `${S3_BASE_URL}/${product.images[0]}`
+                        ? `https://gsk-ltd.s3.us-east-2.amazonaws.com/${product.images[0]}`
                         : "/images/fallback.jpg"
                     }
                     alt={product.name}
