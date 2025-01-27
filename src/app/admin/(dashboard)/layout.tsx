@@ -1,8 +1,12 @@
+// AdminLayout.tsx
 import { AdminNavProvider } from "@/context/AdminNavContext";
 import AdminNav from "../components/adminnav/AdminNav";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import React, { Suspense } from 'react';
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { AdminLayoutErrorBoundary } from "../components/error-boundary/AdminLayoutErrorBoundary";
+import ClientSideRedirect from "../auth/components/auth/ClientSideRedirect";
 
 export const metadata = {
   title: "GSK Ltd website",
@@ -12,29 +16,30 @@ export const metadata = {
 const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
   const session = await getServerSession(authOptions);
 
-  // If no session, redirect to sign-in
   if (!session) {
-    redirect("/admin/auth/sign-in");
-  }
-
-  // If user is not an admin (or VIEW_ONLY), redirect to 403
-  if (session.user.role !== "ADMIN" && session.user.role !== "VIEW_ONLY") {
-    redirect("/403");
+    return <ClientSideRedirect />;
   }
 
   return (
-    <AdminNavProvider>
-      <div className="flex min-h-screen">
-        {/* Left Sidebar */}
-        <div className="max-w-66 border-r">
-          <AdminNav session={session} />
+    <AdminLayoutErrorBoundary>
+      <AdminNavProvider>
+        <div className="flex min-h-screen">
+          <Suspense fallback={<LoadingSpinner />}>
+            <div className="max-w-66 border-r">
+              <AdminNav session={session} />
+            </div>
+            <main className="flex-1 p-5">
+              <Suspense fallback={<LoadingSpinner />}>
+                {children}``
+              </Suspense>
+            </main>
+          </Suspense>
         </div>
-
-        {/* Main Content */}
-        <div className="flex-1 p-5">{children}</div>
-      </div>
-    </AdminNavProvider>
+      </AdminNavProvider>
+    </AdminLayoutErrorBoundary>
   );
 };
 
 export default AdminLayout;
+
+export const dynamic = 'force-dynamic';

@@ -1,5 +1,3 @@
-// components/products/_components/CategorySidebar.tsx
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -31,10 +29,8 @@ export default function CategorySidebar({
     setSelectedIds((prev) => {
       let updated;
       if (prev.includes(categoryId)) {
-        // Remove
         updated = prev.filter((id) => id !== categoryId);
       } else {
-        // Add
         updated = [...prev, categoryId];
       }
       // Notify parent component of new selection

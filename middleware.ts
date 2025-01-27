@@ -42,51 +42,21 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith(path)
   );
 
-  if (isProtectedAdminPath) {
-    if (isExcludedPath) {
-      return NextResponse.next();
-    }
-
+  if (isProtectedAdminPath && !isExcludedPath) {
     const token = await getToken({ req, secret });
 
     if (!token) {
-      console.warn(`Unauthorized access attempt to ${pathname}`);
       const signInUrl = new URL("/admin/signin", req.url);
       signInUrl.searchParams.set("callbackUrl", req.url);
       return NextResponse.redirect(signInUrl);
     }
 
-    // Check if user has either ADMIN or VIEW_ONLY role
     if (token.role !== "ADMIN" && token.role !== "VIEW_ONLY") {
-      console.warn(
-        `Forbidden access attempt to ${pathname} by user ID: ${token.id}`
-      );
       return NextResponse.redirect(new URL("/403", req.url));
     }
 
-    // Allow VIEW_ONLY users to access read-only paths
-    if (token.role === "VIEW_ONLY" && !isWriteProtectedPath) {
-      return NextResponse.next();
-    }
-
-    // Only block write operations for VIEW_ONLY users
-    if (isWriteProtectedPath && token.role === "VIEW_ONLY") {
-      console.warn(
-        `Write operation attempted by VIEW_ONLY user ID: ${token.id}`
-      );
-      return NextResponse.redirect(
-        new URL("/admin/read-only-dashboard", req.url)
-      );
-    } else if (isWriteProtectedPath && token.role === "ADMIN") {
-      return NextResponse.next();
-    }
-
-    // Allow VIEW_ONLY users to access the read-only dashboard
-    if (
-      pathname === "/admin/read-only-dashboard" &&
-      token.role === "VIEW_ONLY"
-    ) {
-      return NextResponse.next();
+    if (token.role === "VIEW_ONLY" && isWriteProtectedPath) {
+      return NextResponse.redirect(new URL("/admin/read-only-dashboard", req.url));
     }
   }
 

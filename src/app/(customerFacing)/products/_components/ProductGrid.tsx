@@ -15,7 +15,7 @@ import { Pagination } from "@/components/ui/Pagination";
 type ProductListProps = {
   products: MappedProduct[];
   category?: Category;
-  expandedId?: string; // Ensure this is optional and can be undefined
+  expandedId?: string; 
   currentPage: number;
   totalPages: number;
   baseUrl: string;
@@ -72,7 +72,7 @@ const ProductsGrid: React.FC<ProductListProps> = ({
         {products.map((product) => (
           <React.Fragment key={product.id}>
             <Card
-              id={`product-card-${product.id}`} // Add an ID for scrolling
+              id={`product-card-${product.id}`}
               className={`cursor-pointer flex flex-col h-full transition-transform transform hover:scale-105 hover:shadow-lg ${
                 expandedProductId === product.id ? "border-teal-500" : "border-gray-300"
               } focus:outline-none focus:ring-2 focus:ring-teal-500`}

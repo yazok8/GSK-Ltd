@@ -1,3 +1,5 @@
+// auth.ts
+
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
@@ -37,9 +39,8 @@ export const authOptions: NextAuthOptions = {
                 { username: identifier },
               ],
             },
-            
           });
-          
+
           if (!user) {
             throw new Error("UserNotFound");
           }
@@ -53,9 +54,9 @@ export const authOptions: NextAuthOptions = {
             throw new Error("InvalidPassword");
           }
 
-          // Allow both ADMIN and VIEW_ONLY roles to access the dashboard
+          // **Change the error name here**
           if (user.role !== Role.ADMIN && user.role !== Role.VIEW_ONLY) {
-            throw new Error("InsufficientPermissions");
+            throw new Error("NotAdmin"); // Changed from "InsufficientPermissions"
           }
 
           return {
@@ -74,26 +75,26 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {  
     async jwt({ token, user }) {  
-     if (user) {  
-      token.id = user.id;  
-      token.role = user.role; // Add this line to include the user's role in the token's payload  
-      token.username = user.username;  
-      token.name = user.name;  
-      token.email = user.email;  
-     }  
-     return token;  
+      if (user) {  
+        token.id = user.id;  
+        token.role = user.role; // Include the user's role in the token's payload  
+        token.username = user.username;  
+        token.name = user.name;  
+        token.email = user.email;  
+      }  
+      return token;  
     },  
     async session({ session, token }) {  
-     if (token && session.user) {  
-      session.user = {  
-        id: token.id as string,  
-        username: token.username as string,  
-        name: token.name as string,  
-        email: token.email as string,  
-        role: token.role as Role, // Add this line to include the user's role in the session  
-      };  
-     }  
-     return session;  
+      if (token && session.user) {  
+        session.user = {  
+          id: token.id as string,  
+          username: token.username as string,  
+          name: token.name as string,  
+          email: token.email as string,  
+          role: token.role as Role, // Include the user's role in the session  
+        };  
+      }  
+      return session;  
     },  
   },
   

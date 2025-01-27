@@ -1,4 +1,3 @@
-// Optimized CategoriesGridSlider Component
 "use client";
 
 import React, { memo } from "react";
