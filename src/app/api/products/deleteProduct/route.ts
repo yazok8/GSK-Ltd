@@ -1,4 +1,3 @@
-// src/app/api/products/deleteProduct/route.ts
 import { deleteProduct } from "@/app/admin/actions/products";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";

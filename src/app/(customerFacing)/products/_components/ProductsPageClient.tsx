@@ -1,5 +1,3 @@
-// components/products/_components/ProductsPageClient.tsx
-
 import React from 'react';
 import ProductsGrid from './ProductGrid';
 import { MappedProduct } from '@/types/MappedProduct';
@@ -10,7 +8,7 @@ interface ProductsPageClientProps {
   currentPage: number;
   totalPages: number;
   baseUrl: string;
-  expandedId?: string; // Ensure this is optional and can be undefined
+  expandedId?: string;
 }
 
 const ProductsPageClient: React.FC<ProductsPageClientProps> = ({
@@ -28,7 +26,7 @@ const ProductsPageClient: React.FC<ProductsPageClientProps> = ({
           currentPage={currentPage}
           totalPages={totalPages}
           baseUrl={baseUrl}
-          expandedId={expandedId} // Pass down expandedId
+          expandedId={expandedId}
         />
       </ProductErrorBoundary>
     </div>

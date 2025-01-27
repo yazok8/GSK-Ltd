@@ -1,8 +1,3 @@
-
-
-
-// src/app/api/products/addProduct/route.ts
-
 import { NextResponse } from 'next/server';
 import { parseForm } from "../../../../../utils/formUtils";
 import { UpdateProduct } from '@/app/admin/actions/products';

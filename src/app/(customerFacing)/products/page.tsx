@@ -9,7 +9,6 @@ type ProductsPageProps = {
     page?: string;
     categoryIds?: string;
     expandedId?: string;
-    // Add other search params if necessary
   };
 };
 
@@ -22,6 +21,7 @@ async function ProductsContent({ searchParams }: ProductsPageProps) {
   const expandedId = searchParams.expandedId;
 
   // Fetch total count of products based on category filters (excluding expandedId)
+  
   const totalProducts = await prisma.product.count({
     where: categoryIds.length > 0
       ? { categoryId: { in: categoryIds } }

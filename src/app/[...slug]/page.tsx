@@ -10,7 +10,7 @@ const CatchAll: React.FC = () => {
   // Implement logic to check if the page exists
   // This could involve checking against a list of valid routes or querying a database
 
-  const pageExists = false; // Replace with actual existence check
+  const pageExists = false; 
 
   if (!pageExists) {
     return <Forbidden />

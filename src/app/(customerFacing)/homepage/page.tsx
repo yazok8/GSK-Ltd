@@ -1,5 +1,3 @@
-// Homepage.tsx
-
 import React, { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { getAllCategories, getProductsByCategoryId } from "@/lib/getCategories";
@@ -59,7 +57,7 @@ export default async function Homepage({ searchParams }: HomepageProps) {
 
    
   
-  const primarySliderIndices = [8, 4, 6, 5]; // Adjust these indices as needed
+  const primarySliderIndices = [8, 4, 6, 5]; 
   const primarySliderCategories = primarySliderIndices
     .map((index) => categories[index])
     .filter(Boolean);

@@ -1,5 +1,3 @@
-// components/products/_components/ProductsRootClient.tsx
-
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
@@ -21,7 +19,7 @@ export default function ProductsRootClient({
   products: initialProducts,
   currentPage,
   totalPages: initialTotalPages,
-  expandedId, // Destructure expandedId
+  expandedId,
 }: RootClientProps) {
   const searchParams = useSearchParams();
   const [products, setProducts] = useState(initialProducts);
