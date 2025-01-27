@@ -1,4 +1,3 @@
-// components/ReadOnlyDashboard.js  
 import ProductsTable from "../(dashboard)/manage-products/components/ProductsTable";  
 import CategoriesTable from "../(dashboard)/manage-categories/_components/CategoriesTable";  
   

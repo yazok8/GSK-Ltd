@@ -1,6 +1,5 @@
 "use client";
 
-import { CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { usePermissions } from "@/hooks/usePermissions";
 import ProductsTable from "../(dashboard)/manage-products/components/ProductsTable";

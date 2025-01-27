@@ -1,5 +1,3 @@
-// components/error-boundaries/ProductErrorBoundary.tsx
-
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
 interface Props {

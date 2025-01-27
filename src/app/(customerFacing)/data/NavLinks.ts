@@ -1,5 +1,3 @@
-// src/app/(customerFacing)/data/NavLinks.ts
-
 export interface NavLinkBase {
   id: string;
   header: string;

@@ -29,7 +29,7 @@ const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
             </div>
             <main className="flex-1 p-5">
               <Suspense fallback={<LoadingSpinner />}>
-                {children}``
+                {children}
               </Suspense>
             </main>
           </Suspense>
