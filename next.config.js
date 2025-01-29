@@ -20,15 +20,36 @@ const nextConfig = {
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     BUCKET_NAME: process.env.AWS_S3_BUCKET_NAME,
   },
-  // Move rewrites inside the config object properly
+
+  // 1. Set correct headers for /robots.txt so it's served as text/plain
+  async headers() {
+    return [
+      {
+        source: '/robots.txt', 
+        headers: [
+          { key: 'Content-Type', value: 'text/plain; charset=UTF-8' },
+        ],
+      },
+    ];
+  },
+
+  // 2. Rewrite the /robots.txt path to an API endpoint (or Next.js route)
   async rewrites() {
     return [
+      // Keep your existing rewrite
       {
         source: '/api/:path*',
         destination: '/api/:path*',
       },
+      // Add a rewrite for /robots.txt
+      {
+        source: '/robots.txt',
+        destination: '/api/robots', // or wherever you serve the text from
+      },
     ];
   },
+
+  // 3. Example webpack config
   webpack: (config, { dev, isServer }) => {
     if (dev) {
       config.watchOptions = {
