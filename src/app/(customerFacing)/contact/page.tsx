@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from "react";
 import emailjs  from 'emailjs-com';
 import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+
 
 interface FormData {
   name: string;
@@ -127,9 +129,13 @@ export default function ContactPage() {
   };
 
   return (
-    <>
+    <Card>
+      <CardHeader className="mx-auto mt-14 text-center">
+        <CardTitle>Connect With Us!</CardTitle>
+      </CardHeader>
       {/* Header Section */}
-      <div className="text-center mx-auto font-bold my-20 text-3xl">
+      <div>
+      <div className="text-center mx-auto font-semibold p-4 text-xl max-w-2xl">
         <p>
           We Know Food Best. Let GSK International Food Supplier be your trusted
           trading partner.
@@ -147,12 +153,11 @@ export default function ContactPage() {
           </a>
         </div>
         <br />
-        <p>Connect With Us!</p>
       </div>
 
       {/* Subject Selection Section */}
       {!subject && (
-        <div className="mx-auto max-w-md p-4">
+        <div className="mx-auto max-w-xl p-4">
           <form
             onSubmit={(e) => e.preventDefault()} // Prevent form submission
             className="flex flex-col space-y-4"
@@ -182,7 +187,7 @@ export default function ContactPage() {
 
       {/* Form Section */}
       {subject && (
-        <div className="mx-auto max-w-2xl p-4">
+        <div className="mx-auto max-w-xl p-4 mb-12">
           {submissionStatus === "success" && (
             <div className="mb-4 p-4 bg-green-100 text-green-700 rounded">
               Your message has been successfully sent!
@@ -323,6 +328,7 @@ export default function ContactPage() {
           </div>
         </div>
       )}
-    </>
+      </div>
+    </Card>
   );
 }
