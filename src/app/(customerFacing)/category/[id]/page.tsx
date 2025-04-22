@@ -1,10 +1,8 @@
-// pages/category/[id]/page.tsx or app/category/[id]/page.tsx
-
 import React from 'react';
 import { MappedProduct } from '@/types/MappedProduct';
 import { isValidObjectId } from '@/lib/validateObjectId';  // Utility function to validate ObjectID
 import { getCategoryById, getProductsByCategoryPaginated } from '../../actions/categories';
-import CategoryPageClient from './CategoryPageClient';
+import CategoryPageClient from '../_components/CategoryPageClient';
 
 type CategoryPageProps = {
   params: {

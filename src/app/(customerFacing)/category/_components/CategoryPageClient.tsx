@@ -8,8 +8,6 @@ import { Category } from '@prisma/client';
 import Image from 'next/image';
 import ProductsGrid from '../../products/_components/ProductGrid';
 import { MappedProduct } from '@/types/MappedProduct';
-import { Pagination } from '@/components/ui/Pagination';
-import Link from 'next/link';
 
 export interface CategoryPageClientProps {
   category: Category;
@@ -48,4 +46,5 @@ export default function CategoryPageClient({ category, products, currentPage, to
       />
     </div>
   );
+  
 }
