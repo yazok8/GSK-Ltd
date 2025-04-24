@@ -10,7 +10,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    # Environment variables for Next.js, Prisma, Redis, Auth, etc.
     env:
       NODE_ENV: test
       DATABASE_URL: mongodb://localhost:27017/test_db
@@ -26,7 +25,7 @@ jobs:
         ports:
           - 27017:27017
         options: >-
-          --health-cmd "pg_isready -U postgres"
+          --health-cmd "echo 'db.runCommand(\"ping\").ok' | mongosh localhost:27017/test --quiet"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -54,6 +53,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Initialize MongoDB Replica Set
+        run: |
+          mongosh --eval 'rs.initiate({_id: "rs0", members: [{_id: 0, host: "localhost:27017"}]})'
+          sleep 10  # Give some time for the replica set to initialize
+
       - name: Generate Prisma client
         run: npx prisma generate
 
@@ -74,6 +78,8 @@ jobs:
 
       - name: Run E2E tests
         run: npm run test:e2e
+        env:
+          DEBUG: pw:api
 
       - name: Upload test results
         if: always()
