@@ -57,12 +57,12 @@ export default async function Homepage({ searchParams }: HomepageProps) {
 
    
   
-  const primarySliderIndices = [8, 4, 6, 5]; 
+  const primarySliderIndices = [4, 1, 5]; 
   const primarySliderCategories = primarySliderIndices
     .map((index) => categories[index])
     .filter(Boolean);
 
-    const categoriesGridSlider = categories.slice(0, 8);
+    const categoriesGridSlider = categories.slice(0, 9);
 
     return (
       <div className="w-full mx-auto">

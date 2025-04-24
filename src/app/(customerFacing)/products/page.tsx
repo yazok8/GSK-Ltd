@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import ProductsRootClient from "./_components/ProductsRootClient";
 import { MappedProduct } from "@/types/MappedProduct";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import Head from "next/head";
 
 type ProductsPageProps = {
   searchParams: {
@@ -106,6 +107,10 @@ export default async function ProductsPage(props: ProductsPageProps) {
         <LoadingSpinner />
       </div>
     }>
+      <Head>
+      <title className="text-3xl font-bold mb-6">Products</title>
+      </Head>
+
       <ProductsContent searchParams={props.searchParams} />
     </Suspense>
   );

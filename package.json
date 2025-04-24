@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "prisma": {
-    "seed": "node prisma/dist/seed.ts"
+    "seed": "node prisma/dist/seed.js"
   },
   "scripts": {
     "dev": "NODE_ENV=development node server.js",
@@ -15,7 +15,14 @@
     "lint": "next lint",
     "seed": "prisma db seed",
     "migrate:prod": "prisma migrate deploy",
-    "postinstall": "prisma generate && prisma db push"
+    "postinstall": "prisma generate && prisma db push",
+    "fix-images": "node scripts/fix-image-paths.js",
+    "restore-images": "node scripts/restore-product-images.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:e2e": "dotenv -e .env.test -- playwright test",
+    "test:e2e:debug": "dotenv -e .env.test -- playwright test --debug",
+    "test:e2e:ui": "dotenv -e .env.test -- playwright test --ui"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.4",
@@ -83,6 +90,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.52.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@types/busboy": "^1.5.4",
     "@types/chokidar": "^1.7.5",
@@ -95,8 +103,10 @@
     "@types/react-slick": "^0.23.13",
     "chokidar": "^4.0.1",
     "concurrently": "^9.1.0",
+    "dotenv-cli": "^7.3.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.15",
+    "mongodb": "^6.16.0",
     "next-sitemap": "^4.2.3",
     "postcss": "^8.4.49",
     "prisma": "^6.6.0",
