@@ -12,7 +12,7 @@ jobs:
 
     env:
       NODE_ENV: test
-      DATABASE_URL: mongodb://localhost:27017/test_db
+      DATABASE_URL: mongodb://localhost:27017/test_db?replicaSet=rs0
       REDIS_URL: redis://localhost:6379
       NEXT_PUBLIC_API_BASE_URL: http://localhost:3000/api
       JWT_SECRET: test_jwt_secret
@@ -25,10 +25,11 @@ jobs:
         ports:
           - 27017:27017
         options: >-
-          --health-cmd "echo 'db.runCommand(\"ping\").ok' | mongosh localhost:27017/test --quiet"
+          --health-cmd "mongo --eval \"db.adminCommand('ping')\""
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          --entrypoint "mongod --replSet rs0 --bind_ip_all"
 
       redis:
         image: redis:7
@@ -50,13 +51,20 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install MongoDB tools
+        run: |
+          wget -qO- https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
+          echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+          sudo apt-get update
+          sudo apt-get install -y mongodb-org-tools mongodb-org-shell
 
       - name: Initialize MongoDB Replica Set
         run: |
-          mongosh --eval 'rs.initiate({_id: "rs0", members: [{_id: 0, host: "localhost:27017"}]})'
+          mongo --eval 'rs.initiate({_id: "rs0", members: [{_id: 0, host: "localhost:27017"}]})'
           sleep 10  # Give some time for the replica set to initialize
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Generate Prisma client
         run: npx prisma generate
